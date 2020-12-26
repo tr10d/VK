@@ -56,15 +56,31 @@
 		853D5DF3258FA2E0008F7EB8 /* VK */ = {
 			isa = PBXGroup;
 			children = (
+				85760DD0259772300065F9B0 /* Storyboards */,
+				85760DCF259772040065F9B0 /* UIClasses */,
 				853D5DF4258FA2E0008F7EB8 /* AppDelegate.swift */,
 				853D5DF6258FA2E0008F7EB8 /* SceneDelegate.swift */,
-				853D5DF8258FA2E0008F7EB8 /* LoginViewController.swift */,
-				853D5DFA258FA2E0008F7EB8 /* Main.storyboard */,
 				853D5DFD258FA2E1008F7EB8 /* Assets.xcassets */,
-				853D5DFF258FA2E1008F7EB8 /* LaunchScreen.storyboard */,
 				853D5E02258FA2E1008F7EB8 /* Info.plist */,
 			);
 			path = VK;
+			sourceTree = "<group>";
+		};
+		85760DCF259772040065F9B0 /* UIClasses */ = {
+			isa = PBXGroup;
+			children = (
+				853D5DF8258FA2E0008F7EB8 /* LoginViewController.swift */,
+			);
+			path = UIClasses;
+			sourceTree = "<group>";
+		};
+		85760DD0259772300065F9B0 /* Storyboards */ = {
+			isa = PBXGroup;
+			children = (
+				853D5DFA258FA2E0008F7EB8 /* Main.storyboard */,
+				853D5DFF258FA2E1008F7EB8 /* LaunchScreen.storyboard */,
+			);
+			path = Storyboards;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
