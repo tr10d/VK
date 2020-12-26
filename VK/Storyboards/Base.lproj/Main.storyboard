@@ -117,10 +117,10 @@
             </objects>
             <point key="canvasLocation" x="782" y="73"/>
         </scene>
-        <!--Table View Controller-->
+        <!--Group Table View Controller-->
         <scene sceneID="yes-c6-Yvz">
             <objects>
-                <tableViewController storyboardIdentifier="Group" id="yaX-bg-bgO" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="GroupTableViewController" id="yaX-bg-bgO" customClass="GroupTableViewController" customModule="VK" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="76W-ys-ujs">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="548"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -149,10 +149,10 @@
             </objects>
             <point key="canvasLocation" x="2640" y="465.84507042253523"/>
         </scene>
-        <!--Table View Controller-->
+        <!--Friends Table View Controller-->
         <scene sceneID="Clu-K1-H13">
             <objects>
-                <tableViewController storyboardIdentifier="Friends" id="Ib4-ad-HLo" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="FriendsTableViewController" id="Ib4-ad-HLo" customClass="FriendsTableViewController" customModule="VK" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="Haj-ma-XDW">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="548"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -181,10 +181,10 @@
             </objects>
             <point key="canvasLocation" x="2640" y="-271"/>
         </scene>
-        <!--Collection View Controller-->
+        <!--Friends Photo Collection View Controller-->
         <scene sceneID="Hr9-hw-fAb">
             <objects>
-                <collectionViewController storyboardIdentifier="FriendsPhoto" id="Gku-3a-Rr9" sceneMemberID="viewController">
+                <collectionViewController storyboardIdentifier="FriendsPhotoCollectionViewController" id="Gku-3a-Rr9" customClass="FriendsPhotoCollectionViewController" customModule="VK" customModuleProvider="target" sceneMemberID="viewController">
                     <collectionView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" id="HLO-QA-LeT">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="548"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -254,10 +254,10 @@
             </objects>
             <point key="canvasLocation" x="1642.5" y="465.84507042253523"/>
         </scene>
-        <!--Table View Controller-->
+        <!--All Group Table View Controller-->
         <scene sceneID="d4M-KZ-o6h">
             <objects>
-                <tableViewController storyboardIdentifier="AllGroup" id="R3I-Kh-LXK" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="AllGroupTableViewController" id="R3I-Kh-LXK" customClass="AllGroupTableViewController" customModule="VK" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="w6E-BS-W8v">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="548"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
