@@ -14,6 +14,10 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var login: UITextField!
     @IBOutlet weak var password: UITextField!
     @IBOutlet weak var scrollView: UIScrollView!
+ 
+    // MARK: - Private Properties
+
+    private let loginsDB = ["": "", "admin ": "123"]
     
     // MARK: - UIViewController
     
@@ -34,6 +38,19 @@ class LoginViewController: UIViewController {
         scrollView.contentInset = insets
     }
  
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        switch identifier {
+        case "toMainTabBar":
+            if !isLoginPasswordCorrect() {
+                showLoginAllert()
+                return false
+            }
+            return true
+        default:
+            return true
+        }
+    }
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // MARK: передача данных на другой экран
 //        print("prepare")
@@ -53,6 +70,20 @@ class LoginViewController: UIViewController {
 //            .instantiateViewController(withIdentifier: "")
 //        present(destinationUIView, animated: true)
     }
- 
+     
+    // MARK: - Private Methods
+    
+    private func isLoginPasswordCorrect() -> Bool {
+        guard let login = login.text, let password = password.text else { return false }
+        guard let passwordFromDB = loginsDB[login.lowercased()]  else { return false }
+        return password == passwordFromDB
+    }
+    
+    private func showLoginAllert() {
+        let alert = UIAlertController(title: "Ошибка", message: "Не верный логин/пароль", preferredStyle: .alert)
+        let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+        alert.addAction(action)
+        present(alert, animated: true, completion: nil)
+    }
+    
 }
-
