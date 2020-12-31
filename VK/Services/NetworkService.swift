@@ -60,7 +60,7 @@ class NetworkService {
         }
         return photos
     }
-    
+
     func isLoginValid(login: String, password: String) -> Bool {
         guard let passwordFromDB = loginsDB[login.lowercased()] else { return false }
         return password == passwordFromDB

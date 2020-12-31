@@ -15,9 +15,6 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var password: UITextField!
     @IBOutlet weak var scrollView: UIScrollView!
 
-    // MARK: - Private Properties
-
-
     // MARK: - UIViewController
 
     override func viewDidLoad() {
@@ -51,36 +48,6 @@ class LoginViewController: UIViewController {
         default:
             return true
         }
-    }
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // MARK: передача данных на другой экран через segue
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-        //        switch segue.identifier {
-        //        case "toScreen":
-        //            let destination = segue.destination as? DestinationUIViewController {
-        //                destination.<> = <>
-        //            }
-        //        default:
-        //            break
-        //        }
-    }
-
-    // MARK: - IBAction
-
-    @IBAction func login(_ sender: UIButton) {
-
-        // MARK: переход на другой экран (способ 1)
-        //        performSegue(withIdentifier: "toMainTab", sender: sender)
-
-        // MARK: переход на другой экран (способ 2)
-        //        let destinationUIView = UIStoryboard(name: "Main", bundle: nil)
-        //            .instantiateViewController(withIdentifier: "")
-        //        present(destinationUIView, animated: true)
-        //        destinationUIView.<> = <> //: передача на другой экран данных
-        //        navigationController?
-        //        .popToViewController(<#T##viewController: UIViewController##UIViewController#>, animated: true )
     }
 
     // MARK: - Private Methods
