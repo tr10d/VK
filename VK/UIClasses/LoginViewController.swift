@@ -14,13 +14,19 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var login: UITextField!
     @IBOutlet weak var password: UITextField!
     @IBOutlet weak var scrollView: UIScrollView!
-    
+
     // MARK: - UIViewController
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self,
+            selector: #selector(keyboardWillShow(notification:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil)
+        NotificationCenter.default.addObserver(self,
+            selector: #selector(keyboardWillHide(notification:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil)
     }
 
     @objc func keyboardWillShow(notification: Notification) {
@@ -28,31 +34,34 @@ class LoginViewController: UIViewController {
         let insets = UIEdgeInsets(top: 0, left: 0, bottom: kbSize.size.height, right: 0)
         scrollView.contentInset = insets
     }
-    
+
     @objc func keyboardWillHide(notification: Notification) {
         let insets = UIEdgeInsets.zero
         scrollView.contentInset = insets
     }
- 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // MARK: передача данных на другой экран
-//        print("prepare")
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+
+    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
+        switch identifier {
+        case "toMainTabBar" where !isLoginPasswordCorrect():
+            showLoginAllert()
+            return false
+        default:
+            return true
+        }
     }
 
-    // MARK: - IBAction
-    
-    @IBAction func login(_ sender: UIButton) {
-        
-        // MARK: переход на другой экран (способ 1)
-//        performSegue(withIdentifier: "toMainTab", sender: sender)
-        
-        // MARK: переход на другой экран (способ 2)
-//        let destinationUIView = UIStoryboard(name: "Main", bundle: nil)
-//            .instantiateViewController(withIdentifier: "")
-//        present(destinationUIView, animated: true)
+    // MARK: - Private Methods
+
+    private func isLoginPasswordCorrect() -> Bool {
+        guard let login = login.text, let password = password.text else { return false }
+        return NetworkService().isLoginValid(login: login, password: password)
     }
- 
+
+    private func showLoginAllert() {
+        let alert = UIAlertController(title: "Error", message: "Login/password is invalid", preferredStyle: .alert)
+        let action = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+        alert.addAction(action)
+        present(alert, animated: true, completion: nil)
+    }
+
 }
-
