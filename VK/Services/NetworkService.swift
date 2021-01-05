@@ -7,32 +7,120 @@
 
 import UIKit
 
+//protocol Image {
+//    var image: ItemImage { get }
+//}
+
+struct ItemImage {
+    let name: String
+    var image: UIImage? {
+        UIImage(named: name)
+    }
+}
+
+
+//extension Image {
+//    var image: ItemImage
+//    init(id: Int, name: String, image: String) {
+//        self.id = id
+//        self.name = name
+//        self.image = ItemImage(name: image)
+//    }
+//}
+
+struct User: Equatable {
+    let id: Int
+    let name: String
+    let image: ItemImage
+    init(id: Int, name: String, image: String) {
+        self.id = id
+        self.name = name
+        self.image = ItemImage(name: image)
+    }
+    static func == (lhs: User, rhs: User) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
+struct Group: Equatable {
+    let id: Int
+    let name: String
+    let image: ItemImage
+    init(id: Int, name: String, image: String) {
+        self.id = id
+        self.name = name
+        self.image = ItemImage(name: image)
+    }
+    static func == (lhs: Group, rhs: Group) -> Bool {
+        lhs.id == rhs.id
+    }
+}
+
+struct Photo {
+    let image: ItemImage
+}
+
+//struct User2: Equatable {
+//    let id: Int
+//    let name: String
+//    let imageName: String
+//    var image: UIImage? {
+//        UIImage(named: imageName)
+//    }
+//}
+
+//struct Group2: Equatable {
+//    let name: String
+//    let imageName: String
+//    var image: UIImage? {
+//        UIImage(named: imageName)
+//    }
+//}
+
 class NetworkService {
 
     private let loginsDB = [
         "": "",
-        "admin ": "123"
+        "admin": "123"
     ]
 
+//    private let users = [User2]()
+//    private let groups = [Group2]()
+//    private let photos = [Int: [Photo]]()
+//    let logins: [String: String]
+//
+//    init() {
+//        self.logins = getLogins()
+//    }
+//
+//    func getLogins() -> [String: String] {
+//        return [
+//            "": "",
+//            "admin": "123"
+//        ]
+//    }
+//
+    // "users": [ { "id": 1, "name": "Friend 1", "image": "Friend-1" } ]
+    
     func getUsers() -> [User] {
-        return [
-            User(name: "Friend 1", imageName: "Friend-1"),
-            User(name: "Friend 2", imageName: "Friend-2"),
-            User(name: "Friend 3", imageName: "Friend-3"),
-            User(name: "Friend 4", imageName: "Friend-4"),
-            User(name: "Friend 5", imageName: "Friend-5")
+        let data = [
+            User(id: 1, name: "Friend 1", image: "Friend-1"),
+            User(id: 2, name: "Friend 2", image: "Friend-2"),
+            User(id: 3, name: "Friend 3", image: "Friend-3"),
+            User(id: 4, name: "Friend 4", image: "Friend-4"),
+            User(id: 5, name: "Friend 5", image: "Friend-5")
         ]
+        return data
     }
 
     func getGroups() -> [Group] {
         return [
-            Group(name: "Group 1", imageName: "Group-1"),
-            Group(name: "Group 2", imageName: "Group-2"),
-            Group(name: "Group 3", imageName: "Group-3"),
-            Group(name: "Group 4", imageName: "Group-4"),
-            Group(name: "Group 5", imageName: "Group-5")
+            Group(id: 1, name: "Group 1", image: "Group-1"),
+            Group(id: 2, name: "Group 2", image: "Group-2"),
+            Group(id: 3, name: "Group 3", image: "Group-3"),
+            Group(id: 4, name: "Group 4", image: "Group-4"),
+            Group(id: 5, name: "Group 5", image: "Group-5")
         ]
-
     }
 
     func getPhotos(user: User) -> [UIImage?] {

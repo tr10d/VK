@@ -31,12 +31,16 @@ class FriendsPhotoCollectionViewController: UICollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView,
                                  cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell",
-                                                         for: indexPath) as? FriendsPhotoCollectionViewCell {
-            cell.friendPhoto.image = photos[indexPath.row]
-            return cell
-        }
-        return UICollectionViewCell()
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath)
+
+        return cell
+//        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell",
+//                                                            for: indexPath) as? FriendsPhotoCollectionViewCell else {
+//            return UICollectionViewCell()
+//        }
+//        cell.friendPhoto.image = photos[indexPath.row]
+//        cell.contentMode = .scaleAspectFit
+//        return cell
     }
 
 }

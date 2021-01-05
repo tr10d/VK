@@ -125,29 +125,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="428" height="872"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" textLabel="pOJ-f4-Agd" imageView="bIP-hK-S0K" rowHeight="37" style="IBUITableViewCellStyleDefault" id="59N-JO-BEa">
-                                <rect key="frame" x="0.0" y="28" width="428" height="37"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="59N-JO-BEa" id="VYy-zB-tw4">
-                                    <rect key="frame" x="0.0" y="0.0" width="428" height="37"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="pOJ-f4-Agd">
-                                            <rect key="frame" x="64.666666666666657" y="0.0" width="343.33333333333331" height="37"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="person.3.fill" catalog="system" id="bIP-hK-S0K">
-                                            <rect key="frame" x="14.333333333333332" y="10" width="35.333333333333336" height="17"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </imageView>
-                                    </subviews>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="yaX-bg-bgO" id="LYe-bE-i2a"/>
                             <outlet property="delegate" destination="yaX-bg-bgO" id="Qyy-bU-hzH"/>
@@ -156,7 +133,7 @@
                     <navigationItem key="navigationItem" title="Groups" id="M2V-Ch-L7F">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="xZI-tT-ofz">
                             <connections>
-                                <segue destination="R3I-Kh-LXK" kind="show" id="AyU-rQ-3Cn"/>
+                                <segue destination="R3I-Kh-LXK" kind="show" identifier="toAllGroupes" id="AyU-rQ-3Cn"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -173,42 +150,19 @@
                         <rect key="frame" x="0.0" y="0.0" width="428" height="872"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" textLabel="Euf-pe-gxc" imageView="FCV-Ce-dCB" style="IBUITableViewCellStyleDefault" id="qLe-Ni-5YF">
-                                <rect key="frame" x="0.0" y="28" width="428" height="43.666667938232422"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="qLe-Ni-5YF" id="FZg-qM-EP3">
-                                    <rect key="frame" x="0.0" y="0.0" width="428" height="43.666667938232422"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Euf-pe-gxc">
-                                            <rect key="frame" x="59" y="0.0" width="349" height="43.666667938232422"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="person" catalog="system" id="FCV-Ce-dCB">
-                                            <rect key="frame" x="22.666666666666664" y="13.000000000000002" width="18.666666666666668" height="17.666666666666668"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </imageView>
-                                    </subviews>
-                                </tableViewCellContentView>
-                                <connections>
-                                    <segue destination="Gku-3a-Rr9" kind="show" identifier="toFriendsPhoto" id="c67-kk-hMg"/>
-                                </connections>
-                            </tableViewCell>
-                        </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="Ib4-ad-HLo" id="SH3-XA-Vdu"/>
                             <outlet property="delegate" destination="Ib4-ad-HLo" id="8qv-Xr-BOk"/>
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="Friends" id="eqm-aq-g9V"/>
+                    <connections>
+                        <segue destination="Gku-3a-Rr9" kind="show" identifier="toFriendsPhoto" id="oNs-r3-ZAa"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6Rm-Bd-dNA" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3231.1999999999998" y="-271.18226600985224"/>
+            <point key="canvasLocation" x="3292" y="-271"/>
         </scene>
         <!--Friends Photo Collection View Controller-->
         <scene sceneID="Hr9-hw-fAb">
@@ -232,8 +186,8 @@
                                     <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eQA-L5-o1G">
-                                            <rect key="frame" x="0.0" y="8" width="128" height="120"/>
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="square.and.arrow.up" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="eQA-L5-o1G">
+                                            <rect key="frame" x="0.0" y="0.0" width="128" height="128"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         </imageView>
                                     </subviews>
@@ -301,38 +255,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="428" height="872"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" textLabel="GST-UF-LAq" imageView="91b-8E-Z80" rowHeight="44" style="IBUITableViewCellStyleDefault" id="eyf-J7-3Vd">
-                                <rect key="frame" x="0.0" y="28" width="428" height="44"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="eyf-J7-3Vd" id="VYt-JH-g1h">
-                                    <rect key="frame" x="0.0" y="0.0" width="428" height="44"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                    <subviews>
-                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="GST-UF-LAq">
-                                            <rect key="frame" x="64.666666666666657" y="0.0" width="343.33333333333331" height="44"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <nil key="textColor"/>
-                                            <nil key="highlightedColor"/>
-                                        </label>
-                                        <imageView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" image="person.3.fill" catalog="system" id="91b-8E-Z80">
-                                            <rect key="frame" x="14.333333333333332" y="13.666666666666664" width="35.333333333333336" height="17"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </imageView>
-                                    </subviews>
-                                </tableViewCellContentView>
-                                <connections>
-                                    <segue destination="Z6M-1R-2mR" kind="unwind" unwindAction="unwindFromGroups:" id="Efs-wO-V8r"/>
-                                </connections>
-                            </tableViewCell>
-                        </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="R3I-Kh-LXK" id="qvm-at-huR"/>
                             <outlet property="delegate" destination="R3I-Kh-LXK" id="csX-c5-3as"/>
                         </connections>
                     </tableView>
                     <navigationItem key="navigationItem" title="All groupes" id="YlF-eC-sdk"/>
+                    <connections>
+                        <segue destination="Z6M-1R-2mR" kind="unwind" identifier="unwindFromGroups" unwindAction="unwindFromGroups:" id="Tlu-18-JFP"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Bhy-Yh-zyz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <exit id="Z6M-1R-2mR" userLabel="Exit" sceneMemberID="exit"/>
@@ -342,9 +273,9 @@
     </scenes>
     <resources>
         <image name="VK_Full_Logo" width="274" height="48"/>
-        <image name="person" catalog="system" width="128" height="117"/>
         <image name="person.3.fill" catalog="system" width="128" height="61"/>
         <image name="person.fill" catalog="system" width="128" height="120"/>
+        <image name="square.and.arrow.up" catalog="system" width="115" height="128"/>
         <namedColor name="VK_ColorBlue">
             <color red="0.15294117647058825" green="0.52941176470588236" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

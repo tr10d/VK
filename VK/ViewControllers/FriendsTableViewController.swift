@@ -14,6 +14,8 @@ class FriendsTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         friends = NetworkService().getUsers()
+        tableView.register(UINib(nibName: "FriendTableViewCell", bundle: nil), forCellReuseIdentifier: "Cell")
+
     }
 
     // MARK: - Table view data source
@@ -27,12 +29,19 @@ class FriendsTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+                as? FriendTableViewCell else {
+            return UITableViewCell()
+        }
         let friend = friends[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        cell.imageView?.image = friend.image
-        cell.textLabel?.text = friend.name
+        cell.friendImage.image = friend.image.image
+        cell.friendName.text = friend.name
         return cell
-   }
+    }
+
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "toFriendsPhoto", sender: self)
+    }
 
     // MARK: - Navigation
 

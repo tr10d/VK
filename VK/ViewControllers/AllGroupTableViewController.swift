@@ -14,6 +14,7 @@ class AllGroupTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         groupes = NetworkService().getGroups()
+        tableView.register(UINib(nibName: "GroupTableViewCell", bundle: nil), forCellReuseIdentifier: "Cell")
     }
 
     // MARK: - Table view data source
@@ -27,11 +28,18 @@ class AllGroupTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+                as? GroupTableViewCell else {
+            return UITableViewCell()
+        }
         let group = groupes[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        cell.imageView?.image = group.image
-        cell.textLabel?.text = group.name
+        cell.groupImage.image = group.image.image
+        cell.groupName.text = group.name
         return cell
+    }
+
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "unwindFromGroups", sender: self)
     }
 
 }

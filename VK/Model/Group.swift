@@ -7,10 +7,10 @@
 
 import UIKit
 
-struct Group: Equatable {
-    let name: String
-    let imageName: String
-    var image: UIImage? {
-        UIImage(named: imageName)
-    }
-}
+//struct Group: Equatable {
+//    let name: String
+//    let imageName: String
+//    var image: UIImage? {
+//        UIImage(named: imageName)
+//    }
+//}

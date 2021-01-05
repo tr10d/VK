@@ -1,13 +1,17 @@
 //
-//  GroupTableViewCell.swift
+//  FriendTableViewCell.swift
 //  VK
 //
-//  Created by  Sergei on 31.12.2020.
+//  Created by  Sergei on 04.01.2021.
 //
 
 import UIKit
 
-class GroupTableViewCell: UITableViewCell {
+@IBDesignable
+class FriendTableViewCell: UITableViewCell {
+
+    @IBOutlet weak var friendImage: UIImageView!
+    @IBOutlet weak var friendName: UILabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()

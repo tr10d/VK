@@ -26,6 +26,7 @@ class GroupTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        tableView.register(UINib(nibName: "GroupTableViewCell", bundle: nil), forCellReuseIdentifier: "Cell")
     }
 
     // MARK: - Table view data source
@@ -39,21 +40,26 @@ class GroupTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+                as? GroupTableViewCell else {
+            return UITableViewCell()
+        }
         let group = groupes[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-        cell.imageView?.image = group.image
-        cell.textLabel?.text = group.name
+        cell.groupImage.image = group.image.image
+        cell.groupName.text = group.name
         return cell
     }
 
-     // Override to support editing the table view.
+    // Override to support editing the table view.
     override func tableView(_ tableView: UITableView,
                             commit editingStyle: UITableViewCell.EditingStyle,
                             forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
+        switch editingStyle {
+        case .delete:
             groupes.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
+        default:
+            break
         }
     }
 
