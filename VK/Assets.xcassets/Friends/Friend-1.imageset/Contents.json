@@ -1,15 +1,12 @@
 {
   "images" : [
     {
-      "filename" : "VK_Compact_Logo.svg",
+      "filename" : "pexels-anna-shvets-4588065.jpg",
       "idiom" : "universal"
     }
   ],
   "info" : {
     "author" : "xcode",
     "version" : 1
-  },
-  "properties" : {
-    "preserves-vector-representation" : true
   }
 }

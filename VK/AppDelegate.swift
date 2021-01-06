@@ -22,7 +22,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         navigationBar.barTintColor = vkBlue
         navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: vkWhite]
 
-         return true
+        return true
     }
 
     // MARK: UISceneSession Lifecycle

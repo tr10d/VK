@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Hev-ij-OpX">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="nwp-7x-JhM">
+            <objects>
+                <viewController id="Hev-ij-OpX" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="mXd-Wy-h53">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rQ8-Ly-Fvh" customClass="CircleView" customModule="VK" customModuleProvider="target">
+                                <rect key="frame" x="20" y="44" width="100" height="100"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="folder.fill.badge.questionmark.ar" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="uoG-bY-iHx">
+                                        <rect key="frame" x="0.0" y="1" width="101.5" height="97.5"/>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstItem="uoG-bY-iHx" firstAttribute="top" secondItem="rQ8-Ly-Fvh" secondAttribute="top" id="7WD-tB-cAs"/>
+                                    <constraint firstAttribute="width" secondItem="rQ8-Ly-Fvh" secondAttribute="height" multiplier="1:1" id="QpS-JJ-Jvz"/>
+                                    <constraint firstAttribute="trailing" secondItem="uoG-bY-iHx" secondAttribute="trailing" id="You-wb-1AQ"/>
+                                    <constraint firstAttribute="width" constant="100" id="s0h-A7-ITt"/>
+                                    <constraint firstAttribute="bottom" secondItem="uoG-bY-iHx" secondAttribute="bottom" id="sML-Ap-Ffq"/>
+                                    <constraint firstItem="uoG-bY-iHx" firstAttribute="leading" secondItem="rQ8-Ly-Fvh" secondAttribute="leading" id="zyx-bU-0nd"/>
+                                </constraints>
+                            </view>
+                            <stackView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" distribution="equalSpacing" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="WOC-dy-qJ4">
+                                <rect key="frame" x="96" y="362" width="72" height="22"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HVn-B7-fJk">
+                                        <rect key="frame" x="0.0" y="1" width="41.5" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <button opaque="NO" contentMode="scaleToFill" enabled="NO" selected="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Udp-ZF-JAr">
+                                        <rect key="frame" x="51.5" y="0.0" width="20.5" height="22"/>
+                                        <state key="normal" image="suit.heart.fill" catalog="system"/>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pTI-vV-I2L" customClass="PhotoLikes" customModule="VK" customModuleProvider="target">
+                                <rect key="frame" x="51" y="232" width="83" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="fnS-5v-nEA"/>
+                        <color key="backgroundColor" systemColor="systemGray5Color"/>
+                        <constraints>
+                            <constraint firstItem="rQ8-Ly-Fvh" firstAttribute="leading" secondItem="fnS-5v-nEA" secondAttribute="leading" constant="20" id="AMh-Us-iHZ"/>
+                            <constraint firstItem="rQ8-Ly-Fvh" firstAttribute="top" secondItem="fnS-5v-nEA" secondAttribute="top" id="yIa-Mi-nmu"/>
+                        </constraints>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="TGp-ea-Hxo" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1614.4927536231885" y="847.76785714285711"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="folder.fill.badge.questionmark.ar" catalog="system" width="128" height="91"/>
+        <image name="suit.heart.fill" catalog="system" width="128" height="109"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGray5Color">
+            <color red="0.89803921568627454" green="0.89803921568627454" blue="0.91764705882352937" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>

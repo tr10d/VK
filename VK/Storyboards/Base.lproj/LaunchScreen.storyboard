@@ -36,7 +36,7 @@
     <resources>
         <image name="VK_Full_Logo" width="274" height="48"/>
         <namedColor name="VK_ColorBlue">
-            <color red="0.15294117647058825" green="0.52941176470588236" blue="0.96078431372549022" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.15299999713897705" green="0.52899998426437378" blue="0.96100002527236938" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

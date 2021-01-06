@@ -9,31 +9,45 @@ import UIKit
 
 class FriendsTableViewController: UITableViewController {
 
-    var friends = [User]()
+    var friends = Users()
+    var letters = [String]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         friends = NetworkService().getUsers()
+        letters = friends.letters
         tableView.register(UINib(nibName: "FriendTableViewCell", bundle: nil), forCellReuseIdentifier: "Cell")
-
     }
 
     // MARK: - Table view data source
 
+    override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
+        return letters
+    }
+
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return letters.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return friends.count
+        let key = letters[section]
+        if let array = friends.data[key] {
+            return array.count
+        }
+        return 0
+    }
+
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return letters[section]
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-                as? FriendTableViewCell else {
+                as? FriendTableViewCell,
+              let array = friends.data[letters[indexPath.section]] else {
             return UITableViewCell()
         }
-        let friend = friends[indexPath.row]
+        let friend = array[indexPath.row]
         cell.friendImage.image = friend.image.image
         cell.friendName.text = friend.name
         return cell
@@ -51,13 +65,21 @@ class FriendsTableViewController: UITableViewController {
         case "toFriendsPhoto":
             guard let tableViewController = segue.source as? FriendsTableViewController,
                   let indexPath = tableViewController.tableView.indexPathForSelectedRow,
-                  let destination = segue.destination as? FriendsPhotoCollectionViewController else { return }
+                  let destination = segue.destination as? FriendsPhotoCollectionViewController,
+                let array = friends.data[letters[indexPath.section]] else { return }
 
-            destination.friend = friends[indexPath.row]
+            destination.friend = array[indexPath.row]
 
         default:
             break
         }
     }
+
+}
+
+class FriendTableViewCell: UITableViewCell {
+
+    @IBOutlet weak var friendImage: UIImageView!
+    @IBOutlet weak var friendName: UILabel!
 
 }

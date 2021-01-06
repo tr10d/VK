@@ -9,7 +9,7 @@ import UIKit
 
 class FriendsPhotoCollectionViewController: UICollectionViewController {
 
-    var photos = [UIImage?]()
+    var photos = [Photo]()
     var friend: User?
 
     override func viewDidLoad() {
@@ -17,6 +17,8 @@ class FriendsPhotoCollectionViewController: UICollectionViewController {
         if let friend = friend {
             photos = NetworkService().getPhotos(user: friend)
         }
+        collectionView.register(UINib(nibName: "PhotoCollectionViewCell", bundle: nil),
+                                forCellWithReuseIdentifier: "Cell")
     }
 
     // MARK: UICollectionViewDataSource
@@ -31,16 +33,20 @@ class FriendsPhotoCollectionViewController: UICollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView,
                                  cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath)
 
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath)
+                as? PhotoCollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        let photo = photos[indexPath.row]
+        cell.photo.image = photo.image.image
         return cell
-//        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell",
-//                                                            for: indexPath) as? FriendsPhotoCollectionViewCell else {
-//            return UICollectionViewCell()
-//        }
-//        cell.friendPhoto.image = photos[indexPath.row]
-//        cell.contentMode = .scaleAspectFit
-//        return cell
     }
+
+}
+
+class PhotoCollectionViewCell: UICollectionViewCell {
+
+    @IBOutlet weak var photo: UIImageView!
 
 }
