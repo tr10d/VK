@@ -46,11 +46,10 @@ class PhotoLikes: UIControl {
 
     @objc
     func touchLike(sender: UIButton) {
-        if let row = row, var currentPhoto = photos?.getItem(index: row) {
-            currentPhoto.switchLike()
-            photos?.insert(currentPhoto, index: row)
+        if let row = row, let photos = photos {
+            photos.switchLike(index: row)
+            updateView​()
         }
-        updateView​()
     }
 
     func updateView​() {

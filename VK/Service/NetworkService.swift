@@ -72,11 +72,13 @@ class Photos {
         self.array = array
     }
 
-    func getItem(index: Int) -> Photo {
-        return array[index]
+    func switchLike(index: Int) {
+        var element = array.remove(at: index)
+        element.switchLike()
+        array.insert(element, at: index)
     }
 
-    func insert(_ newElement: Photo, index: Int) {
-        array.insert(newElement, at: index)
+    func getItem(index: Int) -> Photo {
+        return array[index]
     }
 }
