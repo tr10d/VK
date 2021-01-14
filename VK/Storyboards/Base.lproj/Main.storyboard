@@ -184,6 +184,7 @@
                         </connections>
                     </collectionView>
                     <navigationItem key="navigationItem" id="qFV-va-GyI"/>
+                    <value key="contentSizeForViewInPopover" type="size" width="300" height="300"/>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3QL-Xx-oyp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
