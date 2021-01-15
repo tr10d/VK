@@ -28,17 +28,22 @@ class PhotoLikes: UIControl {
 
     private func setupView​() {
 
+        let spaceLabel = UILabel()
+        let priority = spaceLabel.contentHuggingPriority(for: .horizontal)
+        spaceLabel.setContentHuggingPriority(UILayoutPriority(priority.rawValue - 1), for: .horizontal)
+
+        label = UILabel()
+        label.text = "0"
+
         button = UIButton(type: UIButton.ButtonType.system)
         button.addTarget(self, action: #selector(touchLike), for: .touchUpInside)
         button.setImage(UIImage(systemName: "suit.heart.fill"), for: .normal)
 
-        label = UILabel()
-
-        stackView = UIStackView(arrangedSubviews: [label, button])
+        stackView = UIStackView(arrangedSubviews: [spaceLabel, label, button])
         stackView.axis = .horizontal
         stackView.alignment = .bottom
-        stackView.distribution = .equalSpacing
-        stackView.spacing = 10
+        stackView.distribution = .fill
+        stackView.spacing = 8
 
         addSubview(stackView)
 

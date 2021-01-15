@@ -4,42 +4,66 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFit" reuseIdentifier="Cell" id="gTV-IL-0wX" customClass="PhotoCollectionViewCell" customModule="VK" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="80" height="80"/>
+            <rect key="frame" x="0.0" y="0.0" width="214" height="232"/>
             <autoresizingMask key="autoresizingMask"/>
             <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                <rect key="frame" x="0.0" y="0.0" width="80" height="80"/>
+                <rect key="frame" x="0.0" y="0.0" width="214" height="232"/>
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" id="o4h-fl-a1m">
-                        <rect key="frame" x="0.0" y="0.0" width="80" height="80"/>
-                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                    </imageView>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VU2-2h-egE" customClass="PhotoLikes" customModule="VK" customModuleProvider="target">
-                        <rect key="frame" x="20" y="53" width="60" height="27"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="LO0-2I-onQ">
+                        <rect key="frame" x="0.0" y="0.0" width="214" height="232"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="hT8-HQ-1qj">
+                                <rect key="frame" x="0.0" y="0.0" width="214" height="232"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </imageView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VU2-2h-egE" customClass="PhotoLikes" customModule="VK" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="202" width="214" height="30"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="KHA-Bn-kyU"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="hT8-HQ-1qj" firstAttribute="top" secondItem="LO0-2I-onQ" secondAttribute="top" id="3ge-I8-sv8"/>
+                            <constraint firstAttribute="trailing" secondItem="VU2-2h-egE" secondAttribute="trailing" id="4Gm-3T-Hcc"/>
+                            <constraint firstItem="VU2-2h-egE" firstAttribute="leading" secondItem="LO0-2I-onQ" secondAttribute="leading" id="9UK-7Q-mdY"/>
+                            <constraint firstAttribute="bottom" secondItem="hT8-HQ-1qj" secondAttribute="bottom" id="BGR-gR-rCG"/>
+                            <constraint firstItem="hT8-HQ-1qj" firstAttribute="leading" secondItem="LO0-2I-onQ" secondAttribute="leading" id="YY0-Mf-V7W"/>
+                            <constraint firstAttribute="trailing" secondItem="hT8-HQ-1qj" secondAttribute="trailing" id="cCl-Bv-3V6"/>
+                            <constraint firstAttribute="bottom" secondItem="VU2-2h-egE" secondAttribute="bottom" id="cTY-ci-P0q"/>
+                        </constraints>
                     </view>
                 </subviews>
             </view>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
-                <constraint firstItem="VU2-2h-egE" firstAttribute="trailing" secondItem="o4h-fl-a1m" secondAttribute="trailing" id="J11-pu-Cd8"/>
-                <constraint firstItem="VU2-2h-egE" firstAttribute="bottom" secondItem="o4h-fl-a1m" secondAttribute="bottom" id="PEg-Ge-6km"/>
-                <constraint firstItem="VU2-2h-egE" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" constant="53" id="W36-Yr-Tlh"/>
-                <constraint firstItem="VU2-2h-egE" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="20" id="sjl-IQ-9le"/>
+                <constraint firstItem="LO0-2I-onQ" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="5Je-FK-srg"/>
+                <constraint firstAttribute="bottom" secondItem="LO0-2I-onQ" secondAttribute="bottom" id="FSQ-mh-9Yo"/>
+                <constraint firstAttribute="trailing" secondItem="LO0-2I-onQ" secondAttribute="trailing" id="eJH-ve-2Gl"/>
+                <constraint firstItem="LO0-2I-onQ" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="hl6-BA-xzL"/>
             </constraints>
-            <size key="customSize" width="103" height="157"/>
+            <size key="customSize" width="242" height="315"/>
             <connections>
-                <outlet property="photo" destination="o4h-fl-a1m" id="e7k-OF-hth"/>
+                <outlet property="photo" destination="hT8-HQ-1qj" id="hjE-DV-FKT"/>
                 <outlet property="photoLike" destination="VU2-2h-egE" id="6pV-RO-P5m"/>
             </connections>
-            <point key="canvasLocation" x="-1156.521739130435" y="-207.58928571428569"/>
+            <point key="canvasLocation" x="-1057.9710144927537" y="-154.6875"/>
         </collectionViewCell>
     </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
 </document>
