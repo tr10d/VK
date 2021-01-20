@@ -7,49 +7,47 @@
 
 import UIKit
 
-class FriendsTableViewController: UITableViewController {
+class FriendsTableViewController: UITableViewController, UISearchBarDelegate {
 
     var friends = Users()
-    var letters = [String]()
+
+    @IBOutlet weak var searchFriend: UISearchBar!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         friends = NetworkService().getUsers()
-        letters = friends.letters
-        tableView.register(UINib(nibName: "FriendTableViewCell", bundle: nil), forCellReuseIdentifier: "Cell")
+        tableView.register(FriendTableViewCell.nib, forCellReuseIdentifier: FriendTableViewCell.identifier)
+    }
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        friends.filter = searchText
+        tableView.reloadData()
     }
 
     // MARK: - Table view data source
 
     override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
-        return letters
+        return friends.letters
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return letters.count
+        return friends.letters.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let key = letters[section]
-        if let array = friends.data[key] {
-            return array.count
-        }
-        return 0
+        return friends.getFriends(section: section).count
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return letters[section]
+        return friends.letters[section]
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-                as? FriendTableViewCell,
-              let array = friends.data[letters[indexPath.section]] else {
+                as? FriendTableViewCell else {
             return UITableViewCell()
         }
-        let friend = array[indexPath.row]
-        cell.friendImage.image = friend.image.image
-        cell.friendName.text = friend.name
+        cell.set(friend: friends.getFriend(indexPath: indexPath))
         return cell
     }
 
@@ -65,21 +63,13 @@ class FriendsTableViewController: UITableViewController {
         case "toFriendsPhoto":
             guard let tableViewController = segue.source as? FriendsTableViewController,
                   let indexPath = tableViewController.tableView.indexPathForSelectedRow,
-                  let destination = segue.destination as? FriendsPhotoCollectionViewController,
-                let array = friends.data[letters[indexPath.section]] else { return }
+                  let destination = segue.destination as? FriendsPhotoCollectionViewController else { return }
 
-            destination.friend = array[indexPath.row]
+            destination.friend = friends.getFriend(indexPath: indexPath)
 
         default:
             break
         }
     }
-
-}
-
-class FriendTableViewCell: UITableViewCell {
-
-    @IBOutlet weak var friendImage: UIImageView!
-    @IBOutlet weak var friendName: UILabel!
 
 }

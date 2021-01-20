@@ -7,14 +7,29 @@
 
 import UIKit
 
-class AllGroupTableViewController: UITableViewController {
+class AllGroupTableViewController: UITableViewController, UISearchBarDelegate {
 
-    var groupes = [Group]()
+    var groupes: [Group] = []
+    var filteredGroupes: [Group] = []
+
+    @IBOutlet weak var searchGroup: UISearchBar!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         groupes = NetworkService().getGroups()
-        tableView.register(UINib(nibName: "GroupTableViewCell", bundle: nil), forCellReuseIdentifier: "Cell")
+        filteredGroupes = groupes
+        tableView.register(GroupTableViewCell.nib, forCellReuseIdentifier: GroupTableViewCell.identifier)
+    }
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.isEmpty {
+            filteredGroupes = groupes
+        } else {
+            filteredGroupes = groupes.filter {
+                $0.name.range(of: searchText, options: .caseInsensitive) != nil
+            }
+        }
+        tableView.reloadData()
     }
 
     // MARK: - Table view data source
@@ -24,7 +39,7 @@ class AllGroupTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return groupes.count
+        return filteredGroupes.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -32,9 +47,8 @@ class AllGroupTableViewController: UITableViewController {
                 as? GroupTableViewCell else {
             return UITableViewCell()
         }
-        let group = groupes[indexPath.row]
-        cell.groupImage.image = group.image.image
-        cell.groupName.text = group.name
+        let group = filteredGroupes[indexPath.row]
+        cell.set(group: group)
         return cell
     }
 

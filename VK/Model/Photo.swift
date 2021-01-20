@@ -29,11 +29,19 @@ struct Photo {
             like += count
         }
     }
+
+    init() {
+        like = Int.random(0, 123)
+        image = ItemImage(name: "Photo-\(Int.random(1, 30))")
+        isLiked = like == 0 ? false : Bool.random()
+    }
+
     init(like: Int, image: String, isLiked: Bool = false) {
         self.like = like
         self.image = ItemImage(name: image)
         self.isLiked = isLiked
     }
+
     mutating func switchLike() {
         isLiked = !isLiked
     }
