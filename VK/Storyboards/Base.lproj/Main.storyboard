@@ -142,37 +142,6 @@
             </objects>
             <point key="canvasLocation" x="3230" y="435"/>
         </scene>
-        <!--Friends-->
-        <scene sceneID="Clu-K1-H13">
-            <objects>
-                <tableViewController storyboardIdentifier="FriendsTableViewController" id="Ib4-ad-HLo" customClass="FriendsTableViewController" customModule="VK" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="Haj-ma-XDW">
-                        <rect key="frame" x="0.0" y="0.0" width="428" height="872"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <searchBar key="tableFooterView" contentMode="redraw" id="CIi-B2-Qub">
-                            <rect key="frame" x="0.0" y="0.0" width="428" height="44"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                            <textInputTraits key="textInputTraits"/>
-                            <connections>
-                                <outlet property="delegate" destination="Ib4-ad-HLo" id="ZGb-hL-Tpf"/>
-                            </connections>
-                        </searchBar>
-                        <connections>
-                            <outlet property="dataSource" destination="Ib4-ad-HLo" id="SH3-XA-Vdu"/>
-                            <outlet property="delegate" destination="Ib4-ad-HLo" id="8qv-Xr-BOk"/>
-                        </connections>
-                    </tableView>
-                    <navigationItem key="navigationItem" title="Friends" id="eqm-aq-g9V"/>
-                    <connections>
-                        <outlet property="searchFriend" destination="CIi-B2-Qub" id="ico-ii-pGK"/>
-                        <segue destination="Gku-3a-Rr9" kind="show" identifier="toFriendsPhoto" id="oNs-r3-ZAa"/>
-                    </connections>
-                </tableViewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="6Rm-Bd-dNA" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="3292" y="-271"/>
-        </scene>
         <!--Friends Photo Collection View Controller-->
         <scene sceneID="Hr9-hw-fAb">
             <objects>
@@ -200,6 +169,56 @@
             </objects>
             <point key="canvasLocation" x="4059.8130841121492" y="-271.49028077753781"/>
         </scene>
+        <!--Friends Table View Controller-->
+        <scene sceneID="tIS-sv-gan">
+            <objects>
+                <viewController id="yMv-Le-nXU" customClass="FriendsTableViewController" customModule="VK" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="b81-Un-TWk">
+                        <rect key="frame" x="0.0" y="0.0" width="428" height="872"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="vf7-Jg-uy5">
+                                <rect key="frame" x="0.0" y="56" width="428" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="Z4Y-SX-H8Y"/>
+                                </constraints>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="yMv-Le-nXU" id="F6w-if-97n"/>
+                                </connections>
+                            </searchBar>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Lml-OE-bPG">
+                                <rect key="frame" x="0.0" y="100" width="428" height="689"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="yMv-Le-nXU" id="GpQ-Tx-HYF"/>
+                                    <outlet property="delegate" destination="yMv-Le-nXU" id="dCA-bN-AIX"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="1Kh-wo-gOQ"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="vf7-Jg-uy5" firstAttribute="trailing" secondItem="1Kh-wo-gOQ" secondAttribute="trailing" id="54P-fz-vC0"/>
+                            <constraint firstItem="Lml-OE-bPG" firstAttribute="bottom" secondItem="1Kh-wo-gOQ" secondAttribute="bottom" id="6ng-YV-g0z"/>
+                            <constraint firstItem="Lml-OE-bPG" firstAttribute="trailing" secondItem="1Kh-wo-gOQ" secondAttribute="trailing" id="Dkd-0A-Klq"/>
+                            <constraint firstItem="vf7-Jg-uy5" firstAttribute="top" secondItem="1Kh-wo-gOQ" secondAttribute="top" id="Kzx-d0-qS0"/>
+                            <constraint firstItem="vf7-Jg-uy5" firstAttribute="leading" secondItem="1Kh-wo-gOQ" secondAttribute="leading" id="TrG-ug-9xJ"/>
+                            <constraint firstItem="Lml-OE-bPG" firstAttribute="leading" secondItem="1Kh-wo-gOQ" secondAttribute="leading" id="p9k-ho-uj8"/>
+                            <constraint firstItem="Lml-OE-bPG" firstAttribute="top" secondItem="vf7-Jg-uy5" secondAttribute="bottom" id="rhA-Yv-tGB"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="M6g-g9-PGr"/>
+                    <connections>
+                        <outlet property="serarchBar" destination="vf7-Jg-uy5" id="9TR-4U-5Ec"/>
+                        <outlet property="tableView" destination="Lml-OE-bPG" id="HZX-ui-Jnl"/>
+                        <segue destination="Gku-3a-Rr9" kind="show" identifier="toFriendsPhoto" id="Xot-Pa-rv4"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="R9N-i2-ZTa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3181" y="-271"/>
+        </scene>
         <!--Friends-->
         <scene sceneID="Gpa-3c-wsR">
             <objects>
@@ -212,7 +231,7 @@
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="Ib4-ad-HLo" kind="relationship" relationship="rootViewController" id="U5p-gK-P2a"/>
+                        <segue destination="yMv-Le-nXU" kind="relationship" relationship="rootViewController" id="tVa-8R-8Q8"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Hoe-8I-5DV" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -247,26 +266,30 @@
                         <rect key="frame" x="0.0" y="0.0" width="428" height="872"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <searchBar key="tableFooterView" contentMode="redraw" id="OMh-HJ-Vlx">
-                            <rect key="frame" x="0.0" y="0.0" width="428" height="44"/>
-                            <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                            <textInputTraits key="textInputTraits"/>
-                            <connections>
-                                <outlet property="delegate" destination="R3I-Kh-LXK" id="ie1-8F-isY"/>
-                            </connections>
-                        </searchBar>
                         <connections>
                             <outlet property="dataSource" destination="R3I-Kh-LXK" id="qvm-at-huR"/>
                             <outlet property="delegate" destination="R3I-Kh-LXK" id="csX-c5-3as"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="All groupes" id="YlF-eC-sdk"/>
+                    <navigationItem key="navigationItem" title="All groupes" id="YlF-eC-sdk">
+                        <connections>
+                            <outlet property="titleView" destination="VFQ-oX-fbR" id="mWh-TW-B9h"/>
+                        </connections>
+                    </navigationItem>
                     <connections>
-                        <outlet property="searchGroup" destination="OMh-HJ-Vlx" id="3CJ-hJ-lNe"/>
+                        <outlet property="searchBar" destination="VFQ-oX-fbR" id="gsq-1I-L5o"/>
                         <segue destination="Z6M-1R-2mR" kind="unwind" identifier="unwindFromGroups" unwindAction="unwindFromGroups:" id="Tlu-18-JFP"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Bhy-Yh-zyz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <searchBar contentMode="redraw" id="VFQ-oX-fbR">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                    <textInputTraits key="textInputTraits"/>
+                    <connections>
+                        <outlet property="delegate" destination="R3I-Kh-LXK" id="t2d-28-Eh0"/>
+                    </connections>
+                </searchBar>
                 <exit id="Z6M-1R-2mR" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="4060" y="435"/>
@@ -298,16 +321,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="428" height="872"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" id="msF-gK-jnS">
-                                <rect key="frame" x="0.0" y="28" width="428" height="400"/>
-                                <autoresizingMask key="autoresizingMask"/>
-                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="msF-gK-jnS" id="QzC-gW-lxW">
-                                    <rect key="frame" x="0.0" y="0.0" width="428" height="400"/>
-                                    <autoresizingMask key="autoresizingMask"/>
-                                </tableViewCellContentView>
-                            </tableViewCell>
-                        </prototypes>
                         <connections>
                             <outlet property="dataSource" destination="rm3-cd-aPe" id="KeA-Jg-T8u"/>
                             <outlet property="delegate" destination="rm3-cd-aPe" id="SdV-pB-SB6"/>

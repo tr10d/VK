@@ -7,29 +7,18 @@
 
 import UIKit
 
-class AllGroupTableViewController: UITableViewController, UISearchBarDelegate {
+class AllGroupTableViewController: UITableViewController {
 
     var groupes: [Group] = []
     var filteredGroupes: [Group] = []
 
-    @IBOutlet weak var searchGroup: UISearchBar!
+    @IBOutlet var searchBar: UISearchBar!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         groupes = NetworkService().getGroups()
         filteredGroupes = groupes
         tableView.register(GroupTableViewCell.nib, forCellReuseIdentifier: GroupTableViewCell.identifier)
-    }
-
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if searchText.isEmpty {
-            filteredGroupes = groupes
-        } else {
-            filteredGroupes = groupes.filter {
-                $0.name.range(of: searchText, options: .caseInsensitive) != nil
-            }
-        }
-        tableView.reloadData()
     }
 
     // MARK: - Table view data source
@@ -54,6 +43,23 @@ class AllGroupTableViewController: UITableViewController, UISearchBarDelegate {
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: "unwindFromGroups", sender: self)
+    }
+
+}
+
+// MARK: - Search bar delegate
+
+extension AllGroupTableViewController: UISearchBarDelegate {
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.isEmpty {
+            filteredGroupes = groupes
+        } else {
+            filteredGroupes = groupes.filter {
+                $0.name.range(of: searchText, options: .caseInsensitive) != nil
+            }
+        }
+        tableView.reloadData()
     }
 
 }

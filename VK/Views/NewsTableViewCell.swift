@@ -12,25 +12,30 @@ class NewsTableViewCell: UITableViewCell {
     static let nib = UINib(nibName: "NewsTableViewCell", bundle: nil)
     static let identifier = "Cell"
 
-    @IBOutlet weak var newsImage: UIImageView!
-    @IBOutlet weak var newsAutor: UILabel!
+    @IBOutlet weak var newsUserImg: UIImageView!
+    @IBOutlet weak var newsUser: UILabel!
     @IBOutlet weak var newsDate: UILabel!
     @IBOutlet weak var newsContent: UILabel!
-    @IBOutlet weak var newsImages: UICollectionView!
+    @IBOutlet weak var newsImages: UIImageView!
 
     func setContent(news: News) {
-        newsImage.image = news.user.image.image
-        newsAutor.text = news.user.name
+        newsUserImg.image = news.user.image.image
+        newsUser.text = news.user.name
         newsDate.text = news.date
         newsContent.text = news.text
-
+        if let photos = news.images {
+            if photos.count > 0 {
+                newsImages.image = photos.getItem(index: 0).image.image
+            }
+        }
     }
-//
+
 //    override func awakeFromNib() {
 //        super.awakeFromNib()
+//
 //        // Initialization code
 //    }
-//
+
 //    override func setSelected(_ selected: Bool, animated: Bool) {
 //        super.setSelected(selected, animated: animated)
 //

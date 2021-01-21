@@ -7,54 +7,21 @@
 
 import UIKit
 
-class FriendsTableViewController: UITableViewController, UISearchBarDelegate {
+class FriendsTableViewController: UIViewController {
+
+    @IBOutlet weak var serarchBar: UISearchBar!
+    @IBOutlet weak var tableView: UITableView!
 
     var friends = Users()
-
-    @IBOutlet weak var searchFriend: UISearchBar!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         friends = NetworkService().getUsers()
         tableView.register(FriendTableViewCell.nib, forCellReuseIdentifier: FriendTableViewCell.identifier)
+//        tableView.register(SearchView.nib, forHeaderFooterViewReuseIdentifier: SearchView.identifier)
+//        tableView.register(SearchTableViewCell.nib, forHeaderFooterViewReuseIdentifier: SearchTableViewCell.identifier)
     }
-
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        friends.filter = searchText
-        tableView.reloadData()
-    }
-
-    // MARK: - Table view data source
-
-    override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
-        return friends.letters
-    }
-
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return friends.letters.count
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return friends.getFriends(section: section).count
-    }
-
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return friends.letters[section]
-    }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-                as? FriendTableViewCell else {
-            return UITableViewCell()
-        }
-        cell.set(friend: friends.getFriend(indexPath: indexPath))
-        return cell
-    }
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: "toFriendsPhoto", sender: self)
-    }
-
+     
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -70,6 +37,73 @@ class FriendsTableViewController: UITableViewController, UISearchBarDelegate {
         default:
             break
         }
+    }
+
+}
+
+// MARK: - Table view data source
+
+extension FriendsTableViewController: UITableViewDataSource {
+
+    func sectionIndexTitles(for tableView: UITableView) -> [String]? {
+        return friends.letters
+    }
+
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return friends.letters.count
+    }
+
+}
+
+// MARK: - Table view data delegate
+
+extension FriendsTableViewController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return friends.getFriends(section: section).count
+    }
+
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return friends.letters[section]
+    }
+
+//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//        return tableView.dequeueReusableHeaderFooterView(withIdentifier: SearchTableViewCell.identifier)
+//        return tableView.dequeueReusableHeaderFooterView(withIdentifier: SearchView.identifier)
+//        guard let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: SearchView.identifier) as? SearchView,
+//              section == 0 else {
+//            return nil
+//        }
+//        cell.searchBar.delegate = self
+//        return cell
+//    }
+ 
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+                as? FriendTableViewCell else {
+            return UITableViewCell()
+        }
+        cell.set(friend: friends.getFriend(indexPath: indexPath))
+        return cell
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "toFriendsPhoto", sender: self)
+    }
+
+}
+
+// MARK: - Search bar delegate
+
+extension FriendsTableViewController: UISearchBarDelegate {
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        friends.filter = searchText
+        tableView.reloadData()
     }
 
 }
