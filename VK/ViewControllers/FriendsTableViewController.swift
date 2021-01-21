@@ -18,10 +18,10 @@ class FriendsTableViewController: UIViewController {
         super.viewDidLoad()
         friends = NetworkService().getUsers()
         tableView.register(FriendTableViewCell.nib, forCellReuseIdentifier: FriendTableViewCell.identifier)
-//        tableView.register(SearchView.nib, forHeaderFooterViewReuseIdentifier: SearchView.identifier)
-//        tableView.register(SearchTableViewCell.nib, forHeaderFooterViewReuseIdentifier: SearchTableViewCell.identifier)
+// tableView.register(SearchView.nib, forHeaderFooterViewReuseIdentifier: SearchView.identifier)
+// tableView.register(SearchTableViewCell.nib, forHeaderFooterViewReuseIdentifier: SearchTableViewCell.identifier)
     }
-     
+
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -70,14 +70,14 @@ extension FriendsTableViewController: UITableViewDelegate {
 //    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
 //        return tableView.dequeueReusableHeaderFooterView(withIdentifier: SearchTableViewCell.identifier)
 //        return tableView.dequeueReusableHeaderFooterView(withIdentifier: SearchView.identifier)
-//        guard let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: SearchView.identifier) as? SearchView,
+//  guard let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: SearchView.identifier) as? SearchView,
 //              section == 0 else {
 //            return nil
 //        }
 //        cell.searchBar.delegate = self
 //        return cell
 //    }
- 
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
                 as? FriendTableViewCell else {
