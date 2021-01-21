@@ -37,7 +37,7 @@ class NetworkService {
         ]
     }
 
-    func getPhotos(user: User) -> [Photo] {
+    func getPhotos(user: User) -> Photos {
         var photos = [Photo]()
         switch user.id {
         case 1:
@@ -54,7 +54,7 @@ class NetworkService {
         default:
             break
         }
-        return photos
+        return Photos(array: photos)
     }
 
     func isLoginValid(login: String, password: String) -> Bool {
@@ -63,4 +63,22 @@ class NetworkService {
         return password == passwordFromDB
     }
 
+}
+
+class Photos {
+    var array: [Photo]
+
+    init(array: [Photo]) {
+        self.array = array
+    }
+
+    func switchLike(index: Int) {
+        var element = array.remove(at: index)
+        element.switchLike()
+        array.insert(element, at: index)
+    }
+
+    func getItem(index: Int) -> Photo {
+        return array[index]
+    }
 }

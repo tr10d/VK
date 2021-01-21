@@ -17,10 +17,24 @@ struct ItemImage {
 struct Photo {
     var image: ItemImage
     var like: Int
-    var isLiked: Bool
+    var isLiked: Bool {
+        didSet {
+            let count: Int
+            switch isLiked {
+            case true:
+                count = 1
+            case false:
+                count = -1
+            }
+            like += count
+        }
+    }
     init(like: Int, image: String, isLiked: Bool = false) {
         self.like = like
         self.image = ItemImage(name: image)
         self.isLiked = isLiked
+    }
+    mutating func switchLike() {
+        isLiked = !isLiked
     }
 }
