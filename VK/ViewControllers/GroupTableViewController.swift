@@ -26,7 +26,7 @@ class GroupTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.register(UINib(nibName: "GroupTableViewCell", bundle: nil), forCellReuseIdentifier: "Cell")
+        tableView.register(GroupTableViewCell.nib, forCellReuseIdentifier: GroupTableViewCell.identifier)
     }
 
     // MARK: - Table view data source
@@ -45,8 +45,7 @@ class GroupTableViewController: UITableViewController {
             return UITableViewCell()
         }
         let group = groupes[indexPath.row]
-        cell.groupImage.image = group.image.image
-        cell.groupName.text = group.name
+        cell.set(group: group)
         return cell
     }
 
@@ -62,12 +61,5 @@ class GroupTableViewController: UITableViewController {
             break
         }
     }
-
-}
-
-class GroupTableViewCell: UITableViewCell {
-
-    @IBOutlet weak var groupImage: UIImageView!
-    @IBOutlet weak var groupName: UILabel!
 
 }
