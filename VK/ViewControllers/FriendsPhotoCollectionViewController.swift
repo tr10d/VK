@@ -20,7 +20,11 @@ class FriendsPhotoCollectionViewController: UICollectionViewController {
 
     }
 
-    // MARK: UICollectionViewDataSource
+}
+
+// MARK: UICollectionViewDataSource
+
+extension FriendsPhotoCollectionViewController {
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -32,23 +36,33 @@ class FriendsPhotoCollectionViewController: UICollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView,
                                  cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath)
-                as? PhotoCollectionViewCell else {
+        guard let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: PhotoCollectionViewCell.identifier,
+                for: indexPath) as? PhotoCollectionViewCell else {
             return UICollectionViewCell()
         }
-        if let photos = photos {
-            let photo = photos.getItem(index: indexPath.row)
-//            cell.setPhoto(photo: photo)
-            cell.photo.image = photo.image.image
-            cell.photoLike.setPhoto(photos: photos, row: indexPath.row)
-       }
-//        cell.contentView.bounds.size.width = 70
-//        cell.contentView.bounds.size.height = 120
-
+        cell.configure(photos: photos, row: indexPath.row)
         return cell
     }
 
 }
+
+// MARK: UICollectionViewDelegate
+
+extension FriendsPhotoCollectionViewController {
+
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let fullPhotoVC = storyboard?.instantiateViewController(
+                identifier: "FullPhotoViewController") as? FullPhotoViewController else { return }
+
+        fullPhotoVC.configure(photos: photos, index: indexPath.row)
+
+        present(fullPhotoVC, animated: true)
+    }
+
+}
+
+// MARK: UICollectionViewDelegateFlowLayout
 
 extension FriendsPhotoCollectionViewController: UICollectionViewDelegateFlowLayout {
 

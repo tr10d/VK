@@ -19,4 +19,10 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         photo.image = nil
     }
 
+    func configure(photos: Photos?, row: Int) {
+        guard let photos = photos else { return }
+        let searchedPhoto = photos.getItem(index: row)
+        photo.image = searchedPhoto?.image.image
+        photoLike.setPhoto(photos: photos, row: row)
+    }
 }

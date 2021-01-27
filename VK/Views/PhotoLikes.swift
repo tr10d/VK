@@ -26,6 +26,11 @@ class PhotoLikes: UIControl {
         updateView​()
     }
 
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        stackView.frame = bounds
+    }
+
     private func setupView​() {
 
         let spaceLabel = UILabel()
@@ -52,7 +57,9 @@ class PhotoLikes: UIControl {
     @objc
     func touchLike(sender: UIButton) {
         if let row = row, let photos = photos {
-            photos.switchLike(index: row)
+            UIView.transition(with: sender, duration: 0.5, options: [.transitionFlipFromLeft]) {
+                photos.switchLike(index: row)
+            }
             updateView​()
         }
     }
@@ -64,11 +71,6 @@ class PhotoLikes: UIControl {
             label.text = "\(currentPhoto.like)"
             button.tintColor = currentColor
         }
-    }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        stackView.frame = bounds
     }
 
     func setPhoto(photos: Photos, row: Int) {
