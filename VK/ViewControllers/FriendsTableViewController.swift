@@ -18,6 +18,7 @@ class FriendsTableViewController: UIViewController {
         super.viewDidLoad()
         friends = NetworkService().getUsers()
         tableView.register(FriendTableViewCell.nib, forCellReuseIdentifier: FriendTableViewCell.identifier)
+        navigationController?.delegate = self
     }
 
     // MARK: - Navigation
@@ -93,4 +94,24 @@ extension FriendsTableViewController: UISearchBarDelegate {
         tableView.reloadData()
     }
 
+}
+
+// MARK: - UINavigationControllerDelegate
+
+extension FriendsTableViewController: UINavigationControllerDelegate {
+
+    func navigationController(_ navigationController: UINavigationController,
+                              animationControllerFor operation: UINavigationController.Operation,
+                              from fromVC: UIViewController,
+                              to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+
+        switch operation {
+        case .push:
+            return Animator(isPresenting: true)
+        case .pop:
+            return Animator(isPresenting: false)
+        default:
+            return nil
+        }
+    }
 }
