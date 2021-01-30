@@ -7,7 +7,7 @@
 
 import UIKit
 
-class FriendsPhotoCollectionViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+class FriendsPhotoCollectionViewController: UICollectionViewController {
 
     var photos: Photos?
     var friend: User?
@@ -18,27 +18,6 @@ class FriendsPhotoCollectionViewController: UICollectionViewController, UICollec
         collectionView.register(PhotoCollectionViewCell.nib,
                                 forCellWithReuseIdentifier: PhotoCollectionViewCell.identifier)
 
-    }
-
-    // MARK: UICollectionViewDataSource
-
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let size = Int(min(collectionView.bounds.width, collectionView.bounds.height) / 3)
-        return CGSize(width: size, height: size)
-    }
-
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 0.0
-    }
-
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
-        return 0.0
     }
 
     // MARK: UICollectionViewDataSource
@@ -67,6 +46,29 @@ class FriendsPhotoCollectionViewController: UICollectionViewController, UICollec
 //        cell.contentView.bounds.size.height = 120
 
         return cell
+    }
+
+}
+
+extension FriendsPhotoCollectionViewController: UICollectionViewDelegateFlowLayout {
+
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let size = Int(min(collectionView.bounds.width, collectionView.bounds.height) / 3)
+        return CGSize(width: size, height: size)
+    }
+
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return 0.0
+    }
+
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        return 0.0
     }
 
 }

@@ -55,11 +55,33 @@
                                                     <constraint firstItem="ebc-u7-V4c" firstAttribute="width" secondItem="wTf-FZ-8SZ" secondAttribute="width" id="wdd-Gu-sgp"/>
                                                 </constraints>
                                             </stackView>
+                                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9nI-ll-bcs">
+                                                <rect key="frame" x="176" y="269" width="76" height="36"/>
+                                                <subviews>
+                                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8o2-Le-Mar" customClass="Loading" customModule="VK" customModuleProvider="target">
+                                                        <rect key="frame" x="8" y="8" width="60" height="20"/>
+                                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="20" id="LXv-pF-EVB"/>
+                                                            <constraint firstAttribute="width" constant="60" id="wDP-TR-5g9"/>
+                                                        </constraints>
+                                                    </view>
+                                                </subviews>
+                                                <color key="backgroundColor" white="0.66666666666666663" alpha="0.65451352959437081" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstItem="8o2-Le-Mar" firstAttribute="centerX" secondItem="9nI-ll-bcs" secondAttribute="centerX" id="1yd-ue-hEa"/>
+                                                    <constraint firstAttribute="height" constant="36" id="U88-Pm-rfz"/>
+                                                    <constraint firstItem="8o2-Le-Mar" firstAttribute="centerY" secondItem="9nI-ll-bcs" secondAttribute="centerY" id="rla-aX-VrW"/>
+                                                    <constraint firstAttribute="width" constant="76" id="sCq-B9-MKq"/>
+                                                </constraints>
+                                            </view>
                                         </subviews>
                                         <color key="backgroundColor" name="VK_ColorBlue"/>
                                         <color key="tintColor" name="VK_ColorWhite"/>
                                         <constraints>
+                                            <constraint firstItem="9nI-ll-bcs" firstAttribute="centerX" secondItem="YRH-rT-0Gv" secondAttribute="centerX" id="8Pj-PH-imi"/>
                                             <constraint firstItem="SFe-ri-lal" firstAttribute="top" secondItem="YRH-rT-0Gv" secondAttribute="top" constant="70" id="E5g-ak-6G0"/>
+                                            <constraint firstItem="9nI-ll-bcs" firstAttribute="top" secondItem="SFe-ri-lal" secondAttribute="bottom" constant="23" id="SRi-7L-Baf"/>
                                             <constraint firstItem="SFe-ri-lal" firstAttribute="centerX" secondItem="YRH-rT-0Gv" secondAttribute="centerX" id="aoe-w6-IlM"/>
                                         </constraints>
                                     </view>
@@ -96,7 +118,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="844" y="80.541871921182263"/>
+            <point key="canvasLocation" x="843.92523364485976" y="80.345572354211669"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="erN-md-n1j">

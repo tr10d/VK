@@ -15,6 +15,19 @@ class FriendTableViewCell: UITableViewCell {
     @IBOutlet weak var friendImage: UIImageView!
     @IBOutlet weak var friendName: UILabel!
 
+//    required init?(coder: NSCoder) {
+//        super.init(coder: coder)
+//
+//    }
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self,
+                                                          action: #selector(imageTapped(tapGestureRecognizer:)))
+        self.friendImage.isUserInteractionEnabled = true
+        self.friendImage.addGestureRecognizer(tapGestureRecognizer)
+    }
+
     override func prepareForReuse() {
         friendImage.image = nil
         friendName.text = nil
@@ -27,4 +40,16 @@ class FriendTableViewCell: UITableViewCell {
         friendImage.image = friend.image.image
         friendName.text = friend.name
     }
+
+    @objc
+    func imageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+        let springAnimation = CASpringAnimation(keyPath: "transform.scale")
+        springAnimation.fromValue = 0.7
+        springAnimation.toValue = 1
+        springAnimation.mass = 0.3
+        springAnimation.damping = 1
+
+        tapGestureRecognizer.view?.layer.add(springAnimation, forKey: nil)
+    }
+
 }

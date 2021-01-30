@@ -10,7 +10,7 @@ import UIKit
 class SearchTableViewCell: UITableViewCell {
 
     @IBOutlet weak var searchBar: UISearchBar!
-    
+
     static let nib = UINib(nibName: "SearchTableViewCell", bundle: nil)
     static let identifier = "Cell"
 
