@@ -189,7 +189,37 @@
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3QL-Xx-oyp" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4059.8130841121492" y="-271.49028077753781"/>
+            <point key="canvasLocation" x="4016" y="-271"/>
+        </scene>
+        <!--Full Photo View Controller-->
+        <scene sceneID="AiP-UM-ujK">
+            <objects>
+                <viewController storyboardIdentifier="FullPhotoViewController" modalPresentationStyle="fullScreen" id="e8S-6l-6oV" customClass="FullPhotoViewController" customModule="VK" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Qvh-Mk-DhX">
+                        <rect key="frame" x="0.0" y="0.0" width="428" height="926"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="User-4" translatesAutoresizingMaskIntoConstraints="NO" id="QSY-2G-gCv">
+                                <rect key="frame" x="0.0" y="-21" width="428" height="968"/>
+                            </imageView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="TtM-S4-ivI"/>
+                        <color key="backgroundColor" name="VK_ColorBlack"/>
+                        <constraints>
+                            <constraint firstItem="QSY-2G-gCv" firstAttribute="centerX" secondItem="Qvh-Mk-DhX" secondAttribute="centerX" id="Zot-fF-LQv"/>
+                            <constraint firstItem="QSY-2G-gCv" firstAttribute="trailing" secondItem="TtM-S4-ivI" secondAttribute="trailing" id="cGy-lx-zoh"/>
+                            <constraint firstItem="QSY-2G-gCv" firstAttribute="leading" secondItem="TtM-S4-ivI" secondAttribute="leading" id="iq6-1Q-6Xc"/>
+                            <constraint firstItem="QSY-2G-gCv" firstAttribute="centerY" secondItem="Qvh-Mk-DhX" secondAttribute="centerY" id="tD9-qo-REJ"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="BOt-fk-NvF"/>
+                    <connections>
+                        <outlet property="photoImage" destination="QSY-2G-gCv" id="fxu-b1-CXa"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="X2O-Xm-ciw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="4853" y="-271"/>
         </scene>
         <!--Friends Table View Controller-->
         <scene sceneID="tIS-sv-gan">
@@ -356,10 +386,14 @@
         </scene>
     </scenes>
     <resources>
+        <image name="User-4" width="648" height="968"/>
         <image name="VK_Full_Logo" width="274" height="48"/>
         <image name="newspaper" catalog="system" width="128" height="108"/>
         <image name="person.3.fill" catalog="system" width="128" height="61"/>
         <image name="person.fill" catalog="system" width="128" height="120"/>
+        <namedColor name="VK_ColorBlack">
+            <color red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <namedColor name="VK_ColorBlue">
             <color red="0.15299999713897705" green="0.52899998426437378" blue="0.96100002527236938" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>

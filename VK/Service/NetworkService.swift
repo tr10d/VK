@@ -39,10 +39,10 @@ class NetworkService {
 
     func getPhotos(_ user: User?) -> Photos {
         var photos: [Photo] = []
-        if user != nil {
+//        if user != nil {
             (0...Int.random(0, 50))
                 .forEach { _ in photos.append(Photo()) }
-        }
+//        }
         return Photos(array: photos)
     }
 
@@ -77,7 +77,10 @@ class Photos {
         array.insert(element, at: index)
     }
 
-    func getItem(index: Int) -> Photo {
-        return array[index]
+    func getItem(index: Int) -> Photo? {
+        if index >= 0 && index < array.count {
+            return array[index]
+        }
+        return nil
     }
 }
