@@ -164,7 +164,6 @@
 				85CAF92225B957E700177B7E /* SearchView.swift */,
 				85CAF92525B957F700177B7E /* SearchView.xib */,
 				85BAAE3525BB3079004F99AF /* TableViewCell.swift */,
-				857B94E325C080E900E04846 /* FullPhotoViewController.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -178,6 +177,7 @@
 				854F524525978431007388D2 /* GroupTableViewController.swift */,
 				854F524825978463007388D2 /* AllGroupTableViewController.swift */,
 				852C711C25B8B8CC001AA755 /* NewsTableViewController.swift */,
+				857B94E325C080E900E04846 /* FullPhotoViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";

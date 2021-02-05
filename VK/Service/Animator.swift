@@ -7,13 +7,33 @@
 
 import UIKit
 
+// MARK: Enumes
+
 enum Direction {
     case back, forward
 }
 
-class Animator {
+enum DirectionPresenting {
+    case forPresented, forDismissed
+    func isPresented() -> Bool {
+        self == .forPresented
+    }
+}
+
+// MARK: Animator
+
+final class Animator: NSObject {
 
     private var animatorPhotoSlide: (left: UIViewPropertyAnimator?, right: UIViewPropertyAnimator?)
+    private var isPresenting: Bool
+
+    override init() {
+        isPresenting = true
+    }
+
+    init(isPresenting: Bool) {
+        self.isPresenting = isPresenting
+    }
 
 }
 
@@ -105,6 +125,74 @@ extension Animator {
 
         view.layer.add(animationsGroup, forKey: nil)
 
+    }
+
+}
+
+// MARK: Transition between view controllers
+
+extension Animator: UIViewControllerAnimatedTransitioning {
+
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+        0.75
+    }
+
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+
+        guard let source = transitionContext.viewController(forKey: .from),
+              let destination = transitionContext.viewController(forKey: .to) else { return }
+
+        transitionContext.containerView.addSubview(destination.view)
+        transitionContext.containerView.backgroundColor = UIColor(named: "VK_ColorBlue")
+
+        let rotationAngle = (isPresenting ? .pi : -.pi) / CGFloat(2)
+        let anchorPoint = (
+            source: isPresenting ? CGPoint(x: 0, y: 0) : CGPoint(x: 1, y: 0),
+            destination: isPresenting ? CGPoint(x: 1, y: 0) : CGPoint(x: 0, y: 0))
+
+        source.view.setAnchorPoint(anchorPoint.source)
+        destination.view.setAnchorPoint(anchorPoint.destination)
+        destination.view.transform = CGAffineTransform(rotationAngle: -rotationAngle)
+
+        UIView.animate(withDuration: transitionDuration(using: transitionContext), animations: {
+            source.view.transform = CGAffineTransform(rotationAngle: rotationAngle)
+            destination.view.transform = CGAffineTransform(rotationAngle: 0)
+        }, completion: { isComplete in
+           transitionContext.completeTransition(isComplete)
+        })
+    }
+
+}
+
+// MARK: Service
+
+extension Animator {
+
+    static func getViewController(_ withIdentifier: String) -> UIViewController {
+        return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: withIdentifier)
+    }
+
+}
+
+extension UIView {
+
+    func setAnchorPoint(_ point: CGPoint) {
+        var newPoint = CGPoint(x: bounds.size.width * point.x, y: bounds.size.height * point.y)
+        var oldPoint = CGPoint(x: bounds.size.width * layer.anchorPoint.x, y: bounds.size.height * layer.anchorPoint.y)
+
+        newPoint = newPoint.applying(transform)
+        oldPoint = oldPoint.applying(transform)
+
+        var position = layer.position
+
+        position.x -= oldPoint.x
+        position.x += newPoint.x
+
+        position.y -= oldPoint.y
+        position.y += newPoint.y
+
+        layer.position = position
+        layer.anchorPoint = point
     }
 
 }

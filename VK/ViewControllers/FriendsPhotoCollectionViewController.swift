@@ -52,12 +52,27 @@ extension FriendsPhotoCollectionViewController {
 extension FriendsPhotoCollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let fullPhotoVC = storyboard?.instantiateViewController(
-                identifier: "FullPhotoViewController") as? FullPhotoViewController else { return }
-
+        guard let fullPhotoVC = Animator.getViewController("FullPhotoViewController") as? FullPhotoViewController
+        else { return }
         fullPhotoVC.configure(photos: photos, index: indexPath.row)
-
+        fullPhotoVC.transitioningDelegate = self
         present(fullPhotoVC, animated: true)
+    }
+
+}
+
+// MARK: UIViewControllerTransitioningDelegate
+
+extension FriendsPhotoCollectionViewController: UIViewControllerTransitioningDelegate {
+
+    func animationController(forPresented presented: UIViewController,
+                             presenting: UIViewController,
+                             source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        Animator(isPresenting: true)
+    }
+
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        Animator(isPresenting: false)
     }
 
 }
