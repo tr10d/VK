@@ -56,9 +56,17 @@ class NetworkService {
     func isLoginValid(login: String, password: String) -> Bool {
         let logins = getLogins()
         guard let passwordFromDB = logins[login.lowercased()] else { return false }
-        return password == passwordFromDB
+        let isValid = password == passwordFromDB
+        if isValid {
+            let session = getSession(login: login)
+            Session.set(token: session.token, userId: session.userId)
+        }
+        return isValid
     }
 
+    func getSession(login: String) -> (token: String, userId: Int) {
+        (login, Randoms.randomInt())
+    }
 }
 
 class Photos {

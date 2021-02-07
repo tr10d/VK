@@ -7,12 +7,13 @@
 
 import UIKit
 
-class FriendsTableViewController: UIViewController {
+class FriendsTableViewController: UIViewController, UIGestureRecognizerDelegate {
 
     @IBOutlet weak var serarchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
 
     var friends = Users()
+//    let interactiveTransition = CustomInteractiveTransition()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -100,6 +101,12 @@ extension FriendsTableViewController: UISearchBarDelegate {
 
 extension FriendsTableViewController: UINavigationControllerDelegate {
 
+//    func navigationController(_ navigationController: UINavigationController,
+//                              interactionControllerFor animationController: UIViewControllerAnimatedTransitioning)
+//                                -> UIViewControllerInteractiveTransitioning? {
+//        return interactiveTransition.hasStarted ? interactiveTransition : nil
+//    }
+
     func navigationController(_ navigationController: UINavigationController,
                               animationControllerFor operation: UINavigationController.Operation,
                               from fromVC: UIViewController,
@@ -107,8 +114,12 @@ extension FriendsTableViewController: UINavigationControllerDelegate {
 
         switch operation {
         case .push:
+//            interactiveTransition.viewController = toVC
             return Animator(isPresenting: true)
         case .pop:
+//            if navigationController.viewControllers.first != toVC {
+//                interactiveTransition.viewController = toVC
+//            }
             return Animator(isPresenting: false)
         default:
             return nil
