@@ -41,13 +41,11 @@ class LoginViewController: UIViewController {
     }
 
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-        switch identifier {
-        case "toMainTabBar" where !isLoginPasswordCorrect():
+        let isCorrect = isLoginPasswordCorrect()
+        if !isCorrect {
             showLoginAllert()
-            return false
-        default:
-            return true
         }
+        return isCorrect
     }
 
     // MARK: - Private Methods
