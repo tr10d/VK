@@ -18,7 +18,6 @@ class FullPhotoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        print(Session.get())
         if let index = index {
             photoImage.image = photos?.getItem(index: index)?.image.image
         }

@@ -27,6 +27,9 @@
 		854F524925978463007388D2 /* AllGroupTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854F524825978463007388D2 /* AllGroupTableViewController.swift */; };
 		8553814625A2563800652CEA /* CircularImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8553814525A2563800652CEA /* CircularImageView.swift */; };
 		85577747259DA40500F64810 /* GroupTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 85577745259DA40500F64810 /* GroupTableViewCell.xib */; };
+		8570BE7925DC3DFB002EE718 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8570BE7825DC3DFB002EE718 /* WebKit.framework */; };
+		8577890525DBE9AC00EA45C7 /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8577890425DBE9AC00EA45C7 /* WebViewController.swift */; };
+		8577890F25DC236400EA45C7 /* Login.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8577890E25DC236400EA45C7 /* Login.storyboard */; };
 		857B94E425C080E900E04846 /* FullPhotoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 857B94E325C080E900E04846 /* FullPhotoViewController.swift */; };
 		858C464625A5D54E00619087 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 858C464525A5D54E00619087 /* Photo.swift */; };
 		85B1698C25CBC08900B862D7 /* Session.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85B1698B25CBC08900B862D7 /* Session.swift */; };
@@ -68,6 +71,9 @@
 		854F524825978463007388D2 /* AllGroupTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllGroupTableViewController.swift; sourceTree = "<group>"; };
 		8553814525A2563800652CEA /* CircularImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularImageView.swift; sourceTree = "<group>"; };
 		85577745259DA40500F64810 /* GroupTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupTableViewCell.xib; sourceTree = "<group>"; };
+		8570BE7825DC3DFB002EE718 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		8577890425DBE9AC00EA45C7 /* WebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewController.swift; sourceTree = "<group>"; };
+		8577890E25DC236400EA45C7 /* Login.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Login.storyboard; sourceTree = "<group>"; };
 		857B94E325C080E900E04846 /* FullPhotoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullPhotoViewController.swift; sourceTree = "<group>"; };
 		858C464525A5D54E00619087 /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 		85B1698B25CBC08900B862D7 /* Session.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Session.swift; sourceTree = "<group>"; };
@@ -96,6 +102,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8570BE7925DC3DFB002EE718 /* WebKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -120,6 +127,7 @@
 			children = (
 				853D5DF3258FA2E0008F7EB8 /* VK */,
 				853D5DF2258FA2E0008F7EB8 /* Products */,
+				8570BE7725DC3DFA002EE718 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -171,6 +179,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		8570BE7725DC3DFA002EE718 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8570BE7825DC3DFB002EE718 /* WebKit.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		85760DCF259772040065F9B0 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -181,6 +197,7 @@
 				854F524825978463007388D2 /* AllGroupTableViewController.swift */,
 				852C711C25B8B8CC001AA755 /* NewsTableViewController.swift */,
 				857B94E325C080E900E04846 /* FullPhotoViewController.swift */,
+				8577890425DBE9AC00EA45C7 /* WebViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -188,6 +205,7 @@
 		85760DD0259772300065F9B0 /* Storyboards */ = {
 			isa = PBXGroup;
 			children = (
+				8577890E25DC236400EA45C7 /* Login.storyboard */,
 				853D5DFA258FA2E0008F7EB8 /* Main.storyboard */,
 				853D5DFF258FA2E1008F7EB8 /* LaunchScreen.storyboard */,
 			);
@@ -290,6 +308,7 @@
 				85CAF92625B957F700177B7E /* SearchView.xib in Resources */,
 				85C5BA0025A3AC180009E6FB /* PhotoCollectionViewCell.xib in Resources */,
 				853D5DFC258FA2E0008F7EB8 /* Main.storyboard in Resources */,
+				8577890F25DC236400EA45C7 /* Login.storyboard in Resources */,
 				85577747259DA40500F64810 /* GroupTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -322,6 +341,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				853D5DF9258FA2E0008F7EB8 /* LoginViewController.swift in Sources */,
+				8577890525DBE9AC00EA45C7 /* WebViewController.swift in Sources */,
 				854F524925978463007388D2 /* AllGroupTableViewController.swift in Sources */,
 				85FA7876259B6820007C484D /* FriendsPhotoCollectionViewController.swift in Sources */,
 				854F524625978431007388D2 /* GroupTableViewController.swift in Sources */,

@@ -16,7 +16,7 @@ class AllGroupTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        groupes = NetworkService().getGroups()
+        groupes = NetworkService.shared.getGroups()
         filteredGroupes = groupes
         tableView.register(GroupTableViewCell.nib, forCellReuseIdentifier: GroupTableViewCell.identifier)
     }

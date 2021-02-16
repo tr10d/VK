@@ -18,7 +18,7 @@ struct News {
         self.date = "\(Randoms.randomDate())"
         self.text = (1...Randoms.randomInt(1, 30)).reduce("", { string, _ in string + " \(Randoms.randomFakeTitle())" })
         if Randoms.randomBool() {
-            self.images = NetworkService().getPhotos(self.user)
+            self.images = NetworkService.shared.getPhotos(self.user)
         } else {
             self.images = nil
         }

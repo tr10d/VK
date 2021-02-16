@@ -17,7 +17,7 @@ class FriendsTableViewController: UIViewController, UIGestureRecognizerDelegate 
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        friends = NetworkService().getUsers()
+        friends = NetworkService.shared.getUsers()
         tableView.register(FriendTableViewCell.nib, forCellReuseIdentifier: FriendTableViewCell.identifier)
         navigationController?.delegate = self
     }

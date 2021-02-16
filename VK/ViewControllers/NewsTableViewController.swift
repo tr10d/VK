@@ -13,7 +13,7 @@ class NewsTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        news = NetworkService().getNews()
+        news = NetworkService.shared.getNews()
         tableView.register(NewsTableViewCell.nib,
                            forCellReuseIdentifier: NewsTableViewCell.identifier)
 

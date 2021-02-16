@@ -14,7 +14,7 @@ class FriendsPhotoCollectionViewController: UICollectionViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        photos = NetworkService().getPhotos(friend)
+        photos = NetworkService.shared.getPhotos(friend)
         collectionView.register(PhotoCollectionViewCell.nib,
                                 forCellWithReuseIdentifier: PhotoCollectionViewCell.identifier)
 
