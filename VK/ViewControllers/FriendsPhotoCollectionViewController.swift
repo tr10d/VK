@@ -17,9 +17,22 @@ class FriendsPhotoCollectionViewController: UICollectionViewController {
         photos = NetworkService.shared.getPhotos(friend)
         collectionView.register(PhotoCollectionViewCell.nib,
                                 forCellWithReuseIdentifier: PhotoCollectionViewCell.identifier)
-
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(onDidReceivePhotos),
+                                               name: .didReceivePhotos, object: nil)
+        NetworkService.shared.requestPhotos()
     }
 
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    @objc func onDidReceivePhotos(_ notification: Notification) {
+        if let info = notification.userInfo,
+            let data = info["json"] {
+            print(data)
+        }
+    }
 }
 
 // MARK: UICollectionViewDataSource

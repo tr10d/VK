@@ -20,9 +20,28 @@ class FriendsTableViewController: UIViewController, UIGestureRecognizerDelegate 
         friends = NetworkService.shared.getUsers()
         tableView.register(FriendTableViewCell.nib, forCellReuseIdentifier: FriendTableViewCell.identifier)
         navigationController?.delegate = self
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(onDidReceiveUsers),
+                                               name: .didReceiveUsers, object: nil)
+        NetworkService.shared.requestUsers()
     }
 
-    // MARK: - Navigation
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    @objc func onDidReceiveUsers(_ notification: Notification) {
+        if let info = notification.userInfo,
+            let data = info["json"] {
+            print(data)
+        }
+    }
+
+}
+
+// MARK: - Navigation
+
+extension FriendsTableViewController {
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

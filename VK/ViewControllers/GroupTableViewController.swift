@@ -27,10 +27,27 @@ class GroupTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.register(GroupTableViewCell.nib, forCellReuseIdentifier: GroupTableViewCell.identifier)
-        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(onDidReceiveGroups),
+                                               name: .didReceiveGroups, object: nil)
+        NetworkService.shared.requestGroups()
     }
 
-    // MARK: - Table view data source
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    @objc func onDidReceiveGroups(_ notification: Notification) {
+        if let info = notification.userInfo,
+            let data = info["json"] {
+            print(data)
+        }
+    }
+}
+
+// MARK: - Table view data source
+
+extension GroupTableViewController {
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1

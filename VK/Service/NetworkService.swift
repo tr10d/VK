@@ -5,37 +5,58 @@
 //  Created by  Sergei on 29.12.2020.
 //
 
-import UIKit
+import Foundation
+
+extension Notification.Name {
+    static let didReceiveUsers = Notification.Name("didReceiveUsers")
+    static let didReceiveGroups = Notification.Name("didReceiveGroups")
+    static let didReceivePhotos = Notification.Name("didReceivePhotos")
+    static let didReceiveNews = Notification.Name("didReceiveNews")
+}
 
 class NetworkService {
 
+    static let shared = NetworkService()
     static let session: URLSession = {
         let configuration = URLSessionConfiguration.default
         configuration.allowsCellularAccess = false
-        let session = URLSession(configuration: configuration)
-
-        return session
+        return URLSession(configuration: configuration,
+                          delegate: nil, delegateQueue: nil)
     }()
 
-//    private static let sessionAF: Alamofire.Session = {
+//    lazy var session: URLSession = {
+//        let configuration = URLSessionConfiguration.default
+//        configuration.allowsCellularAccess = false
+//        return URLSession(configuration: configuration,
+//                          delegate: self, delegateQueue: nil)
+//    }()
+
+//    private let sessionDeligate = SessionDeligate()
+
+    private init() {}
+
+//    func nativeSession() -> URLSession {
+//        let configuration = URLSessionConfiguration.default
+//        configuration.allowsCellularAccess = false
+//        return URLSession(configuration: configuration,
+//                          delegate: nil, delegateQueue: nil)
+//    }
+
+//    func sessionAF() -> Alamofire.Session {
 //        let configuration = URLSessionConfiguration.default
 //        configuration.allowsCellularAccess = false
 //        let session = Alamofire.Session(configuration: configuration)
 //
 //        return session
-//    }()
-
-    static let shared = NetworkService()
-
-    private init() {}
-
+//    }
 }
 
 extension NetworkService {
 
-    func version() -> String {
+    var versionAPI: String {
         "5.68"
     }
+
     func requestAuth() -> URLRequest? {
         var urlComponents = URLComponents()
         urlComponents.scheme = "https"
@@ -47,17 +68,18 @@ extension NetworkService {
             URLQueryItem(name: "display", value: "mobile"),
             URLQueryItem(name: "scope", value: "262150"),
             URLQueryItem(name: "response_type", value: "token"),
-            URLQueryItem(name: "v", value: "\(version())")
+            URLQueryItem(name: "v", value: versionAPI)
         ]
         guard let url = urlComponents.url else { return nil }
         return URLRequest(url: url)
     }
 
-    func requestAPI(method: String, parameters: [String: String] = [:]) -> URLRequest? {
+    func requestAPI(method: String, parameters: [String: String] = [:],
+                    completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) {
 
         var queryItems = [
             URLQueryItem(name: "access_token", value: "\(Session.shared.token)"),
-            URLQueryItem(name: "v", value: "\(version())")
+            URLQueryItem(name: "v", value: versionAPI)
         ]
 
         parameters.forEach { (name, value) in
@@ -70,12 +92,13 @@ extension NetworkService {
         urlComponents.path = "/method/\(method)"
         urlComponents.queryItems = queryItems
 
-        guard let url = urlComponents.url else { return nil}
+        guard let url = urlComponents.url else { return }
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.timeoutInterval = 30
-        return request
+
+        NetworkService.session.dataTask(with: request, completionHandler: completionHandler).resume()
     }
 
     func getFriends() -> [Int] {
@@ -86,24 +109,31 @@ extension NetworkService {
 
 extension NetworkService {
 
-    func getUsers() -> Users {
+    func getJSON(data: Data?, response: URLResponse?, error: Error?) -> Any? {
+        if let data = data,
+           let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) {
+            return json
+        }
+        if let error = error {
+            print(error.localizedDescription)
+        }
+        return nil
+    }
+
+    func requestUsers() {
         let parameters = [
             "user_id": "\(Session.shared.userId)",
             "order": "name",
             "fields": "nickname"
-       ]
-        if let request = NetworkService.shared.requestAPI(method: "friends.get", parameters: parameters) {
-            let dataTask = NetworkService.session.dataTask(with: request) { (data, response, error) in
-                if let data = data,
-                   let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) {
-                    print(json)
-                } else if let error = error {
-                    print(error.localizedDescription)
-                }
+        ]
+        NetworkService.shared.requestAPI(method: "friends.get", parameters: parameters) { (data, response, error) in
+            if let json = self.getJSON(data: data, response: response, error: error) {
+                NotificationCenter.default.post(name: .didReceiveUsers, object: nil, userInfo: ["json": json])
             }
-            dataTask.resume()
         }
+    }
 
+    func getUsers() -> Users {
         var users: Users = Users()
         for index in 1...30 {
             users.append(id: index,
@@ -113,28 +143,18 @@ extension NetworkService {
         return users
     }
 
-    func getLogins() -> [String: String] {
-        return [
-            "": "",
-            "admin": "123"
+    func requestGroups() {
+        let parameters = [
+            "user_id": "\(Session.shared.userId)"
         ]
+        NetworkService.shared.requestAPI(method: "groups.get", parameters: parameters) { (data, response, error) in
+            if let json = self.getJSON(data: data, response: response, error: error) {
+                NotificationCenter.default.post(name: .didReceiveGroups, object: nil, userInfo: ["json": json])
+            }
+        }
     }
 
     func getGroups() -> [Group] {
-        let parameters = [
-            "user_id": "\(Session.shared.userId)"
-       ]
-        if let request = NetworkService.shared.requestAPI(method: "groups.get", parameters: parameters) {
-            let dataTask = NetworkService.session.dataTask(with: request) { (data, response, error) in
-                if let data = data,
-                   let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) {
-                    print(json)
-                } else if let error = error {
-                    print(error.localizedDescription)
-                }
-            }
-            dataTask.resume()
-        }
 
         var array: [Group] = []
         for index in 1...30 {
@@ -146,22 +166,18 @@ extension NetworkService {
         return array
     }
 
-    func getPhotos(_ user: User?) -> Photos {
+    func requestPhotos() {
         let parameters = [
             "owner_id": "\(Session.shared.userId)"
-       ]
-        if let request = NetworkService.shared.requestAPI(method: "photos.getAll", parameters: parameters) {
-            let dataTask = NetworkService.session.dataTask(with: request) { (data, response, error) in
-                if let data = data,
-                   let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) {
-                    print(json)
-                } else if let error = error {
-                    print(error.localizedDescription)
-                }
+        ]
+        NetworkService.shared.requestAPI(method: "photos.getAll", parameters: parameters) { (data, response, error) in
+            if let json = self.getJSON(data: data, response: response, error: error) {
+                NotificationCenter.default.post(name: .didReceivePhotos, object: nil, userInfo: ["json": json])
             }
-            dataTask.resume()
         }
+    }
 
+    func getPhotos(_ user: User?) -> Photos {
         var photos: [Photo] = []
 //        if user != nil {
             (0...Int.random(0, 50))
@@ -170,20 +186,15 @@ extension NetworkService {
         return Photos(array: photos)
     }
 
-    func getNews() -> [News] {
-
-        if let request = NetworkService.shared.requestAPI(method: "newsfeed.get") {
-            let dataTask = NetworkService.session.dataTask(with: request) { (data, response, error) in
-                if let data = data,
-                   let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) {
-                    print(json)
-                } else if let error = error {
-                    print(error.localizedDescription)
-                }
+    func requestNews() {
+        NetworkService.shared.requestAPI(method: "newsfeed.get") { (data, response, error) in
+            if let json = self.getJSON(data: data, response: response, error: error) {
+                NotificationCenter.default.post(name: .didReceiveNews, object: nil, userInfo: ["json": json])
             }
-            dataTask.resume()
         }
+    }
 
+    func getNews() -> [News] {
         var news: [News] = []
         (0...Int.random(1, 50))
             .forEach { _ in news.append(News()) }
@@ -202,6 +213,13 @@ extension NetworkService {
 
     func getSession(login: String) -> (token: String, userId: Int) {
         (login, Randoms.randomInt())
+    }
+
+    func getLogins() -> [String: String] {
+        return [
+            "": "",
+            "admin": "123"
+        ]
     }
 
 }

@@ -25,10 +25,6 @@ class WebViewController: UIViewController {
         }
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-
-    }
-
 }
 
 extension WebViewController: WKNavigationDelegate {
@@ -66,5 +62,5 @@ extension WebViewController: WKNavigationDelegate {
         decisionHandler(.cancel)
         performSegue(withIdentifier: "toMainTab", sender: nil)
     }
-    
+
 }
