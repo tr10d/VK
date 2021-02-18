@@ -30,22 +30,22 @@ extension Session {
         case user = "vk.userId"
     }
 
-    func set(token: String, userId: Int) {
+    func setItem(token: String, userId: Int) {
         Session.shared.token = token
         Session.shared.userId = userId
         seveItem()
     }
 
-    func isSaved() -> Bool {
-        guard let token = UserDefaults.standard.string(forKey: UserDefaultsKeys.token.rawValue) else { return false }
-        set(token: token,
-            userId: UserDefaults.standard.integer(forKey: UserDefaultsKeys.user.rawValue))
-        return true
-    }
-
     func seveItem() {
         UserDefaults.standard.set(token, forKey: UserDefaultsKeys.token.rawValue)
         UserDefaults.standard.set(userId, forKey: UserDefaultsKeys.user.rawValue)
+    }
+    
+    func isKeysExist() -> Bool {
+        guard let token = UserDefaults.standard.string(forKey: UserDefaultsKeys.token.rawValue) else { return false }
+        setItem(token: token,
+            userId: UserDefaults.standard.integer(forKey: UserDefaultsKeys.user.rawValue))
+        return true
     }
 
 }

@@ -12,6 +12,7 @@ extension Notification.Name {
     static let didReceiveGroups = Notification.Name("didReceiveGroups")
     static let didReceivePhotos = Notification.Name("didReceivePhotos")
     static let didReceiveNews = Notification.Name("didReceiveNews")
+    static let didReceiveAccountInfo = Notification.Name("didReceiveAccountInfo")
 }
 
 class NetworkService {
@@ -101,10 +102,6 @@ extension NetworkService {
         NetworkService.session.dataTask(with: request, completionHandler: completionHandler).resume()
     }
 
-    func getFriends() -> [Int] {
-        return []
-    }
-
 }
 
 extension NetworkService {
@@ -133,16 +130,6 @@ extension NetworkService {
         }
     }
 
-    func getUsers() -> Users {
-        var users: Users = Users()
-        for index in 1...30 {
-            users.append(id: index,
-                         name: "\(Randoms.randomFakeName())",
-                         image: "User-\(Int.random(1, 12))")
-        }
-        return users
-    }
-
     func requestGroups() {
         let parameters = [
             "user_id": "\(Session.shared.userId)"
@@ -152,6 +139,50 @@ extension NetworkService {
                 NotificationCenter.default.post(name: .didReceiveGroups, object: nil, userInfo: ["json": json])
             }
         }
+    }
+
+    func requestPhotos() {
+        let parameters = [
+            "owner_id": "\(Session.shared.userId)"
+        ]
+        NetworkService.shared.requestAPI(method: "photos.getAll", parameters: parameters) { (data, response, error) in
+            if let json = self.getJSON(data: data, response: response, error: error) {
+                NotificationCenter.default.post(name: .didReceivePhotos, object: nil, userInfo: ["json": json])
+            }
+        }
+    }
+
+    func requestNews() {
+        NetworkService.shared.requestAPI(method: "newsfeed.get") { (data, response, error) in
+            if let json = self.getJSON(data: data, response: response, error: error) {
+                NotificationCenter.default.post(name: .didReceiveNews, object: nil, userInfo: ["json": json])
+            }
+        }
+    }
+
+    func requestAccountInfo() {
+        NetworkService.shared.requestAPI(method: "account.getInfo") { (data, response, error) in
+            if let json = self.getJSON(data: data, response: response, error: error) {
+                NotificationCenter.default.post(name: .didReceiveAccountInfo, object: nil)
+            }
+        }
+    }
+
+   func getNews() -> [News] {
+        var news: [News] = []
+        (0...Int.random(1, 50))
+            .forEach { _ in news.append(News()) }
+        return news
+    }
+
+    func getUsers() -> Users {
+        var users: Users = Users()
+        for index in 1...30 {
+            users.append(id: index,
+                         name: "\(Randoms.randomFakeName())",
+                         image: "User-\(Int.random(1, 12))")
+        }
+        return users
     }
 
     func getGroups() -> [Group] {
@@ -166,17 +197,6 @@ extension NetworkService {
         return array
     }
 
-    func requestPhotos() {
-        let parameters = [
-            "owner_id": "\(Session.shared.userId)"
-        ]
-        NetworkService.shared.requestAPI(method: "photos.getAll", parameters: parameters) { (data, response, error) in
-            if let json = self.getJSON(data: data, response: response, error: error) {
-                NotificationCenter.default.post(name: .didReceivePhotos, object: nil, userInfo: ["json": json])
-            }
-        }
-    }
-
     func getPhotos(_ user: User?) -> Photos {
         var photos: [Photo] = []
 //        if user != nil {
@@ -184,21 +204,6 @@ extension NetworkService {
                 .forEach { _ in photos.append(Photo()) }
 //        }
         return Photos(array: photos)
-    }
-
-    func requestNews() {
-        NetworkService.shared.requestAPI(method: "newsfeed.get") { (data, response, error) in
-            if let json = self.getJSON(data: data, response: response, error: error) {
-                NotificationCenter.default.post(name: .didReceiveNews, object: nil, userInfo: ["json": json])
-            }
-        }
-    }
-
-    func getNews() -> [News] {
-        var news: [News] = []
-        (0...Int.random(1, 50))
-            .forEach { _ in news.append(News()) }
-        return news
     }
 
     func isLoginValid(login: String, password: String) -> Bool {

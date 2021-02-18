@@ -18,13 +18,29 @@ class WebViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        if Session.shared.isSaved() {
-            performSegue(withIdentifier: "toMainTab", sender: nil)
-        } else if let request = NetworkService.shared.requestAuth() {
-            webView.load(request)
+
+        if Session.shared.isKeysExist() {
+
+            NetworkService.shared.requestAPI(method: "account.getInfo") { (_, _, error) in
+                DispatchQueue.main.async {
+                    if error == nil {
+                        self.performSegue(withIdentifier: "toMainTab", sender: nil)
+                    } else {
+                        self.loadRequestAuth()
+                    }
+                }
+            }
+
+        } else {
+            loadRequestAuth()
         }
     }
 
+    func loadRequestAuth() {
+        if let request = NetworkService.shared.requestAuth() {
+            webView.load(request)
+        }
+    }
 }
 
 extension WebViewController: WKNavigationDelegate {
@@ -58,7 +74,7 @@ extension WebViewController: WKNavigationDelegate {
             return
         }
 
-        Session.shared.set(token: token, userId: userId)
+        Session.shared.setItem(token: token, userId: userId)
         decisionHandler(.cancel)
         performSegue(withIdentifier: "toMainTab", sender: nil)
     }
