@@ -7,8 +7,6 @@
 
 import Foundation
 
-typealias SessionItem = (token: String, userId: Int)
-
 class Session {
 
     static let shared = Session()
@@ -40,7 +38,7 @@ extension Session {
         UserDefaults.standard.set(token, forKey: UserDefaultsKeys.token.rawValue)
         UserDefaults.standard.set(userId, forKey: UserDefaultsKeys.user.rawValue)
     }
-    
+
     func isKeysExist() -> Bool {
         guard let token = UserDefaults.standard.string(forKey: UserDefaultsKeys.token.rawValue) else { return false }
         setItem(token: token,

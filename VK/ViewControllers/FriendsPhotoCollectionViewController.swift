@@ -14,30 +14,46 @@ class FriendsPhotoCollectionViewController: UICollectionViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        photos = NetworkService.shared.getPhotos(friend)
-        collectionView.register(PhotoCollectionViewCell.nib,
-                                forCellWithReuseIdentifier: PhotoCollectionViewCell.identifier)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(onDidReceivePhotos),
-                                               name: .didReceivePhotos, object: nil)
-        NetworkService.shared.requestPhotos()
+        dataSourceViewDidLoad()
+        requestViewDidLoad()
     }
 
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
 
+}
+
+// MARK: - Request
+
+extension FriendsPhotoCollectionViewController {
+
+    func requestViewDidLoad() {
+        photos = NetworkService.shared.getPhotos(friend)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(onDidReceivePhotos),
+                                               name: .didReceivePhotos, object: nil)
+        NetworkService.shared.requestPhotos()
+    }
+
     @objc func onDidReceivePhotos(_ notification: Notification) {
         if let info = notification.userInfo,
             let data = info["json"] {
             print(data)
-        }
+            collectionView.reloadData()
+       }
     }
+
 }
 
 // MARK: UICollectionViewDataSource
 
 extension FriendsPhotoCollectionViewController {
+
+    func dataSourceViewDidLoad() {
+        collectionView.register(PhotoCollectionViewCell.nib,
+                                forCellWithReuseIdentifier: PhotoCollectionViewCell.identifier)
+    }
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1

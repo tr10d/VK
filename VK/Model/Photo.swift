@@ -15,6 +15,7 @@ struct ItemImage {
 }
 
 struct Photo {
+
     var image: ItemImage
     var like: Int
     var isLiked: Bool {
@@ -45,4 +46,31 @@ struct Photo {
     mutating func switchLike() {
         isLiked = !isLiked
     }
+
+}
+
+class Photos {
+
+    var array: [Photo]
+    var count: Int {
+        return array.count
+    }
+
+    init(array: [Photo]) {
+        self.array = array
+    }
+
+    func switchLike(index: Int) {
+        var element = array.remove(at: index)
+        element.switchLike()
+        array.insert(element, at: index)
+    }
+
+    func getItem(index: Int) -> Photo? {
+        if index >= 0 && index < array.count {
+            return array[index]
+        }
+        return nil
+    }
+
 }

@@ -13,23 +13,33 @@ class NewsTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        news = NetworkService.shared.getNews()
-        tableView.register(NewsTableViewCell.nib,
-                           forCellReuseIdentifier: NewsTableViewCell.identifier)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(onDidReceiveNews),
-                                               name: .didReceiveNews, object: nil)
-        NetworkService.shared.requestPhotos()
+        dataSourceViewDidLoad()
+        requestViewDidLoad()
     }
 
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
 
+}
+
+// MARK: - Request
+
+extension NewsTableViewController {
+
+    func requestViewDidLoad() {
+        news = NetworkService.shared.getNews()
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(onDidReceiveNews),
+                                               name: .didReceiveNews, object: nil)
+        NetworkService.shared.requestNews()
+    }
+
     @objc func onDidReceiveNews(_ notification: Notification) {
         if let info = notification.userInfo,
             let data = info["json"] {
             print(data)
+            tableView.reloadData()
         }
     }
 
@@ -38,6 +48,11 @@ class NewsTableViewController: UITableViewController {
 // MARK: - Table view data source
 
 extension NewsTableViewController {
+
+    func dataSourceViewDidLoad() {
+        tableView.register(NewsTableViewCell.nib,
+                           forCellReuseIdentifier: NewsTableViewCell.identifier)
+    }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows

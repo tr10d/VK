@@ -36,12 +36,15 @@ class WebViewController: UIViewController {
         }
     }
 
-    func loadRequestAuth() {
+    private func loadRequestAuth() {
         if let request = NetworkService.shared.requestAuth() {
             webView.load(request)
         }
     }
+
 }
+
+// MARK: - WKNavigationDelegate
 
 extension WebViewController: WKNavigationDelegate {
 
