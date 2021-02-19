@@ -49,9 +49,11 @@ extension GroupTableViewController {
 
     @objc func onDidReceiveGroups(_ notification: Notification) {
         if let info = notification.userInfo,
-            let data = info["json"] {
-            print(data)
-            tableView.reloadData()
+           let data = info["json"] {
+            DispatchQueue.main.async {
+                print(data)
+                self.tableView.reloadData()
+            }
         }
     }
 

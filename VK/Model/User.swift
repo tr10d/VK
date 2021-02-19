@@ -4,13 +4,73 @@
 //
 //  Created by  Sergei on 29.12.2020.
 //
-// swiftlint:disable identifier_name
+// swiftlint:disable identifier_name nesting
 
 import UIKit
 
+// MARK: - Users
+
+struct UsersJson: Codable {
+
+    let response: Response
+
+    // MARK: - Response
+
+    struct Response: Codable {
+        let count: Int
+        let items: [User]
+    }
+
+    // MARK: - User
+
+    struct User: Codable {
+        let firstName: String?
+        let id: Int?
+        let lastName: String?
+        let photo50: String?
+
+        enum CodingKeys: String, CodingKey {
+            case firstName = "first_name"
+            case id
+            case lastName = "last_name"
+            case photo50 = "photo_50"
+        }
+    }
+
+}
+
+extension UsersJson.User {
+
+    var screenName: String {
+        "\(firstName ?? "") \(lastName ?? "")"
+    }
+
+    var image: UIImage? {
+        NetworkService.shared.image(url: photo50)
+    }
+
+}
+
+extension UsersJson.User: Comparable {
+
+    static func == (lhs: UsersJson.User, rhs: UsersJson.User) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    static func < (lhs: UsersJson.User, rhs: UsersJson.User) -> Bool {
+        lhs.screenName < rhs.screenName
+    }
+
+    static func > (lhs: UsersJson.User, rhs: UsersJson.User) -> Bool {
+        lhs.screenName > rhs.screenName
+    }
+
+}
+
 struct Users {
-    private var rawData: [String: [User]] = [:]
-    private var filteredData: [String: [User]] = [:]
+
+    var rawData: [String: [UsersJson.User]] = [:]
+    var filteredData: [String: [UsersJson.User]] = [:]
     var letters: [String]  = []
     var filter: String = "" {
         didSet {
@@ -19,7 +79,22 @@ struct Users {
         }
     }
 
-    // MARK: - Private
+    init(usersJson: UsersJson) {
+        setRawData(usersJson: usersJson)
+        setFilteredData()
+        setLetters()
+    }
+
+    private mutating func setRawData(usersJson: UsersJson) {
+        for user in usersJson.response.items {
+            let letter = String(user.screenName[user.screenName.startIndex])
+            if rawData[letter] == nil { rawData[letter] = [] }
+            rawData[letter]?.append(user)
+        }
+        for item in rawData {
+            rawData[item.key] = rawData[item.key]?.sorted()
+        }
+    }
 
     private mutating func setFilteredData() {
         if filter.isEmpty {
@@ -27,7 +102,7 @@ struct Users {
         } else {
             filteredData = [:]
             for (key, data) in rawData {
-                let newData = data.filter { $0.name.range(of: filter, options: .caseInsensitive) != nil }
+                let newData = data.filter { $0.screenName.range(of: filter, options: .caseInsensitive) != nil }
                 if !newData.isEmpty {
                     filteredData[key] = newData.sorted()
                 }
@@ -39,21 +114,19 @@ struct Users {
         letters = filteredData.map { $0.key }.sorted()
     }
 
-    // MARK: - Public
-
-    func getFriends(key: String) -> [User] {
+    func getFriends(key: String) -> [UsersJson.User] {
         guard let array = filteredData[key] else {
-            return [User]()
+            return [UsersJson.User]()
         }
         return array
     }
 
-    func getFriends(section: Int) -> [User] {
+    func getFriends(section: Int) -> [UsersJson.User] {
         let key = letters[section]
         return getFriends(key: key)
     }
 
-    func getFriend(indexPath: IndexPath) -> User? {
+    func getFriend(indexPath: IndexPath) -> UsersJson.User? {
         let array = getFriends(section: indexPath.section)
         if array.count <= indexPath.row {
             return nil
@@ -61,43 +134,4 @@ struct Users {
         return array[indexPath.row]
     }
 
-    mutating func append(id: Int, name: String, image: String) {
-        let user = User(id: id, name: name, image: image)
-        let letter = String(name[name.startIndex])
-        if rawData[letter] == nil {
-            rawData[letter] = [User]()
-        }
-        rawData[letter]?.append(user)
-        setFilteredData()
-        setLetters()
-    }
-
-}
-
-struct User {
-    let id: Int
-    let name: String
-    var image: ItemImage
-
-    init() {
-        self.id = Randoms.randomInt()
-        self.name = "\(Randoms.randomFakeName())"
-        self.image = ItemImage(name: "User-\(Int.random(1, 12))")
-    }
-
-    init(id: Int, name: String, image: String) {
-        self.id = id
-        self.name = name
-        self.image = ItemImage(name: image)
-    }
-}
-
-extension User: Comparable {
-    static func == (lhs: User, rhs: User) -> Bool {
-        lhs.id == rhs.id
-    }
-
-    static func < (lhs: User, rhs: User) -> Bool {
-        lhs.name < rhs.name
-    }
 }

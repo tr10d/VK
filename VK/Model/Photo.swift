@@ -4,19 +4,72 @@
 //
 //  Created by  Sergei on 06.01.2021.
 //
+// swiftlint:disable identifier_name nesting
 
 import UIKit
 
-struct ItemImage {
-    let name: String
-    var image: UIImage? {
-        UIImage(named: name)
+// MARK: - Photo
+struct PhotoJson: Codable {
+    let response: Response?
+
+    // MARK: - Response
+    struct Response: Codable {
+        let count: Int
+        let items: [Item]
+        let more: Int
     }
+
+    // MARK: - Item
+    struct Item: Codable {
+        let albumID, date, id, ownerID: Int
+        let hasTags: Bool
+        let sizes: [Size]?
+        let text: String
+        let likes: Likes?
+        let reposts: Reposts?
+        let realOffset: Int
+
+        enum CodingKeys: String, CodingKey {
+            case albumID = "album_id"
+            case date, id
+            case ownerID = "owner_id"
+            case hasTags = "has_tags"
+            case sizes, text, likes, reposts
+            case realOffset = "real_offset"
+        }
+    }
+
+    // MARK: - Likes
+    struct Likes: Codable {
+        let userLikes, count: Int
+
+        enum CodingKeys: String, CodingKey {
+            case userLikes = "user_likes"
+            case count
+        }
+    }
+
+    // MARK: - Reposts
+    struct Reposts: Codable {
+        let count: Int
+    }
+
+    // MARK: - Size
+    struct Size: Codable {
+        let height: Int
+        let url: String
+        let type: String
+        let width: Int
+    }
+
 }
 
 struct Photo {
 
-    var image: ItemImage
+    var urlImage: String
+    var image: UIImage? {
+        NetworkService.shared.image(url: urlImage)
+    }
     var like: Int
     var isLiked: Bool {
         didSet {
@@ -31,15 +84,9 @@ struct Photo {
         }
     }
 
-    init() {
-        like = Int.random(0, 123)
-        image = ItemImage(name: "Photo-\(Int.random(1, 30))")
-        isLiked = like == 0 ? false : Bool.random()
-    }
-
-    init(like: Int, image: String, isLiked: Bool = false) {
+    init(like: Int, urlImage: String, isLiked: Bool = false) {
         self.like = like
-        self.image = ItemImage(name: image)
+        self.urlImage = urlImage
         self.isLiked = isLiked
     }
 
@@ -60,7 +107,26 @@ class Photos {
         self.array = array
     }
 
-    func switchLike(index: Int) {
+    init(photoJson: PhotoJson) {
+
+        self.array = []
+
+        if let response = photoJson.response {
+            for item in response.items {
+
+                if let likes = item.likes,
+                   let sizes = item.sizes,
+                   sizes.count > 0 {
+                    let urlImage = sizes[0].url
+                    let isLiked = likes.userLikes == 0 ? false : true
+                    self.array.append(Photo(like: likes.count, urlImage: urlImage, isLiked: isLiked))
+                }
+            }
+        }
+
+    }
+
+   func switchLike(index: Int) {
         var element = array.remove(at: index)
         element.switchLike()
         array.insert(element, at: index)
@@ -73,4 +139,13 @@ class Photos {
         return nil
     }
 
+}
+
+// MARK: - will delete
+
+struct ItemImage {
+    let name: String
+    var image: UIImage? {
+        UIImage(named: name)
+    }
 }

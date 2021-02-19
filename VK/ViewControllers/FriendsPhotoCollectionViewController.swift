@@ -10,16 +10,12 @@ import UIKit
 class FriendsPhotoCollectionViewController: UICollectionViewController {
 
     var photos: Photos?
-    var friend: User?
+    var user: UsersJson.User?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         dataSourceViewDidLoad()
         requestViewDidLoad()
-    }
-
-    deinit {
-        NotificationCenter.default.removeObserver(self)
     }
 
 }
@@ -29,19 +25,24 @@ class FriendsPhotoCollectionViewController: UICollectionViewController {
 extension FriendsPhotoCollectionViewController {
 
     func requestViewDidLoad() {
-        photos = NetworkService.shared.getPhotos(friend)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(onDidReceivePhotos),
-                                               name: .didReceivePhotos, object: nil)
-        NetworkService.shared.requestPhotos()
-    }
 
-    @objc func onDidReceivePhotos(_ notification: Notification) {
-        if let info = notification.userInfo,
-            let data = info["json"] {
-            print(data)
-            collectionView.reloadData()
-       }
+        if let user = user,
+           let userId = user.id {
+
+            NetworkService.shared.requestPhotos(userId: userId) { (data, _, _) in
+                guard let data = data else { return }
+                NetworkService.shared.printJSON(data: data)
+                do {
+                    let photoJson = try JSONDecoder().decode(PhotoJson.self, from: data)
+                    self.photos = Photos(photoJson: photoJson)
+                    DispatchQueue.main.async {
+                        self.collectionView.reloadData()
+                    }
+                } catch {
+                    print(error.localizedDescription)
+                }
+            }
+        }
     }
 
 }
