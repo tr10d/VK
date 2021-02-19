@@ -17,12 +17,42 @@ class FriendsTableViewController: UIViewController, UIGestureRecognizerDelegate 
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        friends = NetworkService().getUsers()
-        tableView.register(FriendTableViewCell.nib, forCellReuseIdentifier: FriendTableViewCell.identifier)
-        navigationController?.delegate = self
+        delegateViewDidLoad()
+        dataSourceViewDidLoad()
+        requestViewDidLoad()
     }
 
-    // MARK: - Navigation
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+}
+
+// MARK: - Request
+
+extension FriendsTableViewController {
+
+    func requestViewDidLoad() {
+        friends = NetworkService.shared.getUsers()
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(onDidReceiveUsers),
+                                               name: .didReceiveUsers, object: nil)
+        NetworkService.shared.requestUsers()
+    }
+
+    @objc func onDidReceiveUsers(_ notification: Notification) {
+        if let info = notification.userInfo,
+            let data = info["json"] {
+            print(data)
+            tableView.reloadData()
+       }
+    }
+
+}
+
+// MARK: - Navigation
+
+extension FriendsTableViewController {
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -45,6 +75,10 @@ class FriendsTableViewController: UIViewController, UIGestureRecognizerDelegate 
 
 extension FriendsTableViewController: UITableViewDataSource {
 
+    func dataSourceViewDidLoad() {
+        tableView.register(FriendTableViewCell.nib, forCellReuseIdentifier: FriendTableViewCell.identifier)
+    }
+
     func sectionIndexTitles(for tableView: UITableView) -> [String]? {
         return friends.letters
     }
@@ -58,6 +92,10 @@ extension FriendsTableViewController: UITableViewDataSource {
 // MARK: - Table view data delegate
 
 extension FriendsTableViewController: UITableViewDelegate {
+
+    func delegateViewDidLoad() {
+        navigationController?.delegate = self
+    }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return friends.getFriends(section: section).count

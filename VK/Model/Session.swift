@@ -9,24 +9,41 @@ import Foundation
 
 class Session {
 
-    private static let shared = Session()
+    static let shared = Session()
 
-    private var token: String
-    private var userId: Int
+    var token: String
+    var userId: Int
 
     private init() {
         token = ""
         userId = 0
     }
 
-    static func set(token: String, userId: Int) {
-        Session.shared.token = token
-        Session.shared.userId = userId
-        print("Set session: \(get())")
+}
+
+extension Session {
+
+    enum UserDefaultsKeys: String {
+        case token = "vk.token"
+        case user = "vk.userId"
     }
 
-    static func get() -> (token: String, userId: Int) {
-        (Session.shared.token, Session.shared.userId)
+    func setItem(token: String, userId: Int) {
+        Session.shared.token = token
+        Session.shared.userId = userId
+        seveItem()
+    }
+
+    func seveItem() {
+        UserDefaults.standard.set(token, forKey: UserDefaultsKeys.token.rawValue)
+        UserDefaults.standard.set(userId, forKey: UserDefaultsKeys.user.rawValue)
+    }
+
+    func isKeysExist() -> Bool {
+        guard let token = UserDefaults.standard.string(forKey: UserDefaultsKeys.token.rawValue) else { return false }
+        setItem(token: token,
+            userId: UserDefaults.standard.integer(forKey: UserDefaultsKeys.user.rawValue))
+        return true
     }
 
 }

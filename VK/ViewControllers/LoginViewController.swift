@@ -41,19 +41,19 @@ class LoginViewController: UIViewController {
     }
 
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool {
-        let isCorrect = isLoginPasswordCorrect()
-        if !isCorrect {
-            showLoginAllert()
-        }
-        return isCorrect
+//        let isCorrect = isLoginPasswordCorrect()
+//        if !isCorrect {
+//            showLoginAllert()
+//        }
+        return true
     }
 
     // MARK: - Private Methods
 
-    private func isLoginPasswordCorrect() -> Bool {
-        guard let login = login.text, let password = password.text else { return false }
-        return NetworkService().isLoginValid(login: login, password: password)
-    }
+//    private func isLoginPasswordCorrect() -> Bool {
+//        guard let login = login.text, let password = password.text else { return false }
+//        return NetworkService().isLoginValid(login: login, password: password)
+//    }
 
     private func showLoginAllert() {
         let alert = UIAlertController(title: "Error", message: "Login/password is invalid", preferredStyle: .alert)
