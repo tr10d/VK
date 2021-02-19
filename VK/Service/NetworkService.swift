@@ -128,22 +128,29 @@ extension NetworkService {
         NetworkService.shared.requestAPI(method: "photos.getAll",
                                          parameters: parameters,
                                          completionHandler: completionHandler)
-//        NetworkService.shared.requestAPI(method: "photos.getAll", parameters: parameters) { (data, response, error) in
-//            if let json = self.getJSON(data: data, response: response, error: error) {
-//                NotificationCenter.default.post(name: .didReceivePhotos, object: nil, userInfo: ["json": json])
-//            }
-//        }
     }
 
-    func requestGroups() {
+    func requestGroups(completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) {
         let parameters = [
-            "user_id": "\(Session.shared.userId)"
-        ]
-        NetworkService.shared.requestAPI(method: "groups.get", parameters: parameters) { (data, response, error) in
-            if let json = self.getJSON(data: data, response: response, error: error) {
-                NotificationCenter.default.post(name: .didReceiveGroups, object: nil, userInfo: ["json": json])
-            }
-        }
+            "user_id": "\(Session.shared.userId)",
+            "extended": "1"
+      ]
+        NetworkService.shared.requestAPI(method: "groups.get",
+                                         parameters: parameters,
+                                         completionHandler: completionHandler)
+    }
+
+    func requestSearchGroups(searchinText: String, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) {
+        let parameters = [
+            "type": "group",
+            "future": "0",
+            "market": "0",
+            "sort": "0",
+            "q": "\(searchinText)"
+     ]
+        NetworkService.shared.requestAPI(method: "groups.search",
+                                         parameters: parameters,
+                                         completionHandler: completionHandler)
     }
 
     func requestNews() {
@@ -202,69 +209,4 @@ extension Notification.Name {
     static let didReceivePhotos = Notification.Name("didReceivePhotos")
     static let didReceiveNews = Notification.Name("didReceiveNews")
     static let didReceiveAccountInfo = Notification.Name("didReceiveAccountInfo")
-}
-
-// MARK: - will Delete
-
-extension NetworkService {
-
-    func getNews() -> [News] {
-         var news: [News] = []
-         (0...Int.random(1, 50))
-             .forEach { _ in news.append(News()) }
-         return news
-     }
-
-//     func getUsers() -> Users {
-//         var users: Users = Users()
-//         for index in 1...30 {
-//             users.append(id: index,
-//                          name: "\(Randoms.randomFakeName())",
-//                          image: "User-\(Int.random(1, 12))")
-//         }
-//         return users
-//     }
-
-     func getGroups() -> [Group] {
-
-         var array: [Group] = []
-         for index in 1...30 {
-             array.append(
-                 Group(id: index,
-                       name: Randoms.randomFakeTitle(),
-                       image: "Group-\(Int.random(1, 15))"))
-         }
-         return array
-     }
-
-//     func getPhotos(_ user: User?) -> Photos {
-//         var photos: [Photo] = []
-// //        if user != nil {
-//             (0...Int.random(0, 50))
-//                 .forEach { _ in photos.append(Photo()) }
-// //        }
-//         return Photos(array: photos)
-//     }
-
-     func isLoginValid(login: String, password: String) -> Bool {
-         let logins = getLogins()
-         guard let passwordFromDB = logins[login.lowercased()] else { return false }
-         let isValid = password == passwordFromDB
- //        if isValid {
- //            Session.shared.token = token
- //        }
-         return isValid
-     }
-
-     func getSession(login: String) -> (token: String, userId: Int) {
-         (login, Randoms.randomInt())
-     }
-
-     func getLogins() -> [String: String] {
-         return [
-             "": "",
-             "admin": "123"
-         ]
-     }
-
 }

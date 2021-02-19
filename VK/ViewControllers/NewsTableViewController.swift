@@ -28,7 +28,7 @@ class NewsTableViewController: UITableViewController {
 extension NewsTableViewController {
 
     func requestViewDidLoad() {
-        news = NetworkService.shared.getNews()
+//        news = NetworkService.shared.getNews()
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(onDidReceiveNews),
                                                name: .didReceiveNews, object: nil)

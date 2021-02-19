@@ -9,43 +9,49 @@ import UIKit
 
 class AllGroupTableViewController: UITableViewController {
 
-    var groupes: [Group] = []
-    var filteredGroupes: [Group] = []
+    var searchGroups: SearchGroups?
 
     @IBOutlet var searchBar: UISearchBar!
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        groupes = NetworkService.shared.getGroups()
-        filteredGroupes = groupes
-        tableView.register(GroupTableViewCell.nib, forCellReuseIdentifier: GroupTableViewCell.identifier)
+        dataSourceViewDidLoad()
     }
 
-    // MARK: - Table view data source
+}
 
+// MARK: - Table view data source
+
+extension AllGroupTableViewController {
+    
+    func dataSourceViewDidLoad() {
+        tableView.register(GroupTableViewCell.nib, forCellReuseIdentifier: GroupTableViewCell.identifier)
+    }
+    
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return filteredGroupes.count
+        return searchGroups?.count ?? 0
     }
-
+    
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
                 as? GroupTableViewCell else {
             return UITableViewCell()
         }
-        let group = filteredGroupes[indexPath.row]
+        let group = searchGroups?[indexPath.row]
         cell.set(group: group)
         return cell
     }
-
+    
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: "unwindFromGroups", sender: self)
     }
-
+    
 }
+
 
 // MARK: - Search bar delegate
 
@@ -53,13 +59,24 @@ extension AllGroupTableViewController: UISearchBarDelegate {
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.isEmpty {
-            filteredGroupes = groupes
+            searchGroups = nil
+            tableView.reloadData()
         } else {
-            filteredGroupes = groupes.filter {
-                $0.name.range(of: searchText, options: .caseInsensitive) != nil
+
+            NetworkService.shared.requestSearchGroups(searchinText: searchText) { (data, _, _) in
+                guard let data = data else { return }
+                NetworkService.shared.printJSON(data: data)
+                do {
+                    self.searchGroups = try JSONDecoder().decode(SearchGroups.self, from: data)
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
+                } catch {
+                    print(error.localizedDescription)
+                }
             }
+
         }
-        tableView.reloadData()
     }
 
 }
