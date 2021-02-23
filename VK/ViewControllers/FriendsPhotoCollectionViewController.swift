@@ -34,6 +34,7 @@ extension FriendsPhotoCollectionViewController {
                 NetworkService.shared.printJSON(data: data)
                 do {
                     let photoJson = try JSONDecoder().decode(PhotoJson.self, from: data)
+                    photoJson.saveToRealm()
                     self.photos = Photos(photoJson: photoJson)
                     DispatchQueue.main.async {
                         self.collectionView.reloadData()

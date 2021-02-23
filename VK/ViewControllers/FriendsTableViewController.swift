@@ -33,6 +33,7 @@ extension FriendsTableViewController {
             NetworkService.shared.printJSON(data: data)
             do {
                 let usersJson = try JSONDecoder().decode(UsersJson.self, from: data)
+                usersJson.saveToRealm()
                 self.users = Users(usersJson: usersJson)
                 DispatchQueue.main.async {
                     self.tableView.reloadData()

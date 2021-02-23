@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -23,6 +23,7 @@
 		853D5DFE258FA2E1008F7EB8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 853D5DFD258FA2E1008F7EB8 /* Assets.xcassets */; };
 		853D5E01258FA2E1008F7EB8 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 853D5DFF258FA2E1008F7EB8 /* LaunchScreen.storyboard */; };
 		854039B525A346B600A03A25 /* FriendTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 854039B325A346B600A03A25 /* FriendTableViewCell.xib */; };
+		8541B66D25E15AB000100A8F /* Realm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8541B66C25E15AB000100A8F /* Realm.swift */; };
 		854F5243259783D0007388D2 /* FriendsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854F5242259783D0007388D2 /* FriendsTableViewController.swift */; };
 		854F524625978431007388D2 /* GroupTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854F524525978431007388D2 /* GroupTableViewController.swift */; };
 		854F524925978463007388D2 /* AllGroupTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854F524825978463007388D2 /* AllGroupTableViewController.swift */; };
@@ -70,6 +71,7 @@
 		853D5E00258FA2E1008F7EB8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		853D5E02258FA2E1008F7EB8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		854039B325A346B600A03A25 /* FriendTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = FriendTableViewCell.xib; sourceTree = "<group>"; };
+		8541B66C25E15AB000100A8F /* Realm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Realm.swift; sourceTree = "<group>"; };
 		854F5242259783D0007388D2 /* FriendsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsTableViewController.swift; sourceTree = "<group>"; };
 		854F524525978431007388D2 /* GroupTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupTableViewController.swift; sourceTree = "<group>"; };
 		854F524825978463007388D2 /* AllGroupTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllGroupTableViewController.swift; sourceTree = "<group>"; };
@@ -123,9 +125,9 @@
 				85E3981C259BC0E20079268F /* Group.swift */,
 				858C464525A5D54E00619087 /* Photo.swift */,
 				852C712925B8BECC001AA755 /* News.swift */,
-				850C34E725BB4FFF0019BAFA /* Randoms.swift */,
-				85B1698B25CBC08900B862D7 /* Session.swift */,
 				852B256425DFE918008B0A72 /* Info.swift */,
+				850C34E725BB4FFF0019BAFA /* Randoms.swift */,
+				8541B66C25E15AB000100A8F /* Realm.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -246,6 +248,7 @@
 		85E3981F259BC1150079268F /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				85B1698B25CBC08900B862D7 /* Session.swift */,
 				85E39820259BC12D0079268F /* NetworkService.swift */,
 				85365FF625C1E9C4007ED90B /* Animator.swift */,
 			);
@@ -373,17 +376,16 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-VK/Pods-VK-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-VK/Pods-VK-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-VK/Pods-VK-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-VK/Pods-VK-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-VK/Pods-VK-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -409,6 +411,7 @@
 				852B256525DFE918008B0A72 /* Info.swift in Sources */,
 				85BAAE2E25BAA04F004F99AF /* Loading.swift in Sources */,
 				857B94E425C080E900E04846 /* FullPhotoViewController.swift in Sources */,
+				8541B66D25E15AB000100A8F /* Realm.swift in Sources */,
 				85CAF92325B957E700177B7E /* SearchView.swift in Sources */,
 				858C464625A5D54E00619087 /* Photo.swift in Sources */,
 				85E3981A259BB8D00079268F /* User.swift in Sources */,

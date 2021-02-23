@@ -39,6 +39,25 @@ struct UsersJson: Codable {
 
 }
 
+extension UsersJson: RealmModifity {
+
+    func saveToRealm() {
+        var realmUsers: [RealmUser] = []
+        response.items.forEach {
+            realmUsers.append(RealmUser(user: $0))
+        }
+        do {
+            let realm = RealmManager.realm
+            realm?.beginWrite()
+            realm?.add(realmUsers)
+            try realm?.commitWrite()
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+
+}
+
 extension UsersJson.User {
 
     var screenName: String {

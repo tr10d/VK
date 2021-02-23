@@ -4,7 +4,7 @@
 //
 //  Created by  Sergei on 29.12.2020.
 //
-// swiftlint:disable identifier_name
+// swiftlint:disable identifier_name nesting
 
 import UIKit
 
@@ -60,6 +60,29 @@ extension Groups {
         response?.items.append(group)
     }
 
+    mutating func remove(at: Int) {
+        response?.items.remove(at: at)
+    }
+
+}
+
+extension Groups: RealmModifity {
+
+    func saveToRealm() {
+        var realmUsers: [RealmGroup] = []
+        response?.items.forEach {
+            realmUsers.append(RealmGroup(group: $0))
+        }
+        do {
+            let realm = RealmManager.realm
+            realm?.beginWrite()
+            realm?.add(realmUsers)
+            try realm?.commitWrite()
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+
 }
 
 extension Groups.Item {
@@ -91,9 +114,7 @@ extension SearchGroups {
     }
 
     subscript(index: Int) -> Groups.Item? {
-        get {
-            return index < response.count ? response.items[index] : nil
-        }
+        index < response.count ? response.items[index] : nil
     }
 
 }
