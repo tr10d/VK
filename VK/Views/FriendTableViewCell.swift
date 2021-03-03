@@ -41,8 +41,15 @@ class FriendTableViewCell: UITableViewCell {
         friendName.text = user.screenName
     }
 
-    @objc
-    func imageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+    func set(realmUser: RealmUser?) {
+        guard let realmUser = realmUser else {
+            return
+        }
+        friendImage.image = realmUser.image
+        friendName.text = realmUser.screenName
+    }
+    
+    @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
         let springAnimation = CASpringAnimation(keyPath: "transform.scale")
         springAnimation.fromValue = 0.7
         springAnimation.toValue = 1

@@ -199,6 +199,15 @@ extension NetworkService {
         }
         return image
     }
+
+    func url2str(url: String?) -> String {
+        guard let urlString = url,
+              let urlObject = URL(string: urlString),
+              let data = try? Data(contentsOf: urlObject) else {
+            return ""
+        }
+        return data.base64EncodedString()
+    }
 }
 
 // MARK: - Notification.Name

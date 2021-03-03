@@ -6,7 +6,7 @@
 //
 // swiftlint:disable identifier_name
 
-import Foundation
+import UIKit
 import RealmSwift
 
 protocol RealmModifity {
@@ -17,12 +17,56 @@ protocol RealmModifity {
 
 class RealmManager {
 
+    enum DataType {
+        case users
+    }
+
     static let realm: Realm? = {
         #if DEBUG
         print(Realm.Configuration.defaultConfiguration.fileURL ?? "New Realm error")
         #endif
-        return try? Realm()
+        let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
+        return try? Realm(configuration: config)
     }()
+
+    static func getUsers() -> Users? {
+        Users(realmUser: realm?.objects(RealmUser.self))
+    }
+
+    static func getFromVK(dataType: DataType, completionHandler: @escaping () -> Void) {
+//        var realmUsers: [RealmUser] = []
+//        userJson.response.items.forEach { realmUsers.append(RealmUser(user: $0)) }
+//        saveData(data: realmUsers)
+        
+        NetworkService.shared.requestUsers { (data, _, _) in
+            guard let data = data else { return }
+            do {
+                let usersJson = try JSONDecoder().decode(UsersJson.self, from: data)
+                let realmUsers = usersJson.response.items.map { RealmUser(user: $0) }
+//                var realmUsers: [RealmUser] = []
+//                userJson.response.items.forEach { realmUsers.append(RealmUser(user: $0)) }
+                DispatchQueue.main.async {
+                    saveData(data: realmUsers)
+                    completionHandler()
+//                   RealmManager.setUsers(userJson: usersJson)
+//                    self.loadUsers()
+                }
+            } catch {
+                print(error.localizedDescription)
+            }
+//            self.tableView.refreshControl?.endRefreshing()
+        }
+    }
+
+    static func saveData(data: [Object]) {
+        do {
+            realm?.beginWrite()
+            realm?.add(data, update: .modified)
+            try realm?.commitWrite()
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
 
 }
 
@@ -42,9 +86,39 @@ class RealmUser: Object {
         self.id = user.id ?? 0
         self.firstName = user.firstName ?? ""
         self.lastName = user.lastName ?? ""
-        self.photo50 = user.photo50 ?? ""
+        self.photo50 = NetworkService.shared.url2str(url: user.photo50)
     }
 }
+
+extension RealmUser {
+    
+    var screenName: String {
+        "\(lastName) \(firstName)"
+    }
+    
+    var image: UIImage? {
+        guard let data = Data(base64Encoded: photo50) else { return nil }
+        return UIImage(data: data)
+    }
+
+}
+
+extension RealmUser: Comparable {
+
+    static func == (lhs: RealmUser, rhs: RealmUser) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    static func < (lhs: RealmUser, rhs: RealmUser) -> Bool {
+        lhs.screenName < rhs.screenName
+    }
+
+    static func > (lhs: RealmUser, rhs: RealmUser) -> Bool {
+        lhs.screenName > rhs.screenName
+    }
+
+}
+
 
 class RealmGroup: Object {
 
@@ -89,10 +163,13 @@ class RealmPhoto: Object {
     @objc dynamic var ownerID = 0
     @objc dynamic var hasTags = false
     @objc dynamic var text = ""
-    @objc dynamic var likesUserLikes = 0
-    @objc dynamic var likesCount = 0
-    @objc dynamic var repostsCount = 0
+//    @objc dynamic var likesUserLikes = 0
+//    @objc dynamic var likesCount = 0
+//    @objc dynamic var repostsCount = 0
     @objc dynamic var realOffset = 0
+
+    @objc dynamic var likes: RealmLikes?
+    @objc dynamic var reposts: RealmReposts?
 
     let sizes = List<RealmSize>()
 
@@ -108,16 +185,46 @@ class RealmPhoto: Object {
         self.ownerID = photo.ownerID
         self.hasTags = photo.hasTags
         self.text = photo.text
-        self.likesUserLikes = photo.likes?.userLikes ?? 0
-        self.likesCount = photo.likes?.count ?? 0
-        self.repostsCount = photo.reposts?.count ?? 0
         self.realOffset = photo.realOffset
+
+        self.likes = RealmLikes(photo: photo)
+        self.reposts = RealmReposts(photo: photo)
+
+//        self.likesUserLikes = photo.likes?.userLikes ?? 0
+//        self.likesCount = photo.likes?.count ?? 0
+//        self.repostsCount = photo.reposts?.count ?? 0
 
         photo.sizes?.forEach {
             sizes.append(RealmSize(size: $0))
         }
 
    }
+
+}
+
+// MARK: - Likes
+class RealmLikes: Object {
+
+    @objc dynamic var userLikes = 0
+    @objc dynamic var count = 0
+
+    convenience init(photo: PhotoJson.Item) {
+        self.init()
+        self.userLikes = photo.likes?.userLikes ?? 0
+        self.count = photo.likes?.count ?? 0
+    }
+
+}
+
+// MARK: - Reposts
+class RealmReposts: Object {
+
+    @objc dynamic var count = 0
+
+    convenience init(photo: PhotoJson.Item) {
+        self.init()
+        self.count = photo.reposts?.count ?? 0
+    }
 
 }
 
