@@ -206,10 +206,10 @@
 				8577890425DBE9AC00EA45C7 /* WebViewController.swift */,
 				854F5242259783D0007388D2 /* FriendsTableViewController.swift */,
 				85FA7875259B6820007C484D /* FriendsPhotoCollectionViewController.swift */,
+				857B94E325C080E900E04846 /* FullPhotoViewController.swift */,
 				854F524525978431007388D2 /* GroupTableViewController.swift */,
 				854F524825978463007388D2 /* AllGroupTableViewController.swift */,
 				852C711C25B8B8CC001AA755 /* NewsTableViewController.swift */,
-				857B94E325C080E900E04846 /* FullPhotoViewController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";

@@ -42,7 +42,7 @@ extension AllGroupTableViewController {
             return UITableViewCell()
         }
         let group = searchGroups?[indexPath.row]
-        cell.set(group: group)
+        cell.configure(groupItem: group)
         return cell
     }
 

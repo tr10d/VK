@@ -25,7 +25,7 @@ class NewsTableViewCell: UITableViewCell {
         newsContent.text = news.text
         if let photos = news.images {
             if photos.count > 0 {
-                newsImages.image = photos.getItem(index: 0)?.image
+                newsImages.image = photos[0]?.image
             }
         }
     }

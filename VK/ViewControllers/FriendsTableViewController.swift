@@ -38,7 +38,7 @@ extension FriendsTableViewController {
     }
 
     func getDataFromVK() {
-        RealmManager.responseUsers(dataType: .users) {
+        RealmManager.responseUsers() {
             self.loadUsers()
             self.tableView.refreshControl?.endRefreshing()
        }

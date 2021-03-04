@@ -21,7 +21,7 @@ class PhotoCollectionViewCell: UICollectionViewCell {
 
     func configure(photos: Photos?, row: Int) {
         guard let photos = photos else { return }
-        let searchedPhoto = photos.getItem(index: row)
+        let searchedPhoto = photos[row]
         photo.image = searchedPhoto?.image
         photoLike.setPhoto(photos: photos, row: row)
     }

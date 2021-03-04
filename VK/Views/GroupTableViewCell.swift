@@ -17,10 +17,7 @@ class GroupTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self,
-                                                    action: #selector(imageTapped(tapGestureRecognizer:)))
-        self.groupImage.isUserInteractionEnabled = true
-        self.groupImage.addGestureRecognizer(tapGestureRecognizer)
+        awakeFromNibtapGestureRecognizer()
     }
 
     override func prepareForReuse() {
@@ -28,14 +25,34 @@ class GroupTableViewCell: UITableViewCell {
         groupName.text = nil
     }
 
-    func set(group: Groups.Item?) {
-        guard let group = group else { return }
-        groupImage.image = group.image
+    func configure(group: RealmGroup) {
+        groupImage.image = group.getImage(size: .small)
         groupName.text = group.name
     }
 
-    @objc
-    func imageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+    func configure(groupItem: Groups.Item?) {
+        guard let groupItem = groupItem else {
+            return
+        }
+        groupImage.image = groupItem.image
+        groupName.text = groupItem.name
+    }
+
+
+}
+
+// MARK: - tapGestureRecognizer
+
+extension GroupTableViewCell {
+    
+    func awakeFromNibtapGestureRecognizer() {
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self,
+                                                    action: #selector(imageTapped(tapGestureRecognizer:)))
+        self.groupImage.isUserInteractionEnabled = true
+        self.groupImage.addGestureRecognizer(tapGestureRecognizer)
+    }
+
+    @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
         let springAnimation = CASpringAnimation(keyPath: "transform.scale")
         springAnimation.fromValue = 0.7
         springAnimation.toValue = 1
@@ -46,3 +63,5 @@ class GroupTableViewCell: UITableViewCell {
     }
 
 }
+
+
