@@ -12,18 +12,13 @@ class FriendsTableViewController: UIViewController, UIGestureRecognizerDelegate 
     @IBOutlet weak var serarchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
 
-    var friends = Users()
-//    let interactiveTransition = CustomInteractiveTransition()
+    var users: Users?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         delegateViewDidLoad()
         dataSourceViewDidLoad()
         requestViewDidLoad()
-    }
-
-    deinit {
-        NotificationCenter.default.removeObserver(self)
     }
 
 }
@@ -33,19 +28,19 @@ class FriendsTableViewController: UIViewController, UIGestureRecognizerDelegate 
 extension FriendsTableViewController {
 
     func requestViewDidLoad() {
-        friends = NetworkService.shared.getUsers()
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(onDidReceiveUsers),
-                                               name: .didReceiveUsers, object: nil)
-        NetworkService.shared.requestUsers()
-    }
-
-    @objc func onDidReceiveUsers(_ notification: Notification) {
-        if let info = notification.userInfo,
-            let data = info["json"] {
-            print(data)
-            tableView.reloadData()
-       }
+        NetworkService.shared.requestUsers { (data, _, _) in
+            guard let data = data else { return }
+            NetworkService.shared.printJSON(data: data)
+            do {
+                let usersJson = try JSONDecoder().decode(UsersJson.self, from: data)
+                self.users = Users(usersJson: usersJson)
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
     }
 
 }
@@ -62,7 +57,7 @@ extension FriendsTableViewController {
                   let indexPath = tableViewController.tableView.indexPathForSelectedRow,
                   let destination = segue.destination as? FriendsPhotoCollectionViewController else { return }
 
-            destination.friend = friends.getFriend(indexPath: indexPath)
+            destination.user = users?.getFriend(indexPath: indexPath)
 
         default:
             break
@@ -80,11 +75,11 @@ extension FriendsTableViewController: UITableViewDataSource {
     }
 
     func sectionIndexTitles(for tableView: UITableView) -> [String]? {
-        return friends.letters
+        return users?.letters
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return friends.letters.count
+        return users?.letters.count ?? 0
     }
 
 }
@@ -98,11 +93,11 @@ extension FriendsTableViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return friends.getFriends(section: section).count
+        return users?.getFriends(section: section).count ?? 0
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return friends.letters[section]
+        return users?.letters[section]
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -110,7 +105,7 @@ extension FriendsTableViewController: UITableViewDelegate {
                 as? FriendTableViewCell else {
             return UITableViewCell()
         }
-        cell.set(friend: friends.getFriend(indexPath: indexPath))
+        cell.set(user: users?.getFriend(indexPath: indexPath))
         return cell
     }
 
@@ -129,7 +124,7 @@ extension FriendsTableViewController: UITableViewDelegate {
 extension FriendsTableViewController: UISearchBarDelegate {
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        friends.filter = searchText
+        users?.filter = searchText
         tableView.reloadData()
     }
 
@@ -139,12 +134,6 @@ extension FriendsTableViewController: UISearchBarDelegate {
 
 extension FriendsTableViewController: UINavigationControllerDelegate {
 
-//    func navigationController(_ navigationController: UINavigationController,
-//                              interactionControllerFor animationController: UIViewControllerAnimatedTransitioning)
-//                                -> UIViewControllerInteractiveTransitioning? {
-//        return interactiveTransition.hasStarted ? interactiveTransition : nil
-//    }
-
     func navigationController(_ navigationController: UINavigationController,
                               animationControllerFor operation: UINavigationController.Operation,
                               from fromVC: UIViewController,
@@ -152,15 +141,12 @@ extension FriendsTableViewController: UINavigationControllerDelegate {
 
         switch operation {
         case .push:
-//            interactiveTransition.viewController = toVC
             return Animator(isPresenting: true)
         case .pop:
-//            if navigationController.viewControllers.first != toVC {
-//                interactiveTransition.viewController = toVC
-//            }
             return Animator(isPresenting: false)
         default:
             return nil
         }
     }
+
 }

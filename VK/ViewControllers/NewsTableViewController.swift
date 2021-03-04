@@ -28,7 +28,7 @@ class NewsTableViewController: UITableViewController {
 extension NewsTableViewController {
 
     func requestViewDidLoad() {
-        news = NetworkService.shared.getNews()
+//        news = NetworkService.shared.getNews()
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(onDidReceiveNews),
                                                name: .didReceiveNews, object: nil)
@@ -37,9 +37,11 @@ extension NewsTableViewController {
 
     @objc func onDidReceiveNews(_ notification: Notification) {
         if let info = notification.userInfo,
-            let data = info["json"] {
-            print(data)
-            tableView.reloadData()
+           let data = info["json"] {
+            DispatchQueue.main.async {
+                print(data)
+                self.tableView.reloadData()
+            }
         }
     }
 

@@ -33,12 +33,12 @@ class FriendTableViewCell: UITableViewCell {
         friendName.text = nil
     }
 
-    func set(friend: User?) {
-        guard let friend = friend else {
+    func set(user: UsersJson.User?) {
+        guard let user = user else {
             return
         }
-        friendImage.image = friend.image.image
-        friendName.text = friend.name
+        friendImage.image = user.image
+        friendName.text = user.screenName
     }
 
     @objc

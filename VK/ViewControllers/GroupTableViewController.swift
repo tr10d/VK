@@ -9,18 +9,14 @@ import UIKit
 
 class GroupTableViewController: UITableViewController {
 
-    var groupes = [Group]()
+    var groups: Groups?
 
     @IBAction func unwindFromGroups(_ segue: UIStoryboardSegue) {
         guard let tableViewController = segue.source as? AllGroupTableViewController,
-              let indexPath = tableViewController.tableView.indexPathForSelectedRow else {
-            return
-        }
-        let group = tableViewController.groupes[indexPath.row]
-        if groupes.contains(group) {
-            return
-        }
-        groupes.append(group)
+              let indexPath = tableViewController.tableView.indexPathForSelectedRow else { return }
+
+        let group = tableViewController.searchGroups?[indexPath.row]
+        groups?.append(group)
         tableView.reloadData()
     }
 
@@ -30,9 +26,9 @@ class GroupTableViewController: UITableViewController {
         requestViewDidLoad()
     }
 
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
+//    deinit {
+//        NotificationCenter.default.removeObserver(self)
+//    }
 
 }
 
@@ -41,19 +37,33 @@ class GroupTableViewController: UITableViewController {
 extension GroupTableViewController {
 
     func requestViewDidLoad() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(onDidReceiveGroups),
-                                               name: .didReceiveGroups, object: nil)
-        NetworkService.shared.requestGroups()
+        NetworkService.shared.requestGroups { (data, _, _) in
+            guard let data = data else { return }
+            NetworkService.shared.printJSON(data: data)
+            do {
+                self.groups = try JSONDecoder().decode(Groups.self, from: data)
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+//        NotificationCenter.default.addObserver(self,
+//                                               selector: #selector(onDidReceiveGroups),
+//                                               name: .didReceiveGroups, object: nil)
+//        NetworkService.shared.requestGroups()
     }
 
-    @objc func onDidReceiveGroups(_ notification: Notification) {
-        if let info = notification.userInfo,
-            let data = info["json"] {
-            print(data)
-            tableView.reloadData()
-        }
-    }
+//    @objc func onDidReceiveGroups(_ notification: Notification) {
+//        if let info = notification.userInfo,
+//           let data = info["json"] {
+//            DispatchQueue.main.async {
+//                print(data)
+//                self.tableView.reloadData()
+//            }
+//        }
+//    }
 
 }
 
@@ -70,7 +80,7 @@ extension GroupTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return groupes.count
+        return groups?.count ?? 0
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -78,7 +88,7 @@ extension GroupTableViewController {
                 as? GroupTableViewCell else {
             return UITableViewCell()
         }
-        let group = groupes[indexPath.row]
+        let group = groups?[indexPath.row]
         cell.set(group: group)
         return cell
     }
@@ -87,13 +97,13 @@ extension GroupTableViewController {
     override func tableView(_ tableView: UITableView,
                             commit editingStyle: UITableViewCell.EditingStyle,
                             forRowAt indexPath: IndexPath) {
-        switch editingStyle {
-        case .delete:
-            groupes.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        default:
-            break
-        }
+//        switch editingStyle {
+//        case .delete:
+////            groupes.remove(at: indexPath.row)
+////            tableView.deleteRows(at: [indexPath], with: .fade)
+//        default:
+//            break
+//        }
     }
 
 }

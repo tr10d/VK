@@ -21,13 +21,23 @@ class WebViewController: UIViewController {
 
         if Session.shared.isKeysExist() {
 
-            NetworkService.shared.requestAPI(method: "account.getInfo") { (_, _, error) in
-                DispatchQueue.main.async {
-                    if error == nil {
-                        self.performSegue(withIdentifier: "toMainTab", sender: nil)
-                    } else {
-                        self.loadRequestAuth()
+            NetworkService.shared.requestAPI(method: "account.getInfo") { (data, _, _) in
+
+                NetworkService.shared.printJSON(data: data)
+                var isError = true
+
+                if let data = data {
+                    do {
+                        _ = try JSONDecoder().decode(Info.self, from: data)
+                        isError = false
+                    } catch {
+                        print(error.localizedDescription)
                     }
+                }
+                if isError {
+                    DispatchQueue.main.async { self.loadRequestAuth() }
+                } else {
+                    DispatchQueue.main.async { self.performSegue(withIdentifier: "toMainTab", sender: nil) }
                 }
             }
 

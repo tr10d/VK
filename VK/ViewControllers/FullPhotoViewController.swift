@@ -19,7 +19,7 @@ class FullPhotoViewController: UIViewController {
         super.viewDidLoad()
 
         if let index = index {
-            photoImage.image = photos?.getItem(index: index)?.image.image
+            photoImage.image = photos?.getItem(index: index)?.image
         }
 
         let pan = UIPanGestureRecognizer(target: self, action: #selector(onPan))

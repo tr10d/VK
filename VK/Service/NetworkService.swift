@@ -36,7 +36,7 @@ class NetworkService {
 extension NetworkService {
 
     var versionAPI: String {
-        "5.68"
+        "5.130"
     }
 
     func requestAuth() -> URLRequest? {
@@ -85,8 +85,8 @@ extension NetworkService {
     }
 
     func requestAPIAF(method: String, parameters: [String: String] = [:],
-                      completionHandler: @escaping (AFDataResponse<Any>) -> ()) {
-        
+                      completionHandler: @escaping (AFDataResponse<Any>) -> Void) {
+
         var queryItems: [String: String] = [
             "access_token": "\(Session.shared.token)",
             "v": versionAPI
@@ -94,10 +94,12 @@ extension NetworkService {
         parameters.forEach { (name, value) in
             queryItems[name] = value
         }
-        
+
         let url = "https://api.vk.com/method/\(method)"
-        
-        NetworkService.session.alamofire.request(url, method: .post, parameters: queryItems).responseJSON(completionHandler: completionHandler)
+
+        NetworkService.session.alamofire
+            .request(url, method: .post, parameters: queryItems)
+            .responseJSON(completionHandler: completionHandler)
 
     }
 }
@@ -106,51 +108,49 @@ extension NetworkService {
 
 extension NetworkService {
 
-    func requestUsers() {
+    func requestUsers(completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) {
         let parameters = [
             "user_id": "\(Session.shared.userId)",
-            "order": "name",
-            "fields": "nickname"
+            "fields": "photo_50"
         ]
-        NetworkService.shared.requestAPIAF(method: "friends.get", parameters: parameters) { (response) in
-            switch response.result {
-            case .success:
-                if let data = response.data,
-                   let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) {
-                    print(json)
-                }
-            case .failure(let error):
-                print(error.localizedDescription)
-            }
-        }
-        
-        NetworkService.shared.requestAPI(method: "friends.get", parameters: parameters) { (data, response, error) in
-            if let json = self.getJSON(data: data, response: response, error: error) {
-                NotificationCenter.default.post(name: .didReceiveUsers, object: nil, userInfo: ["json": json])
-            }
-        }
+        NetworkService.shared.requestAPI(method: "friends.get",
+                                         parameters: parameters,
+                                         completionHandler: completionHandler)
     }
 
-    func requestGroups() {
+    func requestPhotos(userId: Int, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) {
         let parameters = [
-            "user_id": "\(Session.shared.userId)"
+            "owner_id": "\(userId)",
+            "extended": "1",
+            "photo_sizes": "1",
+            "skip_hidden": "1"
         ]
-        NetworkService.shared.requestAPI(method: "groups.get", parameters: parameters) { (data, response, error) in
-            if let json = self.getJSON(data: data, response: response, error: error) {
-                NotificationCenter.default.post(name: .didReceiveGroups, object: nil, userInfo: ["json": json])
-            }
-        }
+        NetworkService.shared.requestAPI(method: "photos.getAll",
+                                         parameters: parameters,
+                                         completionHandler: completionHandler)
     }
 
-    func requestPhotos() {
+    func requestGroups(completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) {
         let parameters = [
-            "owner_id": "\(Session.shared.userId)"
-        ]
-        NetworkService.shared.requestAPI(method: "photos.getAll", parameters: parameters) { (data, response, error) in
-            if let json = self.getJSON(data: data, response: response, error: error) {
-                NotificationCenter.default.post(name: .didReceivePhotos, object: nil, userInfo: ["json": json])
-            }
-        }
+            "user_id": "\(Session.shared.userId)",
+            "extended": "1"
+      ]
+        NetworkService.shared.requestAPI(method: "groups.get",
+                                         parameters: parameters,
+                                         completionHandler: completionHandler)
+    }
+
+    func requestSearchGroups(searchinText: String, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) {
+        let parameters = [
+            "type": "group",
+            "future": "0",
+            "market": "0",
+            "sort": "0",
+            "q": "\(searchinText)"
+     ]
+        NetworkService.shared.requestAPI(method: "groups.search",
+                                         parameters: parameters,
+                                         completionHandler: completionHandler)
     }
 
     func requestNews() {
@@ -159,6 +159,20 @@ extension NetworkService {
                 NotificationCenter.default.post(name: .didReceiveNews, object: nil, userInfo: ["json": json])
             }
         }
+    }
+
+    func printJSON(data: Data?) {
+        if let data = data {
+            do {
+                let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+                print(json)
+            } catch {
+                print(error.localizedDescription)
+            }
+        } else {
+            print("Data is missing")
+        }
+
     }
 
     func getJSON(data: Data?, response: URLResponse?, error: Error?) -> Any? {
@@ -174,6 +188,19 @@ extension NetworkService {
 
 }
 
+extension NetworkService {
+
+    func image(url: String?) -> UIImage? {
+        guard let urlString = url,
+              let urlObject = URL(string: urlString),
+              let data = try? Data(contentsOf: urlObject),
+              let image = UIImage(data: data) else {
+            return nil
+        }
+        return image
+    }
+}
+
 // MARK: - Notification.Name
 
 extension Notification.Name {
@@ -182,69 +209,4 @@ extension Notification.Name {
     static let didReceivePhotos = Notification.Name("didReceivePhotos")
     static let didReceiveNews = Notification.Name("didReceiveNews")
     static let didReceiveAccountInfo = Notification.Name("didReceiveAccountInfo")
-}
-
-// MARK: - willDelete
-
-extension NetworkService {
-
-    func getNews() -> [News] {
-         var news: [News] = []
-         (0...Int.random(1, 50))
-             .forEach { _ in news.append(News()) }
-         return news
-     }
-
-     func getUsers() -> Users {
-         var users: Users = Users()
-         for index in 1...30 {
-             users.append(id: index,
-                          name: "\(Randoms.randomFakeName())",
-                          image: "User-\(Int.random(1, 12))")
-         }
-         return users
-     }
-
-     func getGroups() -> [Group] {
-
-         var array: [Group] = []
-         for index in 1...30 {
-             array.append(
-                 Group(id: index,
-                       name: Randoms.randomFakeTitle(),
-                       image: "Group-\(Int.random(1, 15))"))
-         }
-         return array
-     }
-
-     func getPhotos(_ user: User?) -> Photos {
-         var photos: [Photo] = []
- //        if user != nil {
-             (0...Int.random(0, 50))
-                 .forEach { _ in photos.append(Photo()) }
- //        }
-         return Photos(array: photos)
-     }
-
-     func isLoginValid(login: String, password: String) -> Bool {
-         let logins = getLogins()
-         guard let passwordFromDB = logins[login.lowercased()] else { return false }
-         let isValid = password == passwordFromDB
- //        if isValid {
- //            Session.shared.token = token
- //        }
-         return isValid
-     }
-
-     func getSession(login: String) -> (token: String, userId: Int) {
-         (login, Randoms.randomInt())
-     }
-
-     func getLogins() -> [String: String] {
-         return [
-             "": "",
-             "admin": "123"
-         ]
-     }
-
 }

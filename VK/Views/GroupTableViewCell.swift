@@ -28,9 +28,9 @@ class GroupTableViewCell: UITableViewCell {
         groupName.text = nil
     }
 
-    func set(group: Group?) {
+    func set(group: Groups.Item?) {
         guard let group = group else { return }
-        groupImage.image = group.image.image
+        groupImage.image = group.image
         groupName.text = group.name
     }
 

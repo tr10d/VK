@@ -102,7 +102,7 @@ extension Animator {
     func continueAnimations(view: UIView, newPhoto: Photo?) {
         if let view = view as? UIImageView,
            let newPhoto = newPhoto {
-            view.image = newPhoto.image.image
+            view.image = newPhoto.image
         }
         view.frame.origin.x = 0
 
