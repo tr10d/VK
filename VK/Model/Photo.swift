@@ -7,6 +7,7 @@
 // swiftlint:disable identifier_name nesting
 
 import UIKit
+import RealmSwift
 
 // MARK: - Photo
 struct PhotoJson: Codable {
@@ -87,7 +88,8 @@ struct Photo {
 
     var urlImage: String
     var image: UIImage? {
-        NetworkService.shared.image(url: urlImage)
+        guard let data = Data(base64Encoded: urlImage) else { return nil }
+        return UIImage(data: data)
     }
     var like: Int
     var isLiked: Bool {
@@ -117,7 +119,7 @@ struct Photo {
 
 class Photos {
 
-    var array: [Photo]
+    var array: [Photo] = []
     var count: Int {
         return array.count
     }
@@ -126,26 +128,18 @@ class Photos {
         self.array = array
     }
 
-    init(photoJson: PhotoJson) {
-
-        self.array = []
-
-        if let response = photoJson.response {
-            for item in response.items {
-
-                if let likes = item.likes,
-                   let sizes = item.sizes,
-                   sizes.count > 0 {
-                    let urlImage = sizes[0].url
-                    let isLiked = likes.userLikes == 0 ? false : true
-                    self.array.append(Photo(like: likes.count, urlImage: urlImage, isLiked: isLiked))
-                }
-            }
+    init(realmPhoto: Results<RealmPhoto>?) {
+        guard let realmPhoto = realmPhoto else { return }
+        for item in realmPhoto where item.sizes.count > 0 {
+            let img = item.sizes[0]
+            let photo = Photo(like: item.likes?.count ?? 0,
+                              urlImage: img.url,
+                              isLiked: item.likes?.userLikes == 1)
+            self.array.append(photo)
         }
-
     }
 
-   func switchLike(index: Int) {
+    func switchLike(index: Int) {
         var element = array.remove(at: index)
         element.switchLike()
         array.insert(element, at: index)

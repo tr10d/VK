@@ -9,7 +9,7 @@
 import UIKit
 import RealmSwift
 
-// MARK: - Users
+// MARK: - UsersJson
 
 struct UsersJson: Codable {
 
@@ -40,42 +40,7 @@ struct UsersJson: Codable {
 
 }
 
-//extension UsersJson {
-//
-//    init(realmUser: [RealmUser]) {
-//        
-//        var items: [UsersJson.User] = []
-//        realmUser.forEach {
-//            let user = UsersJson.User(firstName: $0.firstName,
-//                                      id: $0.id,
-//                                      lastName: $0.lastName,
-//                                      photo50: $0.photo50)
-//            items.append(user)
-//        }
-//        response = Response(count: realmUser.count, items: items)
-//        
-//    }
-//    
-//}
-
-//extension UsersJson: RealmModifity {
-//
-//    func saveToRealm() {
-//        var realmUsers: [RealmUser] = []
-//        response.items.forEach {
-//            realmUsers.append(RealmUser(user: $0))
-//        }
-//        do {
-//            let realm = RealmManager.realm
-//            realm?.beginWrite()
-//            realm?.add(realmUsers)
-//            try realm?.commitWrite()
-//        } catch {
-//            print(error.localizedDescription)
-//        }
-//    }
-//
-//}
+// MARK: - UsersJson.Users extension
 
 extension UsersJson.User {
 
@@ -105,6 +70,8 @@ extension UsersJson.User: Comparable {
 
 }
 
+// MARK: - Users
+
 struct Users {
 
     var rawData: [String: [RealmUser]] = [:]
@@ -116,30 +83,25 @@ struct Users {
             setLetters()
         }
     }
-
-//    init(usersJson: UsersJson) {
-//        setRawData(usersJson: usersJson)
-//        setFilteredData()
-//        setLetters()
-//    }
+    var count: Int {
+        rawData.count
+    }
 
     init(realmUser: Results<RealmUser>?) {
         setRawData(realmUser: realmUser)
         setFilteredData()
         setLetters()
     }
-//    init(realmUser: Results<RealmUser>?) {
-//        guard let realmUser = realmUser else {  return }
-//        for user in realmUser {
-//            let letter = String(user.lastName[user.lastName.startIndex])
-//            if rawData[letter] == nil { rawData[letter] = [] }
-//            rawData[letter]?.append(user)
-//        }
-//    }
+
+}
+
+// MARK: - Users extension
+
+extension Users {
 
     private mutating func setRawData(realmUser: Results<RealmUser>?) {
         guard let realmUser = realmUser else {  return }
-       for user in realmUser {
+        for user in realmUser {
             let letter = String(user.screenName[user.screenName.startIndex])
             if rawData[letter] == nil { rawData[letter] = [] }
             rawData[letter]?.append(user)
@@ -148,16 +110,6 @@ struct Users {
             rawData[item.key] = rawData[item.key]?.sorted()
         }
     }
-//    private mutating func setRawData(usersJson: UsersJson) {
-//        for user in usersJson.response.items {
-//            let letter = String(user.screenName[user.screenName.startIndex])
-//            if rawData[letter] == nil { rawData[letter] = [] }
-//            rawData[letter]?.append(user)
-//        }
-//        for item in rawData {
-//            rawData[item.key] = rawData[item.key]?.sorted()
-//        }
-//    }
 
     private mutating func setFilteredData() {
         if filter.isEmpty {

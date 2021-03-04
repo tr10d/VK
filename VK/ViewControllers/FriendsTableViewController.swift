@@ -29,11 +29,19 @@ extension FriendsTableViewController {
 
     func requestViewDidLoad() {
         loadUsers()
+        if users == nil || users?.count == 0 { getDataFromVK() }
     }
 
-    fileprivate func loadUsers() {
+    func loadUsers() {
         users = RealmManager.getUsers()
         tableView.reloadData()
+    }
+
+    func getDataFromVK() {
+        RealmManager.responseUsers(dataType: .users) {
+            self.loadUsers()
+            self.tableView.refreshControl?.endRefreshing()
+       }
     }
 
 }
@@ -50,7 +58,7 @@ extension FriendsTableViewController {
                   let indexPath = tableViewController.tableView.indexPathForSelectedRow,
                   let destination = segue.destination as? FriendsPhotoCollectionViewController else { return }
 
-//            destination.user = users?.getFriend(indexPath: indexPath)
+            destination.user = users?.getFriend(indexPath: indexPath)
 
         default:
             break
@@ -67,32 +75,13 @@ extension FriendsTableViewController: UITableViewDataSource {
         tableView.register(FriendTableViewCell.nib, forCellReuseIdentifier: FriendTableViewCell.identifier)
 
         let refreshControl = UIRefreshControl()
-        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh from VK")
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
         tableView.refreshControl = refreshControl
    }
 
     @objc func refresh(_ sender: AnyObject) {
-        RealmManager.getFromVK(dataType: .users) {
-            self.loadUsers()
-            self.tableView.refreshControl?.endRefreshing()
-       }
-
-//        NetworkService.shared.requestUsers { (data, _, _) in
-//            guard let data = data else { return }
-//            NetworkService.shared.printJSON(data: data)
-//            do {
-//                let usersJson = try JSONDecoder().decode(UsersJson.self, from: data)
-//                DispatchQueue.main.async {
-//                    RealmManager.setUsers(userJson: usersJson)
-//                    self.loadUsers()
-//                }
-//            } catch {
-//                print(error.localizedDescription)
-//            }
-//            self.tableView.refreshControl?.endRefreshing()
-//        }
-
+        getDataFromVK()
     }
 
     func sectionIndexTitles(for tableView: UITableView) -> [String]? {

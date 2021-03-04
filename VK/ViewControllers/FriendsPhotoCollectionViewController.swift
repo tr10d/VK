@@ -10,7 +10,7 @@ import UIKit
 class FriendsPhotoCollectionViewController: UICollectionViewController {
 
     var photos: Photos?
-    var user: UsersJson.User?
+    var user: RealmUser?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,27 +25,21 @@ class FriendsPhotoCollectionViewController: UICollectionViewController {
 extension FriendsPhotoCollectionViewController {
 
     func requestViewDidLoad() {
-
-        if let user = user,
-           let userId = user.id {
-
-            NetworkService.shared.requestPhotos(userId: userId) { (data, _, _) in
-                guard let data = data else { return }
-                NetworkService.shared.printJSON(data: data)
-                do {
-                    let photoJson = try JSONDecoder().decode(PhotoJson.self, from: data)
-                    photoJson.saveToRealm()
-                    self.photos = Photos(photoJson: photoJson)
-                    DispatchQueue.main.async {
-                        self.collectionView.reloadData()
-                    }
-                } catch {
-                    print(error.localizedDescription)
-                }
-            }
-        }
+        loadPhotos()
+        if photos == nil || photos?.count == 0 { getDataFromVK() }
     }
 
+    func loadPhotos() {
+        photos = RealmManager.getPhotos(realmUser: user)
+        collectionView.reloadData()
+    }
+
+    func getDataFromVK() {
+        RealmManager.responsePhotos(realmUser: user) {
+            self.loadPhotos()
+            self.collectionView.refreshControl?.endRefreshing()
+       }
+    }
 }
 
 // MARK: UICollectionViewDataSource
@@ -55,6 +49,16 @@ extension FriendsPhotoCollectionViewController {
     func dataSourceViewDidLoad() {
         collectionView.register(PhotoCollectionViewCell.nib,
                                 forCellWithReuseIdentifier: PhotoCollectionViewCell.identifier)
+
+        let refreshControl = UIRefreshControl()
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh from VK")
+        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        collectionView.refreshControl = refreshControl
+
+    }
+
+    @objc func refresh(_ sender: AnyObject) {
+        getDataFromVK()
     }
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {

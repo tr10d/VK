@@ -15,11 +15,6 @@ class FriendTableViewCell: UITableViewCell {
     @IBOutlet weak var friendImage: UIImageView!
     @IBOutlet weak var friendName: UILabel!
 
-//    required init?(coder: NSCoder) {
-//        super.init(coder: coder)
-//
-//    }
-
     override func awakeFromNib() {
         super.awakeFromNib()
         let tapGestureRecognizer = UITapGestureRecognizer(target: self,
@@ -32,6 +27,20 @@ class FriendTableViewCell: UITableViewCell {
         friendImage.image = nil
         friendName.text = nil
     }
+
+    @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+        let springAnimation = CASpringAnimation(keyPath: "transform.scale")
+        springAnimation.fromValue = 0.7
+        springAnimation.toValue = 1
+        springAnimation.mass = 0.3
+        springAnimation.damping = 1
+
+        tapGestureRecognizer.view?.layer.add(springAnimation, forKey: nil)
+    }
+
+}
+
+extension FriendTableViewCell {
 
     func set(user: UsersJson.User?) {
         guard let user = user else {
@@ -47,16 +56,6 @@ class FriendTableViewCell: UITableViewCell {
         }
         friendImage.image = realmUser.image
         friendName.text = realmUser.screenName
-    }
-    
-    @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
-        let springAnimation = CASpringAnimation(keyPath: "transform.scale")
-        springAnimation.fromValue = 0.7
-        springAnimation.toValue = 1
-        springAnimation.mass = 0.3
-        springAnimation.damping = 1
-
-        tapGestureRecognizer.view?.layer.add(springAnimation, forKey: nil)
     }
 
 }

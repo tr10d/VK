@@ -188,6 +188,8 @@ extension NetworkService {
 
 }
 
+// MARK: - Func
+
 extension NetworkService {
 
     func image(url: String?) -> UIImage? {
