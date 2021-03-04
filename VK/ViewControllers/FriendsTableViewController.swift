@@ -16,9 +16,9 @@ class FriendsTableViewController: UIViewController, UIGestureRecognizerDelegate 
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        delegateViewDidLoad()
-        dataSourceViewDidLoad()
-        requestViewDidLoad()
+        viewDidLoadDelegate()
+        viewDidLoadDataSource()
+        viewDidLoadRequest()
     }
 
 }
@@ -27,7 +27,7 @@ class FriendsTableViewController: UIViewController, UIGestureRecognizerDelegate 
 
 extension FriendsTableViewController {
 
-    func requestViewDidLoad() {
+    func viewDidLoadRequest() {
         loadUsers()
         if users == nil || users?.count == 0 { getDataFromVK() }
     }
@@ -38,7 +38,7 @@ extension FriendsTableViewController {
     }
 
     func getDataFromVK() {
-        RealmManager.responseUsers() {
+        RealmManager.responseUsers {
             self.loadUsers()
             self.tableView.refreshControl?.endRefreshing()
        }
@@ -71,7 +71,7 @@ extension FriendsTableViewController {
 
 extension FriendsTableViewController: UITableViewDataSource {
 
-    func dataSourceViewDidLoad() {
+    func viewDidLoadDataSource() {
         tableView.register(FriendTableViewCell.nib, forCellReuseIdentifier: FriendTableViewCell.identifier)
 
         let refreshControl = UIRefreshControl()
@@ -98,7 +98,7 @@ extension FriendsTableViewController: UITableViewDataSource {
 
 extension FriendsTableViewController: UITableViewDelegate {
 
-    func delegateViewDidLoad() {
+    func viewDidLoadDelegate() {
         navigationController?.delegate = self
     }
 

@@ -19,8 +19,6 @@ class NewsTableViewCell: UITableViewCell {
     @IBOutlet weak var newsImages: UIImageView!
 
     func setContent(news: News) {
-//        newsUserImg.image = news.user.image.image
-//        newsUser.text = news.user.name
         newsDate.text = news.date
         newsContent.text = news.text
         if let photos = news.images {
@@ -30,17 +28,4 @@ class NewsTableViewCell: UITableViewCell {
         }
     }
 
-//    override func awakeFromNib() {
-//        super.awakeFromNib()
-//
-//        // Initialization code
-//    }
-
-//    override func setSelected(_ selected: Bool, animated: Bool) {
-//        super.setSelected(selected, animated: animated)
-//
-//        // Configure the view for the selected state
-//    }
-//
-//
 }

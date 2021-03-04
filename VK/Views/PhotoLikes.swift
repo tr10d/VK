@@ -31,6 +31,10 @@ class PhotoLikes: UIControl {
         stackView.frame = bounds
     }
 
+}
+
+extension PhotoLikes {
+
     private func setupView​() {
 
         let spaceLabel = UILabel()

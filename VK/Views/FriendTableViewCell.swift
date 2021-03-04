@@ -17,15 +17,24 @@ class FriendTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self,
-                                                          action: #selector(imageTapped(tapGestureRecognizer:)))
-        self.friendImage.isUserInteractionEnabled = true
-        self.friendImage.addGestureRecognizer(tapGestureRecognizer)
+        awakeFromNibGestureRecognizer()
+
     }
 
     override func prepareForReuse() {
         friendImage.image = nil
         friendName.text = nil
+    }
+
+}
+
+extension FriendTableViewCell {
+
+    func awakeFromNibGestureRecognizer() {
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self,
+                                                          action: #selector(imageTapped(tapGestureRecognizer:)))
+        self.friendImage.isUserInteractionEnabled = true
+        self.friendImage.addGestureRecognizer(tapGestureRecognizer)
     }
 
     @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer) {

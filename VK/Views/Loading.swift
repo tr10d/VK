@@ -63,6 +63,6 @@ class Loading: UIControl {
         UIView.animate(withDuration: duration, delay: 0.8, options: options) {
             self.circle3.alpha = alpha
         }
-
     }
+
 }

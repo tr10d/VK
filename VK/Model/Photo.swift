@@ -9,7 +9,7 @@
 import UIKit
 import RealmSwift
 
-// MARK: - Photo
+// MARK: - PhotoJson
 struct PhotoJson: Codable {
 
     let response: Response?
@@ -66,7 +66,8 @@ struct PhotoJson: Codable {
 
 }
 
-// MARK: - Photo
+// MARK: - Photos
+
 struct Photos {
 
     var array: [RealmPhoto] = []
@@ -74,17 +75,9 @@ struct Photos {
         return array.count
     }
 
-//    init(array: [Photo]) {
-//        self.array = array
-//    }
-
     init(realmPhoto: Results<RealmPhoto>?) {
         guard let realmPhoto = realmPhoto else { return }
         for item in realmPhoto where item.sizes.count > 0 {
-//            let img = item.sizes[0]
-//            let photo = Photo(like: item.likes?.count ?? 0,
-//                              urlImage: img.url,
-//                              isLiked: item.likes?.userLikes == 1)
             self.array.append(item)
         }
     }
@@ -92,18 +85,6 @@ struct Photos {
 }
 
 extension Photos {
-    
-//    func switchLike(index: Int) {
-//        array[index].switchLike()
-////        var element = array.remove(at: index)
-////        element.switchLike()
-////        array.insert(element, at: index)
-//    }
-
-//    func getItem(index: Int) -> RealmPhoto? {
-//        guard index < 0, index >= array.count else { return nil }
-//        return array[index]
-//    }
 
     subscript(index: Int) -> RealmPhoto? {
         guard index >= 0, index < self.count else { return nil }
@@ -111,37 +92,3 @@ extension Photos {
     }
 
 }
-//
-//struct Photo {
-//
-//    var urlImage: String
-//    var image: UIImage? {
-//        guard let data = Data(base64Encoded: urlImage) else { return nil }
-//        return UIImage(data: data)
-//    }
-//    var like: Int
-//    var isLiked: Bool {
-//        didSet {
-//            let count: Int
-//            switch isLiked {
-//            case true:
-//                count = 1
-//            case false:
-//                count = -1
-//            }
-//            like += count
-//        }
-//    }
-//
-//    init(like: Int, urlImage: String, isLiked: Bool = false) {
-//        self.like = like
-//        self.urlImage = urlImage
-//        self.isLiked = isLiked
-//    }
-//
-//    mutating func switchLike() {
-//        isLiked = !isLiked
-//    }
-//
-//}
-//

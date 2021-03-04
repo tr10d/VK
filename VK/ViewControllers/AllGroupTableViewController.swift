@@ -15,7 +15,7 @@ class AllGroupTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        dataSourceViewDidLoad()
+        viewDidLoadDataSource()
     }
 
 }
@@ -24,7 +24,7 @@ class AllGroupTableViewController: UITableViewController {
 
 extension AllGroupTableViewController {
 
-    func dataSourceViewDidLoad() {
+    func viewDidLoadDataSource() {
         tableView.register(GroupTableViewCell.nib, forCellReuseIdentifier: GroupTableViewCell.identifier)
     }
 
@@ -61,7 +61,6 @@ extension AllGroupTableViewController: UISearchBarDelegate {
             searchGroups = nil
             tableView.reloadData()
         } else {
-
             NetworkService.shared.requestSearchGroups(searchinText: searchText) { (data, _, _) in
                 guard let data = data else { return }
                 NetworkService.shared.printJSON(data: data)
@@ -74,7 +73,6 @@ extension AllGroupTableViewController: UISearchBarDelegate {
                     print(error.localizedDescription)
                 }
             }
-
         }
     }
 

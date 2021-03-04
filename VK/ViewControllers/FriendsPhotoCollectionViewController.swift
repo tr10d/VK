@@ -14,8 +14,8 @@ class FriendsPhotoCollectionViewController: UICollectionViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        dataSourceViewDidLoad()
-        requestViewDidLoad()
+        viewDidLoadDataSource()
+        viewDidLoadRequest()
     }
 
 }
@@ -24,7 +24,7 @@ class FriendsPhotoCollectionViewController: UICollectionViewController {
 
 extension FriendsPhotoCollectionViewController {
 
-    func requestViewDidLoad() {
+    func viewDidLoadRequest() {
         loadPhotos()
         if photos == nil || photos?.count == 0 { getDataFromVK() }
     }
@@ -46,7 +46,7 @@ extension FriendsPhotoCollectionViewController {
 
 extension FriendsPhotoCollectionViewController {
 
-    func dataSourceViewDidLoad() {
+    func viewDidLoadDataSource() {
         collectionView.register(PhotoCollectionViewCell.nib,
                                 forCellWithReuseIdentifier: PhotoCollectionViewCell.identifier)
 

@@ -66,25 +66,6 @@ extension Groups {
 
 }
 
-//extension Groups: RealmModifity {
-//
-//    func saveToRealm() {
-//        var realmUsers: [RealmGroup] = []
-//        response?.items.forEach {
-//            realmUsers.append(RealmGroup(group: $0))
-//        }
-//        do {
-//            let realm = RealmManager.realm
-//            realm?.beginWrite()
-//            realm?.add(realmUsers)
-//            try realm?.commitWrite()
-//        } catch {
-//            print(error.localizedDescription)
-//        }
-//    }
-//
-//}
-
 extension Groups.Item {
 
     var image: UIImage? {

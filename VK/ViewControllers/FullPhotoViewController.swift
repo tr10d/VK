@@ -18,7 +18,7 @@ class FullPhotoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         viewDidLoadAnimator()
-        
+
         if let index = index {
             photoImage.image = photos?[index]?.image
         }
@@ -33,7 +33,7 @@ class FullPhotoViewController: UIViewController {
 }
 
 extension FullPhotoViewController {
-    
+
     func viewDidLoadAnimator() {
         let pan = UIPanGestureRecognizer(target: self, action: #selector(onPan))
         photoImage.addGestureRecognizer(pan)
@@ -43,7 +43,7 @@ extension FullPhotoViewController {
 
         photoImage.isUserInteractionEnabled = true
     }
-    
+
     @objc func onPan(sender: UIPanGestureRecognizer) {
         switch sender.state {
         case .began:

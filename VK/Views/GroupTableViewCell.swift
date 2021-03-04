@@ -25,26 +25,12 @@ class GroupTableViewCell: UITableViewCell {
         groupName.text = nil
     }
 
-    func configure(group: RealmGroup) {
-        groupImage.image = group.getImage(size: .small)
-        groupName.text = group.name
-    }
-
-    func configure(groupItem: Groups.Item?) {
-        guard let groupItem = groupItem else {
-            return
-        }
-        groupImage.image = groupItem.image
-        groupName.text = groupItem.name
-    }
-
-
 }
 
 // MARK: - tapGestureRecognizer
 
 extension GroupTableViewCell {
-    
+
     func awakeFromNibtapGestureRecognizer() {
         let tapGestureRecognizer = UITapGestureRecognizer(target: self,
                                                     action: #selector(imageTapped(tapGestureRecognizer:)))
@@ -64,4 +50,17 @@ extension GroupTableViewCell {
 
 }
 
+extension GroupTableViewCell {
 
+    func configure(group: RealmGroup) {
+        groupImage.image = group.getImage(size: .small)
+        groupName.text = group.name
+    }
+
+    func configure(groupItem: Groups.Item?) {
+        guard let groupItem = groupItem else { return }
+        groupImage.image = groupItem.image
+        groupName.text = groupItem.name
+    }
+
+}
