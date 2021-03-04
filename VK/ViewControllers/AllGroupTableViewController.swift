@@ -23,19 +23,19 @@ class AllGroupTableViewController: UITableViewController {
 // MARK: - Table view data source
 
 extension AllGroupTableViewController {
-    
+
     func dataSourceViewDidLoad() {
         tableView.register(GroupTableViewCell.nib, forCellReuseIdentifier: GroupTableViewCell.identifier)
     }
-    
+
     override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
-    
+
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return searchGroups?.count ?? 0
     }
-    
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
                 as? GroupTableViewCell else {
@@ -45,13 +45,12 @@ extension AllGroupTableViewController {
         cell.set(group: group)
         return cell
     }
-    
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: "unwindFromGroups", sender: self)
     }
-    
-}
 
+}
 
 // MARK: - Search bar delegate
 

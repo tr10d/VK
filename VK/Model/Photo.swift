@@ -64,6 +64,25 @@ struct PhotoJson: Codable {
 
 }
 
+extension PhotoJson: RealmModifity {
+
+    func saveToRealm() {
+        var realmUsers: [RealmPhoto] = []
+        response?.items.forEach {
+            realmUsers.append(RealmPhoto(photo: $0))
+        }
+        do {
+            let realm = RealmManager.realm
+            realm?.beginWrite()
+            realm?.add(realmUsers)
+            try realm?.commitWrite()
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+
+}
+
 struct Photo {
 
     var urlImage: String

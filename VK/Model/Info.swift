@@ -9,10 +9,12 @@ import Foundation
 
 // MARK: - Info
 struct Info: Codable {
-    let response: Response
-}
 
-// MARK: - Response
-struct Response: Codable {
-    let country: String
+    let response: Response
+
+    // MARK: - Response
+    struct Response: Codable {
+        let country: String
+    }
+
 }

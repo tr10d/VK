@@ -26,10 +26,6 @@ class GroupTableViewController: UITableViewController {
         requestViewDidLoad()
     }
 
-//    deinit {
-//        NotificationCenter.default.removeObserver(self)
-//    }
-
 }
 
 // MARK: - Request
@@ -37,11 +33,14 @@ class GroupTableViewController: UITableViewController {
 extension GroupTableViewController {
 
     func requestViewDidLoad() {
+
         NetworkService.shared.requestGroups { (data, _, _) in
             guard let data = data else { return }
             NetworkService.shared.printJSON(data: data)
             do {
-                self.groups = try JSONDecoder().decode(Groups.self, from: data)
+                let groups = try JSONDecoder().decode(Groups.self, from: data)
+                groups.saveToRealm()
+                self.groups = groups
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
                 }
@@ -49,21 +48,8 @@ extension GroupTableViewController {
                 print(error.localizedDescription)
             }
         }
-//        NotificationCenter.default.addObserver(self,
-//                                               selector: #selector(onDidReceiveGroups),
-//                                               name: .didReceiveGroups, object: nil)
-//        NetworkService.shared.requestGroups()
-    }
 
-//    @objc func onDidReceiveGroups(_ notification: Notification) {
-//        if let info = notification.userInfo,
-//           let data = info["json"] {
-//            DispatchQueue.main.async {
-//                print(data)
-//                self.tableView.reloadData()
-//            }
-//        }
-//    }
+    }
 
 }
 
@@ -97,13 +83,13 @@ extension GroupTableViewController {
     override func tableView(_ tableView: UITableView,
                             commit editingStyle: UITableViewCell.EditingStyle,
                             forRowAt indexPath: IndexPath) {
-//        switch editingStyle {
-//        case .delete:
-////            groupes.remove(at: indexPath.row)
-////            tableView.deleteRows(at: [indexPath], with: .fade)
-//        default:
-//            break
-//        }
+        switch editingStyle {
+        case .delete:
+            groups?.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        default:
+            break
+        }
     }
 
 }

@@ -28,19 +28,12 @@ class FriendsTableViewController: UIViewController, UIGestureRecognizerDelegate 
 extension FriendsTableViewController {
 
     func requestViewDidLoad() {
-        NetworkService.shared.requestUsers { (data, _, _) in
-            guard let data = data else { return }
-            NetworkService.shared.printJSON(data: data)
-            do {
-                let usersJson = try JSONDecoder().decode(UsersJson.self, from: data)
-                self.users = Users(usersJson: usersJson)
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
+        loadUsers()
+    }
+
+    fileprivate func loadUsers() {
+        users = RealmManager.getUsers()
+        tableView.reloadData()
     }
 
 }
@@ -57,7 +50,7 @@ extension FriendsTableViewController {
                   let indexPath = tableViewController.tableView.indexPathForSelectedRow,
                   let destination = segue.destination as? FriendsPhotoCollectionViewController else { return }
 
-            destination.user = users?.getFriend(indexPath: indexPath)
+//            destination.user = users?.getFriend(indexPath: indexPath)
 
         default:
             break
@@ -72,6 +65,34 @@ extension FriendsTableViewController: UITableViewDataSource {
 
     func dataSourceViewDidLoad() {
         tableView.register(FriendTableViewCell.nib, forCellReuseIdentifier: FriendTableViewCell.identifier)
+
+        let refreshControl = UIRefreshControl()
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        tableView.refreshControl = refreshControl
+   }
+
+    @objc func refresh(_ sender: AnyObject) {
+        RealmManager.getFromVK(dataType: .users) {
+            self.loadUsers()
+            self.tableView.refreshControl?.endRefreshing()
+       }
+
+//        NetworkService.shared.requestUsers { (data, _, _) in
+//            guard let data = data else { return }
+//            NetworkService.shared.printJSON(data: data)
+//            do {
+//                let usersJson = try JSONDecoder().decode(UsersJson.self, from: data)
+//                DispatchQueue.main.async {
+//                    RealmManager.setUsers(userJson: usersJson)
+//                    self.loadUsers()
+//                }
+//            } catch {
+//                print(error.localizedDescription)
+//            }
+//            self.tableView.refreshControl?.endRefreshing()
+//        }
+
     }
 
     func sectionIndexTitles(for tableView: UITableView) -> [String]? {
@@ -105,7 +126,7 @@ extension FriendsTableViewController: UITableViewDelegate {
                 as? FriendTableViewCell else {
             return UITableViewCell()
         }
-        cell.set(user: users?.getFriend(indexPath: indexPath))
+        cell.set(realmUser: users?.getFriend(indexPath: indexPath))
         return cell
     }
 
