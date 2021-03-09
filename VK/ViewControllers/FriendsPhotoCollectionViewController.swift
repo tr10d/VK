@@ -36,12 +36,10 @@ class FriendsPhotoCollectionViewController: UICollectionViewController {
 extension FriendsPhotoCollectionViewController {
 
     func viewDidLoadRequest() {
-        loadPhotos {
-            self.collectionView.reloadData()
-        }
+        loadRealmData { self.collectionView.reloadData() }
     }
 
-    func loadPhotos(offset: Int = 0, completion: @escaping () -> Void) {
+    func loadRealmData(offset: Int = 0, completion: @escaping () -> Void) {
         RealmManager.getPhotos(realmUser: user, offset: offset) { photos in
             self.photos = photos
             completion()
@@ -66,7 +64,7 @@ extension FriendsPhotoCollectionViewController {
     }
 
     @objc func refresh(_ sender: AnyObject) {
-        loadPhotos { self.collectionView.refreshControl?.endRefreshing() }
+        loadRealmData { self.collectionView.refreshControl?.endRefreshing() }
     }
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -84,9 +82,8 @@ extension FriendsPhotoCollectionViewController {
             return
         }
         let lastCount = photos.count
-        if indexPath.row == lastCount - 1 {
-            loadPhotos(offset: lastCount) {}
-        }
+        guard indexPath.row == lastCount - 1 else { return }
+        loadRealmData(offset: lastCount) {}
     }
 
     override func collectionView(_ collectionView: UICollectionView,
@@ -181,10 +178,6 @@ extension FriendsPhotoCollectionViewController {
 
     private func deinitNotificationToken() {
         notificationToken?.invalidate()
-    }
-
-    private func convertNotificationToken(_ array: [Int]) -> [IndexPath] {
-        array.map { IndexPath(item: $0, section: 0) }
     }
 
     private func showAlert(title: String? = nil,

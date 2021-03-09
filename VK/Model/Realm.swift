@@ -17,26 +17,45 @@ protocol RealmManagerDataProtocol {
     func getRealmObject() -> [Object]
 }
 
+//protocol RealmNotificationToken {
+//    var notificationToken: NotificationToken? { get }
+//    
+//}
 
 // MARK: - RealmManager
 
 class RealmManager {
 
-    static let realm: Realm? = {
-        #if DEBUG
-        print(Realm.Configuration.defaultConfiguration.fileURL ?? "New Realm error")
-        #endif
-        let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
-        return try? Realm(configuration: config)
-    }()
+    static let shared = RealmManager()
+    
+    private let realm: Realm // = {
+//        #if DEBUG
+//        print(Realm.Configuration.defaultConfiguration.fileURL ?? "New Realm error")
+//        #endif
+//        let config = Realm.Configuration(deleteRealmIfMigrationNeeded: true)
+//        return try? Realm(configuration: config)
+//    }()
 
+    private init?() {
+        let configurator = Realm.Configuration(schemaVersion: 1, deleteRealmIfMigrationNeeded: true)
+        guard let realm = try? Realm(configuration: configurator) else { return nil }
+        self.realm = realm
+        #if DEBUG
+            print(realm.configuration.fileURL ?? "New Realm error")
+        #endif
+    }
+
+}
+
+extension RealmManager {
+    
     static func getUsers() -> Users {
-        Users(realmUser: realm?.objects(RealmUser.self))
+        Users(realmUser: shared?.realm.objects(RealmUser.self))
     }
 
     static func getPhotos(realmUser: RealmUser?, offset: Int = 0, completion: @escaping (Results<RealmPhoto>) -> Void) {
         guard let realmUser = realmUser else { return }
-        guard let realmPhoto = realm?.objects(RealmPhoto.self).filter("ownerID == %@", realmUser.id)else { return }
+        guard let realmPhoto = shared?.realm.objects(RealmPhoto.self).filter("ownerID == %@", realmUser.id) else { return }
 
         if realmPhoto.count == offset {
             RealmManager.responsePhotos(realmUser: realmUser, offset: offset) {
@@ -49,10 +68,17 @@ class RealmManager {
         }
     }
 
-    static func getGroups() -> [RealmGroup] {
-        var array: [RealmGroup] = []
-        realm?.objects(RealmGroup.self).forEach { array.append($0) }
-        return array
+    static func getGroups(offset: Int = 0, completion: @escaping (Results<RealmGroup>) -> Void) {
+        guard let realmData = shared?.realm.objects(RealmGroup.self) else { return }
+        if realmData.count == offset {
+            RealmManager.responseGroups(offset: offset) {
+                completion(realmData)
+//                completion(Photos(realmPhoto: realmPhoto))
+            }
+        } else {
+            completion(realmData)
+//            completion(Photos(realmPhoto: realmPhoto))
+        }
     }
 
     static func responseUsers(completionHandler: @escaping () -> Void) {
@@ -105,7 +131,7 @@ class RealmManager {
 //        }
 // }
 
-    static func responseGroups(completionHandler: @escaping () -> Void) {
+    static func responseGroups(offset: Int = 0, completionHandler: @escaping () -> Void) {
         NetworkService.shared.requestGroups { (data, _, _) in
             guard let data = data else { return }
             do {
@@ -125,8 +151,8 @@ class RealmManager {
 
     static func saveData(data: [Object]) {
         do {
-            try realm?.write {
-                realm?.add(data, update: .modified)
+            try shared?.realm.write {
+                shared?.realm.add(data, update: .modified)
             }
             //            realm?.beginWrite()
             //            realm?.add(data, update: .all)
@@ -134,9 +160,50 @@ class RealmManager {
         } catch {
             print(error.localizedDescription)
         }
+    }}
+
+extension RealmManager {
+
+    func add<T: Object>(object: T) throws {
+        try realm.write {
+            realm.add(object)
+        }
+    }
+
+    func add<T: Object>(objects: [T]) throws {
+        try realm.write {
+            realm.add(objects, update: .all)
+        }
+    }
+
+    func delete<T: Object>(object: T) throws {
+        try realm.write {
+            realm.delete(object)
+        }
+    }
+
+    func deleteAll() throws {
+        try realm.write {
+            realm.deleteAll()
+        }
+    }
+
+    func update(closure: (() -> Void)) throws {
+        try realm.write {
+            closure()
+        }
+    }
+
+    func getObjects<T: Object>() -> Results<T> {
+        let result = realm.objects(T.self)
+        if result.isEmpty {
+            
+        }
+        return result
     }
 
 }
+
 
 // MARK: - RealmUser
 
@@ -219,10 +286,13 @@ class RealmGroup: Object {
         self.isAdmin = (group.isAdmin != 0)
         self.isMember = (group.isMember != 0)
         self.isAdvertiser = (group.isAdvertiser != 0)
-        self.photo50 = NetworkService.shared.url2str(url: group.photo50)
-        self.photo100 = NetworkService.shared.url2str(url: group.photo100)
-        self.photo200 = NetworkService.shared.url2str(url: group.photo200)
-    }
+        self.photo50 = group.photo50
+        self.photo100 = group.photo100
+        self.photo200 = group.photo200
+//        self.photo50 = NetworkService.shared.url2str(url: group.photo50)
+//        self.photo100 = NetworkService.shared.url2str(url: group.photo100)
+//        self.photo200 = NetworkService.shared.url2str(url: group.photo200)
+   }
 
 }
 
@@ -232,18 +302,32 @@ extension RealmGroup {
         case small, medium, big
     }
 
-    func getImage(size: SizeImage) -> UIImage? {
-        var base64Data = ""
+    func image(size: SizeImage = .small) -> UIImage? {
+//        var base64Data = UIImage?
 
         switch size {
-        case .small: base64Data = photo50
-        case .medium: base64Data = photo100
-        case .big: base64Data = photo200
+        case .small: return NetworkService.shared.image(url: photo50)
+        case .medium: return NetworkService.shared.image(url: photo100)
+        case .big: return NetworkService.shared.image(url: photo200)
         }
-
-        guard let data = Data(base64Encoded: base64Data) else { return nil }
-        return UIImage(data: data)
+        return nil
+        
+//        guard let data = Data(base64Encoded: base64Data) else { return nil }
+//        return UIImage(data: data)
     }
+    
+//    func getImage(size: SizeImage) -> UIImage? {
+//        var base64Data = ""
+//
+//        switch size {
+//        case .small: base64Data = photo50
+//        case .medium: base64Data = photo100
+//        case .big: base64Data = photo200
+//        }
+//
+//        guard let data = Data(base64Encoded: base64Data) else { return nil }
+//        return UIImage(data: data)
+//    }
 
 }
 
@@ -308,11 +392,17 @@ extension RealmPhoto {
     }
 
     func switchLike() {
-        guard let likes = likes, let realm = RealmManager.realm else { return }
+
+//        guard let likes = likes, let realm = RealmManager.shared.realm else { return }
         do {
-            realm.beginWrite()
-            likes.userLikes = likes.userLikes == 0 ? 1 : 0
-            try realm.commitWrite()
+            try RealmManager.shared?.update {
+                if let likes = self.likes {
+                    likes.userLikes = likes.userLikes == 0 ? 1 : 0
+                }
+            }
+//            realm.beginWrite()
+//            likes.userLikes = likes.userLikes == 0 ? 1 : 0
+//            try realm.commitWrite()
         } catch {
             print(error)
         }

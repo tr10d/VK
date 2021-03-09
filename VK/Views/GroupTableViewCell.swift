@@ -52,8 +52,11 @@ extension GroupTableViewCell {
 
 extension GroupTableViewCell {
 
-    func configure(group: RealmGroup) {
-        groupImage.image = group.getImage(size: .small)
+    func configure(group: RealmGroup?) {
+        guard let group = group else {
+            return
+        }
+        groupImage.image = group.image(size: .small)
         groupName.text = group.name
     }
 
