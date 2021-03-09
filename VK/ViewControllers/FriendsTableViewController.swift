@@ -8,23 +8,26 @@
 import UIKit
 import RealmSwift
 
+// MARK: - FriendsTableViewController
+
 class FriendsTableViewController: UIViewController, UIGestureRecognizerDelegate {
 
     @IBOutlet weak var serarchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
 
-    var users: Users? {
-        didSet { tableView.reloadData() }
+    private var users: Results<RealmUser>? {
+        didSet { setLetters() }
     }
-    private var realmUsers: Results<RealmUser>? {
-        didSet {
-            print(#function)
-        }
+
+    private var filteredUsers: Results<RealmUser>? {
+        guard let searchText = serarchBar.text,
+              !searchText.isEmpty else { return users }
+        return users?.filter(NSPredicate(format: "screenName CONTAINS %@", searchText))
     }
-    
+
     private var letters: [String] = []
     private var notificationToken: NotificationToken?
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         viewDidLoadDelegate()
@@ -36,6 +39,28 @@ class FriendsTableViewController: UIViewController, UIGestureRecognizerDelegate 
     deinit {
         deinitNotificationToken()
     }
+
+}
+
+// MARK: - Common
+
+extension FriendsTableViewController {
+    
+    func setLetters() {
+        letters.removeAll()
+        filteredUsers?.forEach {
+            let letter = String($0.screenName[$0.screenName.startIndex])
+            letters.append(letter)
+        }
+        let set = Set(letters)
+        letters = Array(set).sorted()
+    }
+
+    func user(by section: Int) -> Results<RealmUser>? {
+        let letter = letters[section]
+        return users?.filter(NSPredicate(format: "lastName BEGINSWITH %@", letter))
+    }
+
 }
 
 // MARK: - Request
@@ -44,28 +69,28 @@ extension FriendsTableViewController {
 
     func viewDidLoadRequest() {
         loadRealmData { self.tableView.reloadData() }
-        loadUsers()
-        if users == nil || users?.count == 0 { getDataFromVK() }
+//        loadUsers()
+//        if users == nil || users?.count == 0 { getDataFromVK() }
     }
 
     func loadRealmData(offset: Int = 0, completion: @escaping () -> Void) {
         RealmManager.getUsers2(offset: offset) { realmData in
-            self.realmUsers = realmData
+            self.users = realmData
             completion()
         }
     }
 
-    func loadUsers() {
-        users = RealmManager.getUsers()
-//        tableView.reloadData()
-    }
-
-    func getDataFromVK() {
-        RealmManager.responseUsers {
-            self.loadUsers()
-            self.tableView.refreshControl?.endRefreshing()
-       }
-    }
+//    func loadUsers() {
+//        users = RealmManager.getUsers()
+////        tableView.reloadData()
+//    }
+//
+//    func getDataFromVK() {
+//        RealmManager.responseUsers {
+//            self.loadUsers()
+//            self.tableView.refreshControl?.endRefreshing()
+//       }
+//    }
 
 }
 
@@ -81,7 +106,9 @@ extension FriendsTableViewController {
                   let indexPath = tableViewController.tableView.indexPathForSelectedRow,
                   let destination = segue.destination as? FriendsPhotoCollectionViewController else { return }
 
-            destination.configure(user: users?.getFriend(indexPath: indexPath))
+            let realmUser = user(by: indexPath.section)?[indexPath.row]
+//            filteredUsers[indexPath.row]
+            destination.configure(user: realmUser)
 
         default:
             break
@@ -105,15 +132,17 @@ extension FriendsTableViewController: UITableViewDataSource {
 
     @objc func refresh(_ sender: AnyObject) {
         loadRealmData { self.tableView.refreshControl?.endRefreshing() }
-        getDataFromVK()
+//        getDataFromVK()
     }
 
     func sectionIndexTitles(for tableView: UITableView) -> [String]? {
-        return users?.letters
+        letters
+//        return users?.letters
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return users?.letters.count ?? 0
+        letters.count
+//        return users?.letters.count ?? 0
     }
 
 }
@@ -127,26 +156,29 @@ extension FriendsTableViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return users?.getFriends(section: section).count ?? 0
+        user(by: section)?.count ?? 0
+//        return users?.getFriends(section: section).count ?? 0
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return users?.letters[section]
+        letters[section]
+//        return users?.letters[section]
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        guard let realmUsers = realmUsers else { return }
+        guard let realmUsers = users else { return }
         let lastCount = realmUsers.count
         guard indexPath.row == lastCount - 1 else { return }
         loadRealmData(offset: lastCount) {}
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
                 as? FriendTableViewCell else {
             return UITableViewCell()
         }
-        cell.set(realmUser: users?.getFriend(indexPath: indexPath))
+        let realmUser = user(by: indexPath.section)?[indexPath.row]
+        cell.set(realmUser: realmUser)
         return cell
     }
 
@@ -165,7 +197,7 @@ extension FriendsTableViewController: UITableViewDelegate {
 extension FriendsTableViewController: UISearchBarDelegate {
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        users?.filter = searchText
+//        users?.filter = searchText
         tableView.reloadData()
     }
 
@@ -197,7 +229,7 @@ extension FriendsTableViewController: UINavigationControllerDelegate {
 extension FriendsTableViewController {
 
     func viewDidLoadNotificationToken() {
-        notificationToken = realmUsers?.observe { [weak self] change in
+        notificationToken = users?.observe { [weak self] change in
             switch change {
             case .initial(let users):
                 print("Initialize \(users.count)")

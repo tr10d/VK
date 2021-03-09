@@ -67,14 +67,13 @@ struct PhotoJSON: Codable {
 }
 
 extension PhotoJSON: RealmManagerDataProtocol {
-    
+
     func getRealmObject() -> [Object] {
         var realmObjects = [RealmPhoto]()
         guard let response = self.response else { return realmObjects }
         response.items.forEach { realmObjects.append(RealmPhoto(photo: $0)) }
         return realmObjects
     }
-    
 
 //    func toRealm<RealmPhoto>() -> [RealmPhoto] {
 //

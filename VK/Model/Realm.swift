@@ -54,7 +54,7 @@ extension RealmManager {
     }
 
     static func getUsers2(offset: Int = 0, completion: @escaping (Results<RealmUser>) -> Void) {
-        guard let realmData = shared?.realm.objects(RealmUser.self) else { return }
+        guard let realmData = shared?.realm.objects(RealmUser.self).sorted(byKeyPath: "lastName") else { return }
         if realmData.count == offset {
             RealmManager.responseUsers(offset: offset) { completion(realmData) }
         } else {
@@ -92,9 +92,9 @@ extension RealmManager {
             guard let data = data else { return }
             do {
                 let usersJson = try JSONDecoder().decode(UsersJson.self, from: data)
-                let realmUsers = usersJson.response.items.map { RealmUser(user: $0) }
+                let realmUsers = usersJson.response?.items.map { RealmUser(user: $0) }
                 DispatchQueue.main.async {
-                    saveData(data: realmUsers)
+                    saveData(data: realmUsers!)
                     completionHandler()
                 }
             } catch {
@@ -103,6 +103,22 @@ extension RealmManager {
         }
     }
 
+    static func responseUsers2(offset: Int = 0, completionHandler: @escaping () -> Void) {
+        NetworkService.shared.requestUsers { (data, _, _) in
+            guard let data = data else { return }
+            do {
+                let realmData = try JSONDecoder().decode(UsersJson.self, from: data).getRealmObject()
+                guard !realmData.isEmpty else { return }
+                DispatchQueue.main.async {
+                    RealmManager.saveData(data: realmData)
+                    completionHandler()
+                }
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+    }
+    
     static func responsePhotos(realmUser: RealmUser?, offset: Int = 0, completionHandler: @escaping () -> Void) {
         guard let realmUser = realmUser else { return }
 
