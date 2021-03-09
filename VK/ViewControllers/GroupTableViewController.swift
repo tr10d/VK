@@ -41,7 +41,6 @@ extension GroupTableViewController {
 
     func viewDidLoadRequest() {
         loadRealmData { self.tableView.reloadData() }
-//        if groups.count == 0 { getDataFromVK() }
     }
 
     func loadRealmData(offset: Int = 0, completion: @escaping () -> Void) {

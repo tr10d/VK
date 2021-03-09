@@ -19,11 +19,11 @@ class FriendsTableViewController: UIViewController, UIGestureRecognizerDelegate 
         didSet { setLetters() }
     }
 
-    private var filteredUsers: Results<RealmUser>? {
-        guard let searchText = serarchBar.text,
-              !searchText.isEmpty else { return users }
-        return users?.filter(NSPredicate(format: "screenName CONTAINS %@", searchText))
+    private var searchText: String = "" {
+        didSet { updateFilteredUsers() }
     }
+
+    private var filteredUsers: Results<RealmUser>?
 
     private var letters: [String] = []
     private var notificationToken: NotificationToken?
@@ -45,7 +45,12 @@ class FriendsTableViewController: UIViewController, UIGestureRecognizerDelegate 
 // MARK: - Common
 
 extension FriendsTableViewController {
-    
+
+    func updateFilteredUsers() {
+        filteredUsers = searchText.isEmpty ? users : users?
+            .filter(NSPredicate(format: "screenName CONTAINS %@", searchText))
+    }
+
     func setLetters() {
         letters.removeAll()
         filteredUsers?.forEach {
@@ -69,8 +74,6 @@ extension FriendsTableViewController {
 
     func viewDidLoadRequest() {
         loadRealmData { self.tableView.reloadData() }
-//        loadUsers()
-//        if users == nil || users?.count == 0 { getDataFromVK() }
     }
 
     func loadRealmData(offset: Int = 0, completion: @escaping () -> Void) {
@@ -79,18 +82,6 @@ extension FriendsTableViewController {
             completion()
         }
     }
-
-//    func loadUsers() {
-//        users = RealmManager.getUsers()
-////        tableView.reloadData()
-//    }
-//
-//    func getDataFromVK() {
-//        RealmManager.responseUsers {
-//            self.loadUsers()
-//            self.tableView.refreshControl?.endRefreshing()
-//       }
-//    }
 
 }
 
@@ -105,11 +96,8 @@ extension FriendsTableViewController {
             guard let tableViewController = segue.source as? FriendsTableViewController,
                   let indexPath = tableViewController.tableView.indexPathForSelectedRow,
                   let destination = segue.destination as? FriendsPhotoCollectionViewController else { return }
-
             let realmUser = user(by: indexPath.section)?[indexPath.row]
-//            filteredUsers[indexPath.row]
             destination.configure(user: realmUser)
-
         default:
             break
         }
@@ -132,17 +120,14 @@ extension FriendsTableViewController: UITableViewDataSource {
 
     @objc func refresh(_ sender: AnyObject) {
         loadRealmData { self.tableView.refreshControl?.endRefreshing() }
-//        getDataFromVK()
     }
 
     func sectionIndexTitles(for tableView: UITableView) -> [String]? {
         letters
-//        return users?.letters
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {
         letters.count
-//        return users?.letters.count ?? 0
     }
 
 }
@@ -157,12 +142,10 @@ extension FriendsTableViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         user(by: section)?.count ?? 0
-//        return users?.getFriends(section: section).count ?? 0
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         letters[section]
-//        return users?.letters[section]
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -197,7 +180,7 @@ extension FriendsTableViewController: UITableViewDelegate {
 extension FriendsTableViewController: UISearchBarDelegate {
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-//        users?.filter = searchText
+        self.searchText = searchText
         tableView.reloadData()
     }
 
