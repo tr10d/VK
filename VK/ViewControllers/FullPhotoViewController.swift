@@ -6,10 +6,11 @@
 //
 
 import UIKit
+import RealmSwift
 
 class FullPhotoViewController: UIViewController {
 
-    private var photos: Photos?
+    private var photos: Results<RealmPhoto>?
     private var index: Int?
     private var animator = Animator()
 
@@ -20,12 +21,12 @@ class FullPhotoViewController: UIViewController {
         viewDidLoadAnimator()
 
         if let index = index {
-            photoImage.image = photos?[index]?.image
+            photoImage.image = photos?[index].image
         }
 
     }
 
-    func configure(photos: Photos?, index: Int) {
+    func configure(photos: Results<RealmPhoto>?, index: Int) {
         self.photos = photos
         self.index = index
     }

@@ -6,12 +6,13 @@
 //
 
 import UIKit
+import RealmSwift
 
 @IBDesignable
 class PhotoLikes: UIControl {
 
     private var stackView: UIStackView!, button: UIButton!, label: UILabel!
-    var photos: Photos?
+    var photos: Results<RealmPhoto>?
     var row: Int?
 
     override init(frame: CGRect) {
@@ -61,7 +62,7 @@ extension PhotoLikes {
     @objc func touchLike(sender: UIButton) {
         if let row = row, let photos = photos {
             UIView.transition(with: sender, duration: 0.5, options: [.transitionFlipFromLeft]) {
-                photos[row]?.switchLike()
+                photos[row].switchLike()
             }
             updateView​()
         }
@@ -76,7 +77,13 @@ extension PhotoLikes {
         }
     }
 
-    func setPhoto(photos: Photos, row: Int) {
+//    func setPhoto(photos: Photos, row: Int) {
+//        self.photos = photos
+//        self.row = row
+//        updateView​()
+//    }
+
+    func setPhoto(photos: Results<RealmPhoto>, row: Int) {
         self.photos = photos
         self.row = row
         updateView​()

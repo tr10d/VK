@@ -12,7 +12,9 @@ class FriendsTableViewController: UIViewController, UIGestureRecognizerDelegate 
     @IBOutlet weak var serarchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
 
-    var users: Users?
+    var users: Users? {
+        didSet { tableView.reloadData() }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,7 +36,7 @@ extension FriendsTableViewController {
 
     func loadUsers() {
         users = RealmManager.getUsers()
-        tableView.reloadData()
+//        tableView.reloadData()
     }
 
     func getDataFromVK() {
@@ -58,7 +60,7 @@ extension FriendsTableViewController {
                   let indexPath = tableViewController.tableView.indexPathForSelectedRow,
                   let destination = segue.destination as? FriendsPhotoCollectionViewController else { return }
 
-            destination.user = users?.getFriend(indexPath: indexPath)
+            destination.configure(user: users?.getFriend(indexPath: indexPath))
 
         default:
             break

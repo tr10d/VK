@@ -56,7 +56,7 @@ extension WebViewController: WKNavigationDelegate {
             return
         }
 
-        Session.shared.setItem(token: token, userId: userId)
+        Session.shared.set(token: token, userId: userId)
         decisionHandler(.cancel)
         performSegue(withIdentifier: "toMainTab", sender: nil)
     }

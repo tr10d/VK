@@ -6,16 +6,27 @@
 //
 
 import UIKit
+import RealmSwift
 
 class FriendsPhotoCollectionViewController: UICollectionViewController {
 
-    var photos: Photos?
-    var user: RealmUser?
+    private var user: RealmUser?
+    private var photos: Results<RealmPhoto>?
+    private var notificationToken: NotificationToken?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         viewDidLoadDataSource()
         viewDidLoadRequest()
+        viewDidLoadNotificationToken()
+    }
+
+    deinit {
+        deinitNotificationToken()
+    }
+
+    func configure(user: RealmUser?) {
+        self.user = user
     }
 
 }
@@ -25,24 +36,21 @@ class FriendsPhotoCollectionViewController: UICollectionViewController {
 extension FriendsPhotoCollectionViewController {
 
     func viewDidLoadRequest() {
-        loadPhotos()
-        if photos == nil || photos?.count == 0 { getDataFromVK() }
+        loadPhotos {
+            self.collectionView.reloadData()
+        }
     }
 
-    func loadPhotos() {
-        photos = RealmManager.getPhotos(realmUser: user)
-        collectionView.reloadData()
+    func loadPhotos(offset: Int = 0, completion: @escaping () -> Void) {
+        RealmManager.getPhotos(realmUser: user, offset: offset) { photos in
+            self.photos = photos
+            completion()
+        }
     }
 
-    func getDataFromVK() {
-        RealmManager.responsePhotos(realmUser: user) {
-            self.loadPhotos()
-            self.collectionView.refreshControl?.endRefreshing()
-       }
-    }
 }
 
-// MARK: UICollectionViewDataSource
+// MARK: - UICollectionViewDataSource
 
 extension FriendsPhotoCollectionViewController {
 
@@ -58,7 +66,7 @@ extension FriendsPhotoCollectionViewController {
     }
 
     @objc func refresh(_ sender: AnyObject) {
-        getDataFromVK()
+        loadPhotos { self.collectionView.refreshControl?.endRefreshing() }
     }
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -67,6 +75,18 @@ extension FriendsPhotoCollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return photos?.count ?? 0
+    }
+
+    override func collectionView(_ collectionView: UICollectionView,
+                                 willDisplay cell: UICollectionViewCell,
+                                 forItemAt indexPath: IndexPath) {
+        guard let photos = photos else {
+            return
+        }
+        let lastCount = photos.count
+        if indexPath.row == lastCount - 1 {
+            loadPhotos(offset: lastCount) {}
+        }
     }
 
     override func collectionView(_ collectionView: UICollectionView,
@@ -82,7 +102,7 @@ extension FriendsPhotoCollectionViewController {
 
 }
 
-// MARK: UICollectionViewDelegate
+// MARK: - UICollectionViewDelegate
 
 extension FriendsPhotoCollectionViewController {
 
@@ -96,7 +116,7 @@ extension FriendsPhotoCollectionViewController {
 
 }
 
-// MARK: UIViewControllerTransitioningDelegate
+// MARK: - UIViewControllerTransitioningDelegate
 
 extension FriendsPhotoCollectionViewController: UIViewControllerTransitioningDelegate {
 
@@ -112,7 +132,7 @@ extension FriendsPhotoCollectionViewController: UIViewControllerTransitioningDel
 
 }
 
-// MARK: UICollectionViewDelegateFlowLayout
+// MARK: - UICollectionViewDelegateFlowLayout
 
 extension FriendsPhotoCollectionViewController: UICollectionViewDelegateFlowLayout {
 
@@ -133,6 +153,48 @@ extension FriendsPhotoCollectionViewController: UICollectionViewDelegateFlowLayo
                         layout collectionViewLayout: UICollectionViewLayout,
                         minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0.0
+    }
+
+}
+
+// MARK: - NotificationToken
+
+extension FriendsPhotoCollectionViewController {
+
+    func viewDidLoadNotificationToken() {
+        notificationToken = photos?.observe { [weak self] change in
+            switch change {
+            case .initial(let users):
+                print("Initialize \(users.count)")
+            case .update( _,
+                         deletions: let deletions,
+                         insertions: let insertions,
+                         modifications: let modifications):
+                self?.collectionView.deleteItems(at: deletions.indexPaths)
+                self?.collectionView.insertItems(at: insertions.indexPaths)
+                self?.collectionView.reloadItems(at: modifications.indexPaths)
+            case .error(let error):
+                self?.showAlert(title: "Error", message: error.localizedDescription)
+            }
+        }
+    }
+
+    private func deinitNotificationToken() {
+        notificationToken?.invalidate()
+    }
+
+    private func convertNotificationToken(_ array: [Int]) -> [IndexPath] {
+        array.map { IndexPath(item: $0, section: 0) }
+    }
+
+    private func showAlert(title: String? = nil,
+                           message: String? = nil,
+                           handler: ((UIAlertAction) -> Void)? = nil,
+                           completion: (() -> Void)? = nil) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let alertAction = UIAlertAction(title: "OK", style: .default, handler: handler)
+        alertController.addAction(alertAction)
+        present(alertController, animated: true, completion: completion)
     }
 
 }

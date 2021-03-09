@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 class PhotoCollectionViewCell: UICollectionViewCell {
 
@@ -19,10 +20,18 @@ class PhotoCollectionViewCell: UICollectionViewCell {
         photo.image = nil
     }
 
-    func configure(photos: Photos?, row: Int) {
+//    func configure(photos: Photos?, row: Int) {
+//        guard let photos = photos else { return }
+//        let searchedPhoto = photos[row]
+//        photo.image = searchedPhoto?.image
+//        photoLike.setPhoto(photos: photos, row: row)
+//    }
+
+    func configure(photos: Results<RealmPhoto>?, row: Int) {
         guard let photos = photos else { return }
         let searchedPhoto = photos[row]
-        photo.image = searchedPhoto?.image
-        photoLike.setPhoto(photos: photos, row: row)
+        photo.image = searchedPhoto.image
+//        photoLike.setPhoto(photos: photos, row: row)
     }
+
 }
