@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import RealmSwift
 
 class FriendsTableViewController: UIViewController, UIGestureRecognizerDelegate {
 
@@ -15,14 +16,26 @@ class FriendsTableViewController: UIViewController, UIGestureRecognizerDelegate 
     var users: Users? {
         didSet { tableView.reloadData() }
     }
-
+    private var realmUsers: Results<RealmUser>? {
+        didSet {
+            print(#function)
+        }
+    }
+    
+    private var letters: [String] = []
+    private var notificationToken: NotificationToken?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         viewDidLoadDelegate()
         viewDidLoadDataSource()
         viewDidLoadRequest()
+        viewDidLoadNotificationToken()
     }
 
+    deinit {
+        deinitNotificationToken()
+    }
 }
 
 // MARK: - Request
@@ -30,8 +43,16 @@ class FriendsTableViewController: UIViewController, UIGestureRecognizerDelegate 
 extension FriendsTableViewController {
 
     func viewDidLoadRequest() {
+        loadRealmData { self.tableView.reloadData() }
         loadUsers()
         if users == nil || users?.count == 0 { getDataFromVK() }
+    }
+
+    func loadRealmData(offset: Int = 0, completion: @escaping () -> Void) {
+        RealmManager.getUsers2(offset: offset) { realmData in
+            self.realmUsers = realmData
+            completion()
+        }
     }
 
     func loadUsers() {
@@ -83,6 +104,7 @@ extension FriendsTableViewController: UITableViewDataSource {
    }
 
     @objc func refresh(_ sender: AnyObject) {
+        loadRealmData { self.tableView.refreshControl?.endRefreshing() }
         getDataFromVK()
     }
 
@@ -112,6 +134,13 @@ extension FriendsTableViewController: UITableViewDelegate {
         return users?.letters[section]
     }
 
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard let realmUsers = realmUsers else { return }
+        let lastCount = realmUsers.count
+        guard indexPath.row == lastCount - 1 else { return }
+        loadRealmData(offset: lastCount) {}
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
                 as? FriendTableViewCell else {
@@ -159,6 +188,47 @@ extension FriendsTableViewController: UINavigationControllerDelegate {
         default:
             return nil
         }
+    }
+
+}
+
+// MARK: - NotificationToken
+
+extension FriendsTableViewController {
+
+    func viewDidLoadNotificationToken() {
+        notificationToken = realmUsers?.observe { [weak self] change in
+            switch change {
+            case .initial(let users):
+                print("Initialize \(users.count)")
+            case .update( _,
+                         deletions: let deletions,
+                         insertions: let insertions,
+                         modifications: let modifications):
+                self?.tableView.beginUpdates()
+                self?.tableView.deleteRows(at: deletions.indexPaths, with: .automatic)
+                self?.tableView.insertRows(at: insertions.indexPaths, with: .automatic)
+                self?.tableView.reloadRows(at: modifications.indexPaths, with: .automatic)
+                self?.tableView.endUpdates()
+
+            case .error(let error):
+                self?.showAlert(title: "Error", message: error.localizedDescription)
+            }
+        }
+    }
+
+    private func deinitNotificationToken() {
+        notificationToken?.invalidate()
+    }
+
+    private func showAlert(title: String? = nil,
+                           message: String? = nil,
+                           handler: ((UIAlertAction) -> Void)? = nil,
+                           completion: (() -> Void)? = nil) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let alertAction = UIAlertAction(title: "OK", style: .default, handler: handler)
+        alertController.addAction(alertAction)
+        present(alertController, animated: true, completion: completion)
     }
 
 }

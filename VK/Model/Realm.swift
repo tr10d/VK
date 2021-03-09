@@ -48,14 +48,24 @@ class RealmManager {
 }
 
 extension RealmManager {
-    
+
     static func getUsers() -> Users {
         Users(realmUser: shared?.realm.objects(RealmUser.self))
     }
 
+    static func getUsers2(offset: Int = 0, completion: @escaping (Results<RealmUser>) -> Void) {
+        guard let realmData = shared?.realm.objects(RealmUser.self) else { return }
+        if realmData.count == offset {
+            RealmManager.responseUsers(offset: offset) { completion(realmData) }
+        } else {
+            completion(realmData)
+        }
+    }
+
     static func getPhotos(realmUser: RealmUser?, offset: Int = 0, completion: @escaping (Results<RealmPhoto>) -> Void) {
         guard let realmUser = realmUser else { return }
-        guard let realmPhoto = shared?.realm.objects(RealmPhoto.self).filter("ownerID == %@", realmUser.id) else { return }
+        guard let realmPhoto = shared?.realm.objects(RealmPhoto.self)
+                .filter("ownerID == %@", realmUser.id) else { return }
 
         if realmPhoto.count == offset {
             RealmManager.responsePhotos(realmUser: realmUser, offset: offset) {
@@ -71,17 +81,13 @@ extension RealmManager {
     static func getGroups(offset: Int = 0, completion: @escaping (Results<RealmGroup>) -> Void) {
         guard let realmData = shared?.realm.objects(RealmGroup.self) else { return }
         if realmData.count == offset {
-            RealmManager.responseGroups(offset: offset) {
-                completion(realmData)
-//                completion(Photos(realmPhoto: realmPhoto))
-            }
+            RealmManager.responseGroups(offset: offset) { completion(realmData) }
         } else {
             completion(realmData)
-//            completion(Photos(realmPhoto: realmPhoto))
         }
     }
 
-    static func responseUsers(completionHandler: @escaping () -> Void) {
+    static func responseUsers(offset: Int = 0, completionHandler: @escaping () -> Void) {
         NetworkService.shared.requestUsers { (data, _, _) in
             guard let data = data else { return }
             do {
@@ -154,13 +160,12 @@ extension RealmManager {
             try shared?.realm.write {
                 shared?.realm.add(data, update: .modified)
             }
-            //            realm?.beginWrite()
-            //            realm?.add(data, update: .all)
-            //            try realm?.commitWrite()
         } catch {
             print(error.localizedDescription)
         }
-    }}
+    }
+
+}
 
 extension RealmManager {
 
@@ -197,13 +202,12 @@ extension RealmManager {
     func getObjects<T: Object>() -> Results<T> {
         let result = realm.objects(T.self)
         if result.isEmpty {
-            
+
         }
         return result
     }
 
 }
-
 
 // MARK: - RealmUser
 
@@ -223,7 +227,8 @@ class RealmUser: Object {
         self.id = user.id ?? 0
         self.firstName = user.firstName ?? ""
         self.lastName = user.lastName ?? ""
-        self.photo50 = NetworkService.shared.url2str(url: user.photo50)
+        self.photo50 = user.photo50 ?? ""
+//        self.photo50 = NetworkService.shared.url2str(url: user.photo50)
     }
 }
 
@@ -234,8 +239,9 @@ extension RealmUser {
     }
 
     var image: UIImage? {
-        guard let data = Data(base64Encoded: photo50) else { return nil }
-        return UIImage(data: data)
+        NetworkService.shared.image(url: photo50)
+//        guard let data = Data(base64Encoded: photo50) else { return nil }
+//        return UIImage(data: data)
     }
 
 }

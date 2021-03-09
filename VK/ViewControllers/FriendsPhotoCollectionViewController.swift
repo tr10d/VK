@@ -78,9 +78,7 @@ extension FriendsPhotoCollectionViewController {
     override func collectionView(_ collectionView: UICollectionView,
                                  willDisplay cell: UICollectionViewCell,
                                  forItemAt indexPath: IndexPath) {
-        guard let photos = photos else {
-            return
-        }
+        guard let photos = photos else { return }
         let lastCount = photos.count
         guard indexPath.row == lastCount - 1 else { return }
         loadRealmData(offset: lastCount) {}

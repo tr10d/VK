@@ -10,17 +10,16 @@ import RealmSwift
 
 class GroupTableViewController: UITableViewController {
 
-//    var groups: [RealmGroup] = []
     private var groups: Results<RealmGroup>?
     private var notificationToken: NotificationToken?
-    
+
     @IBAction func unwindFromGroups(_ segue: UIStoryboardSegue) {
-//        guard let tableViewController = segue.source as? AllGroupTableViewController,
-//              let indexPath = tableViewController.tableView.indexPathForSelectedRow else { return }
-//
-//        let group = tableViewController.searchGroups?[indexPath.row]
-//        groups?.append(group)
-//        tableView.reloadData()
+        guard let tableViewController = segue.source as? AllGroupTableViewController,
+              let indexPath = tableViewController.tableView.indexPathForSelectedRow,
+              let group = tableViewController.searchGroups?[indexPath.row] else { return }
+
+        let realmGroup = RealmGroup(group: group)
+        try? RealmManager.shared?.add(object: realmGroup)
     }
 
     override func viewDidLoad() {
@@ -41,7 +40,7 @@ class GroupTableViewController: UITableViewController {
 extension GroupTableViewController {
 
     func viewDidLoadRequest() {
-        loadRealmData() { self.tableView.reloadData() }
+        loadRealmData { self.tableView.reloadData() }
 //        if groups.count == 0 { getDataFromVK() }
     }
 
@@ -50,15 +49,7 @@ extension GroupTableViewController {
             self.groups = realmData
             completion()
         }
-//        tableView.reloadData()
     }
-
-//    func getDataFromVK() {
-//        RealmManager.responseGroups {
-//            self.loadGroups()
-//            self.tableView.refreshControl?.endRefreshing()
-//       }
-//    }
 
 }
 
@@ -101,13 +92,13 @@ extension GroupTableViewController {
     override func tableView(_ tableView: UITableView,
                             commit editingStyle: UITableViewCell.EditingStyle,
                             forRowAt indexPath: IndexPath) {
-//        switch editingStyle {
-//        case .delete:
-//            groups?.remove(at: indexPath.row)
-//            tableView.deleteRows(at: [indexPath], with: .fade)
-//        default:
-//            break
-//        }
+        switch editingStyle {
+        case .delete:
+            guard let realmGroup = groups?[indexPath.row] else { return }
+            try? RealmManager.shared?.delete(object: realmGroup)
+        default:
+            break
+        }
     }
 
 }
