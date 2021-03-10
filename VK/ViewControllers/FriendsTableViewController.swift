@@ -15,25 +15,34 @@ class FriendsTableViewController: UIViewController, UIGestureRecognizerDelegate 
     @IBOutlet weak var serarchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
 
-    private var users: Results<RealmUser>? {
-        didSet { setLetters() }
+    private var users: Results<RealmUser>?
+    private var filteredUsers: Results<RealmUser>? {
+        searchText.isEmpty ? users :
+            users?.filter("lastName CONTAINS %@", searchText)
+    }
+    
+    private var searchText: String {
+        self.serarchBar.text ?? ""
     }
 
-    private var searchText: String = "" {
-        didSet { updateFilteredUsers() }
+    private var letters: [String] {
+        var array = [String]()
+        filteredUsers?.forEach {
+            let letter = String($0.screenName[$0.screenName.startIndex])
+            array.append(letter)
+        }
+        let set = Set(array)
+        return Array(set).sorted()
     }
 
-    private var filteredUsers: Results<RealmUser>?
-
-    private var letters: [String] = []
     private var notificationToken: NotificationToken?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        viewDidLoadDelegate()
-        viewDidLoadDataSource()
         viewDidLoadRequest()
         viewDidLoadNotificationToken()
+        viewDidLoadDelegate()
+        viewDidLoadDataSource()
     }
 
     deinit {
@@ -46,24 +55,9 @@ class FriendsTableViewController: UIViewController, UIGestureRecognizerDelegate 
 
 extension FriendsTableViewController {
 
-    func updateFilteredUsers() {
-        filteredUsers = searchText.isEmpty ? users : users?
-            .filter(NSPredicate(format: "screenName CONTAINS %@", searchText))
-    }
-
-    func setLetters() {
-        letters.removeAll()
-        filteredUsers?.forEach {
-            let letter = String($0.screenName[$0.screenName.startIndex])
-            letters.append(letter)
-        }
-        let set = Set(letters)
-        letters = Array(set).sorted()
-    }
-
     func user(by section: Int) -> Results<RealmUser>? {
         let letter = letters[section]
-        return users?.filter(NSPredicate(format: "lastName BEGINSWITH %@", letter))
+        return filteredUsers?.filter("lastName BEGINSWITH %@", letter)
     }
 
 }
@@ -180,7 +174,6 @@ extension FriendsTableViewController: UITableViewDelegate {
 extension FriendsTableViewController: UISearchBarDelegate {
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        self.searchText = searchText
         tableView.reloadData()
     }
 
