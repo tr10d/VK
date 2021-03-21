@@ -7,9 +7,11 @@
 // swiftlint:disable identifier_name nesting
 
 import UIKit
+import RealmSwift
 
-// MARK: - Photo
-struct PhotoJson: Codable {
+// MARK: - PhotoJson
+struct PhotoJSON: Codable {
+
     let response: Response?
 
     // MARK: - Response
@@ -23,10 +25,10 @@ struct PhotoJson: Codable {
     struct Item: Codable {
         let albumID, date, id, ownerID: Int
         let hasTags: Bool
-        let sizes: [Size]?
+        let sizes: [Size]
         let text: String
-        let likes: Likes?
-        let reposts: Reposts?
+        let likes: Likes
+        let reposts: Reposts
         let realOffset: Int
 
         enum CodingKeys: String, CodingKey {
@@ -64,107 +66,40 @@ struct PhotoJson: Codable {
 
 }
 
-extension PhotoJson: RealmModifity {
+extension PhotoJSON: RealmManagerDataProtocol {
 
-    func saveToRealm() {
-        var realmUsers: [RealmPhoto] = []
-        response?.items.forEach {
-            realmUsers.append(RealmPhoto(photo: $0))
-        }
-        do {
-            let realm = RealmManager.realm
-            realm?.beginWrite()
-            realm?.add(realmUsers)
-            try realm?.commitWrite()
-        } catch {
-            print(error.localizedDescription)
-        }
+    func getRealmObject() -> [Object] {
+        var realmObjects = [RealmPhoto]()
+        guard let response = self.response else { return realmObjects }
+        response.items.forEach { realmObjects.append(RealmPhoto(photo: $0)) }
+        return realmObjects
     }
 
 }
 
-struct Photo {
+// MARK: - Photos
 
-    var urlImage: String
-    var image: UIImage? {
-        NetworkService.shared.image(url: urlImage)
-    }
-    var like: Int
-    var isLiked: Bool {
-        didSet {
-            let count: Int
-            switch isLiked {
-            case true:
-                count = 1
-            case false:
-                count = -1
-            }
-            like += count
-        }
-    }
+struct Photos {
 
-    init(like: Int, urlImage: String, isLiked: Bool = false) {
-        self.like = like
-        self.urlImage = urlImage
-        self.isLiked = isLiked
-    }
-
-    mutating func switchLike() {
-        isLiked = !isLiked
-    }
-
-}
-
-class Photos {
-
-    var array: [Photo]
+    var array: [RealmPhoto] = []
     var count: Int {
         return array.count
     }
 
-    init(array: [Photo]) {
-        self.array = array
-    }
-
-    init(photoJson: PhotoJson) {
-
-        self.array = []
-
-        if let response = photoJson.response {
-            for item in response.items {
-
-                if let likes = item.likes,
-                   let sizes = item.sizes,
-                   sizes.count > 0 {
-                    let urlImage = sizes[0].url
-                    let isLiked = likes.userLikes == 0 ? false : true
-                    self.array.append(Photo(like: likes.count, urlImage: urlImage, isLiked: isLiked))
-                }
-            }
+    init(realmPhoto: Results<RealmPhoto>?) {
+        guard let realmPhoto = realmPhoto else { return }
+        for item in realmPhoto where item.sizes.count > 0 {
+            self.array.append(item)
         }
-
-    }
-
-   func switchLike(index: Int) {
-        var element = array.remove(at: index)
-        element.switchLike()
-        array.insert(element, at: index)
-    }
-
-    func getItem(index: Int) -> Photo? {
-        if index >= 0 && index < array.count {
-            return array[index]
-        }
-        return nil
     }
 
 }
 
-// MARK: - will delete
+extension Photos {
 
-struct ItemImage {
-    let name: String
-    var image: UIImage? {
-        UIImage(named: name)
+    subscript(index: Int) -> RealmPhoto? {
+        guard index >= 0, index < self.count else { return nil }
+        return array[index]
     }
+
 }

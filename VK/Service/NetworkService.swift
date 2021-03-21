@@ -118,9 +118,20 @@ extension NetworkService {
                                          completionHandler: completionHandler)
     }
 
-    func requestPhotos(userId: Int, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) {
+    func requestPhotos(userId: Int, offset: Int, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) {
+//        let parameters = [
+//            "owner_id": "\(userId)",
+//            "offset": "\(offset)",
+//            "album_id": "profile",
+//            "extended": "1",
+//            "rev": "0"
+//        ]
+//        NetworkService.shared.requestAPI(method: "photos.get",
+//                                         parameters: parameters,
+//                                         completionHandler: completionHandler)
         let parameters = [
             "owner_id": "\(userId)",
+            "offset": "\(offset)",
             "extended": "1",
             "photo_sizes": "1",
             "skip_hidden": "1"
@@ -187,6 +198,8 @@ extension NetworkService {
     }
 
 }
+
+// MARK: - Func
 
 extension NetworkService {
 

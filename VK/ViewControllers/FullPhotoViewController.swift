@@ -6,10 +6,11 @@
 //
 
 import UIKit
+import RealmSwift
 
 class FullPhotoViewController: UIViewController {
 
-    private var photos: Photos?
+    private var photos: Results<RealmPhoto>?
     private var index: Int?
     private var animator = Animator()
 
@@ -17,11 +18,24 @@ class FullPhotoViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        viewDidLoadAnimator()
 
         if let index = index {
-            photoImage.image = photos?.getItem(index: index)?.image
+            photoImage.image = photos?[index].image
         }
 
+    }
+
+    func configure(photos: Results<RealmPhoto>?, index: Int) {
+        self.photos = photos
+        self.index = index
+    }
+
+}
+
+extension FullPhotoViewController {
+
+    func viewDidLoadAnimator() {
         let pan = UIPanGestureRecognizer(target: self, action: #selector(onPan))
         photoImage.addGestureRecognizer(pan)
 
@@ -31,13 +45,7 @@ class FullPhotoViewController: UIViewController {
         photoImage.isUserInteractionEnabled = true
     }
 
-    func configure(photos: Photos?, index: Int) {
-        self.photos = photos
-        self.index = index
-    }
-
-    @objc
-    func onPan(sender: UIPanGestureRecognizer) {
+    @objc func onPan(sender: UIPanGestureRecognizer) {
         switch sender.state {
         case .began:
             animator.began(view: photoImage)
@@ -46,8 +54,8 @@ class FullPhotoViewController: UIViewController {
         case .ended:
             let currentIndex = index ?? 0
             let direction = animator.ended(view: photoImage,
-                                           backPhoto: photos?.getItem(index: currentIndex - 1),
-                                           forwardPhoto: photos?.getItem(index: currentIndex + 1))
+                                           backPhoto: photos?[currentIndex - 1],
+                                           forwardPhoto: photos?[currentIndex + 1])
             if let direction = direction {
                 switch direction {
                 case .back:
@@ -62,8 +70,7 @@ class FullPhotoViewController: UIViewController {
         }
     }
 
-    @objc
-    func onTap(sender: UITapGestureRecognizer) {
+    @objc func onTap(sender: UITapGestureRecognizer) {
         if sender.state == .ended {
             dismiss(animated: true)
         }

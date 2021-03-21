@@ -65,7 +65,7 @@ extension Animator {
         animatorPhotoSlide.right?.fractionComplete = fractionComplete.right
     }
 
-    func ended(view: UIView, backPhoto: Photo?, forwardPhoto: Photo?) -> Direction? {
+    func ended(view: UIView, backPhoto: RealmPhoto?, forwardPhoto: RealmPhoto?) -> Direction? {
 
         let fractionLeft = animatorPhotoSlide.left?.fractionComplete ?? 0
         let fractionRight = animatorPhotoSlide.right?.fractionComplete ?? 0
@@ -99,7 +99,7 @@ extension Animator {
         return nil
     }
 
-    func continueAnimations(view: UIView, newPhoto: Photo?) {
+    func continueAnimations(view: UIView, newPhoto: RealmPhoto?) {
         if let view = view as? UIImageView,
            let newPhoto = newPhoto {
             view.image = newPhoto.image

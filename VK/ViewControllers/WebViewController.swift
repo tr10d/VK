@@ -18,38 +18,7 @@ class WebViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        if Session.shared.isKeysExist() {
-
-            NetworkService.shared.requestAPI(method: "account.getInfo") { (data, _, _) in
-
-                NetworkService.shared.printJSON(data: data)
-                var isError = true
-
-                if let data = data {
-                    do {
-                        _ = try JSONDecoder().decode(Info.self, from: data)
-                        isError = false
-                    } catch {
-                        print(error.localizedDescription)
-                    }
-                }
-                if isError {
-                    DispatchQueue.main.async { self.loadRequestAuth() }
-                } else {
-                    DispatchQueue.main.async { self.performSegue(withIdentifier: "toMainTab", sender: nil) }
-                }
-            }
-
-        } else {
-            loadRequestAuth()
-        }
-    }
-
-    private func loadRequestAuth() {
-        if let request = NetworkService.shared.requestAuth() {
-            webView.load(request)
-        }
+        self.loadRequestAuth()
     }
 
 }
@@ -87,9 +56,49 @@ extension WebViewController: WKNavigationDelegate {
             return
         }
 
-        Session.shared.setItem(token: token, userId: userId)
+        Session.shared.set(token: token, userId: userId)
         decisionHandler(.cancel)
         performSegue(withIdentifier: "toMainTab", sender: nil)
+    }
+
+}
+
+// MARK: - Auth
+
+extension WebViewController {
+
+    func viewDidLoadAuth() {
+        if Session.shared.isKeysExist() {
+
+            NetworkService.shared.requestAPI(method: "account.getInfo") { (data, _, _) in
+
+                NetworkService.shared.printJSON(data: data)
+                var isError = true
+
+                if let data = data {
+                    do {
+                        _ = try JSONDecoder().decode(Info.self, from: data)
+                        isError = false
+                    } catch {
+                        print(error.localizedDescription)
+                    }
+                }
+                if isError {
+                    DispatchQueue.main.async { self.loadRequestAuth() }
+                } else {
+                    DispatchQueue.main.async { self.performSegue(withIdentifier: "toMainTab", sender: nil) }
+                }
+            }
+
+        } else {
+            loadRequestAuth()
+        }
+    }
+
+    private func loadRequestAuth() {
+        if let request = NetworkService.shared.requestAuth() {
+            webView.load(request)
+        }
     }
 
 }

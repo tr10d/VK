@@ -6,24 +6,31 @@
 //
 
 import UIKit
+import RealmSwift
 
 class GroupTableViewController: UITableViewController {
 
-    var groups: Groups?
+    private var groups: Results<RealmGroup>?
+    private var notificationToken: NotificationToken?
 
     @IBAction func unwindFromGroups(_ segue: UIStoryboardSegue) {
         guard let tableViewController = segue.source as? AllGroupTableViewController,
-              let indexPath = tableViewController.tableView.indexPathForSelectedRow else { return }
+              let indexPath = tableViewController.tableView.indexPathForSelectedRow,
+              let group = tableViewController.searchGroups?[indexPath.row] else { return }
 
-        let group = tableViewController.searchGroups?[indexPath.row]
-        groups?.append(group)
-        tableView.reloadData()
+        let realmGroup = RealmGroup(group: group)
+        try? RealmManager.shared?.add(object: realmGroup)
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        dataSourceViewDidLoad()
-        requestViewDidLoad()
+        viewDidLoadDataSource()
+        viewDidLoadRequest()
+        viewDidLoadNotificationToken()
+    }
+
+    deinit {
+        deinitNotificationToken()
     }
 
 }
@@ -32,23 +39,15 @@ class GroupTableViewController: UITableViewController {
 
 extension GroupTableViewController {
 
-    func requestViewDidLoad() {
+    func viewDidLoadRequest() {
+        loadRealmData { self.tableView.reloadData() }
+    }
 
-        NetworkService.shared.requestGroups { (data, _, _) in
-            guard let data = data else { return }
-            NetworkService.shared.printJSON(data: data)
-            do {
-                let groups = try JSONDecoder().decode(Groups.self, from: data)
-                groups.saveToRealm()
-                self.groups = groups
-                DispatchQueue.main.async {
-                    self.tableView.reloadData()
-                }
-            } catch {
-                print(error.localizedDescription)
-            }
+    func loadRealmData(offset: Int = 0, completion: @escaping () -> Void) {
+        RealmManager.getGroups(offset: offset) { realmData in
+            self.groups = realmData
+            completion()
         }
-
     }
 
 }
@@ -57,8 +56,17 @@ extension GroupTableViewController {
 
 extension GroupTableViewController {
 
-    func dataSourceViewDidLoad() {
+    func viewDidLoadDataSource() {
         tableView.register(GroupTableViewCell.nib, forCellReuseIdentifier: GroupTableViewCell.identifier)
+
+        let refreshControl = UIRefreshControl()
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh from VK")
+        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        tableView.refreshControl = refreshControl
+    }
+
+    @objc func refresh(_ sender: AnyObject) {
+        loadRealmData { self.tableView.refreshControl?.endRefreshing() }
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -75,7 +83,7 @@ extension GroupTableViewController {
             return UITableViewCell()
         }
         let group = groups?[indexPath.row]
-        cell.set(group: group)
+        cell.configure(group: group)
         return cell
     }
 
@@ -85,11 +93,52 @@ extension GroupTableViewController {
                             forRowAt indexPath: IndexPath) {
         switch editingStyle {
         case .delete:
-            groups?.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .fade)
+            guard let realmGroup = groups?[indexPath.row] else { return }
+            try? RealmManager.shared?.delete(object: realmGroup)
         default:
             break
         }
+    }
+
+}
+
+// MARK: - NotificationToken
+
+extension GroupTableViewController {
+
+    func viewDidLoadNotificationToken() {
+        notificationToken = groups?.observe { [weak self] change in
+            switch change {
+            case .initial(let users):
+                print("Initialize \(users.count)")
+            case .update( _,
+                         deletions: let deletions,
+                         insertions: let insertions,
+                         modifications: let modifications):
+                self?.tableView.beginUpdates()
+                self?.tableView.deleteRows(at: deletions.indexPaths, with: .automatic)
+                self?.tableView.insertRows(at: insertions.indexPaths, with: .automatic)
+                self?.tableView.reloadRows(at: modifications.indexPaths, with: .automatic)
+                self?.tableView.endUpdates()
+
+            case .error(let error):
+                self?.showAlert(title: "Error", message: error.localizedDescription)
+            }
+        }
+    }
+
+    private func deinitNotificationToken() {
+        notificationToken?.invalidate()
+    }
+
+    private func showAlert(title: String? = nil,
+                           message: String? = nil,
+                           handler: ((UIAlertAction) -> Void)? = nil,
+                           completion: (() -> Void)? = nil) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let alertAction = UIAlertAction(title: "OK", style: .default, handler: handler)
+        alertController.addAction(alertAction)
+        present(alertController, animated: true, completion: completion)
     }
 
 }

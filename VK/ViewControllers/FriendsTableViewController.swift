@@ -6,19 +6,58 @@
 //
 
 import UIKit
+import RealmSwift
+
+// MARK: - FriendsTableViewController
 
 class FriendsTableViewController: UIViewController, UIGestureRecognizerDelegate {
 
     @IBOutlet weak var serarchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
 
-    var users: Users?
+    private var users: Results<RealmUser>?
+    private var filteredUsers: Results<RealmUser>? {
+        searchText.isEmpty ? users :
+            users?.filter("lastName CONTAINS %@", searchText)
+    }
+    
+    private var searchText: String {
+        self.serarchBar.text ?? ""
+    }
+
+    private var letters: [String] {
+        var array = [String]()
+        filteredUsers?.forEach {
+            let letter = String($0.screenName[$0.screenName.startIndex])
+            array.append(letter)
+        }
+        let set = Set(array)
+        return Array(set).sorted()
+    }
+
+    private var notificationToken: NotificationToken?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        delegateViewDidLoad()
-        dataSourceViewDidLoad()
-        requestViewDidLoad()
+        viewDidLoadRequest()
+        viewDidLoadNotificationToken()
+        viewDidLoadDelegate()
+        viewDidLoadDataSource()
+    }
+
+    deinit {
+        deinitNotificationToken()
+    }
+
+}
+
+// MARK: - Common
+
+extension FriendsTableViewController {
+
+    func user(by section: Int) -> Results<RealmUser>? {
+        let letter = letters[section]
+        return filteredUsers?.filter("lastName BEGINSWITH %@", letter)
     }
 
 }
@@ -27,13 +66,15 @@ class FriendsTableViewController: UIViewController, UIGestureRecognizerDelegate 
 
 extension FriendsTableViewController {
 
-    func requestViewDidLoad() {
-        loadUsers()
+    func viewDidLoadRequest() {
+        loadRealmData { self.tableView.reloadData() }
     }
 
-    fileprivate func loadUsers() {
-        users = RealmManager.getUsers()
-        tableView.reloadData()
+    func loadRealmData(offset: Int = 0, completion: @escaping () -> Void) {
+        RealmManager.getUsers2(offset: offset) { realmData in
+            self.users = realmData
+            completion()
+        }
     }
 
 }
@@ -49,9 +90,8 @@ extension FriendsTableViewController {
             guard let tableViewController = segue.source as? FriendsTableViewController,
                   let indexPath = tableViewController.tableView.indexPathForSelectedRow,
                   let destination = segue.destination as? FriendsPhotoCollectionViewController else { return }
-
-//            destination.user = users?.getFriend(indexPath: indexPath)
-
+            let realmUser = user(by: indexPath.section)?[indexPath.row]
+            destination.configure(user: realmUser)
         default:
             break
         }
@@ -63,44 +103,25 @@ extension FriendsTableViewController {
 
 extension FriendsTableViewController: UITableViewDataSource {
 
-    func dataSourceViewDidLoad() {
+    func viewDidLoadDataSource() {
         tableView.register(FriendTableViewCell.nib, forCellReuseIdentifier: FriendTableViewCell.identifier)
 
         let refreshControl = UIRefreshControl()
-        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh from VK")
         refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
         tableView.refreshControl = refreshControl
    }
 
     @objc func refresh(_ sender: AnyObject) {
-        RealmManager.getFromVK(dataType: .users) {
-            self.loadUsers()
-            self.tableView.refreshControl?.endRefreshing()
-       }
-
-//        NetworkService.shared.requestUsers { (data, _, _) in
-//            guard let data = data else { return }
-//            NetworkService.shared.printJSON(data: data)
-//            do {
-//                let usersJson = try JSONDecoder().decode(UsersJson.self, from: data)
-//                DispatchQueue.main.async {
-//                    RealmManager.setUsers(userJson: usersJson)
-//                    self.loadUsers()
-//                }
-//            } catch {
-//                print(error.localizedDescription)
-//            }
-//            self.tableView.refreshControl?.endRefreshing()
-//        }
-
+        loadRealmData { self.tableView.refreshControl?.endRefreshing() }
     }
 
     func sectionIndexTitles(for tableView: UITableView) -> [String]? {
-        return users?.letters
+        letters
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return users?.letters.count ?? 0
+        letters.count
     }
 
 }
@@ -109,16 +130,23 @@ extension FriendsTableViewController: UITableViewDataSource {
 
 extension FriendsTableViewController: UITableViewDelegate {
 
-    func delegateViewDidLoad() {
+    func viewDidLoadDelegate() {
         navigationController?.delegate = self
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return users?.getFriends(section: section).count ?? 0
+        user(by: section)?.count ?? 0
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return users?.letters[section]
+        letters[section]
+    }
+
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        guard let realmUsers = users else { return }
+        let lastCount = realmUsers.count
+        guard indexPath.row == lastCount - 1 else { return }
+        loadRealmData(offset: lastCount) {}
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -126,7 +154,8 @@ extension FriendsTableViewController: UITableViewDelegate {
                 as? FriendTableViewCell else {
             return UITableViewCell()
         }
-        cell.set(realmUser: users?.getFriend(indexPath: indexPath))
+        let realmUser = user(by: indexPath.section)?[indexPath.row]
+        cell.set(realmUser: realmUser)
         return cell
     }
 
@@ -145,7 +174,6 @@ extension FriendsTableViewController: UITableViewDelegate {
 extension FriendsTableViewController: UISearchBarDelegate {
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        users?.filter = searchText
         tableView.reloadData()
     }
 
@@ -168,6 +196,47 @@ extension FriendsTableViewController: UINavigationControllerDelegate {
         default:
             return nil
         }
+    }
+
+}
+
+// MARK: - NotificationToken
+
+extension FriendsTableViewController {
+
+    func viewDidLoadNotificationToken() {
+        notificationToken = users?.observe { [weak self] change in
+            switch change {
+            case .initial(let users):
+                print("Initialize \(users.count)")
+            case .update( _,
+                         deletions: let deletions,
+                         insertions: let insertions,
+                         modifications: let modifications):
+                self?.tableView.beginUpdates()
+                self?.tableView.deleteRows(at: deletions.indexPaths, with: .automatic)
+                self?.tableView.insertRows(at: insertions.indexPaths, with: .automatic)
+                self?.tableView.reloadRows(at: modifications.indexPaths, with: .automatic)
+                self?.tableView.endUpdates()
+
+            case .error(let error):
+                self?.showAlert(title: "Error", message: error.localizedDescription)
+            }
+        }
+    }
+
+    private func deinitNotificationToken() {
+        notificationToken?.invalidate()
+    }
+
+    private func showAlert(title: String? = nil,
+                           message: String? = nil,
+                           handler: ((UIAlertAction) -> Void)? = nil,
+                           completion: (() -> Void)? = nil) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let alertAction = UIAlertAction(title: "OK", style: .default, handler: handler)
+        alertController.addAction(alertAction)
+        present(alertController, animated: true, completion: completion)
     }
 
 }

@@ -17,10 +17,7 @@ class GroupTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self,
-                                                    action: #selector(imageTapped(tapGestureRecognizer:)))
-        self.groupImage.isUserInteractionEnabled = true
-        self.groupImage.addGestureRecognizer(tapGestureRecognizer)
+        awakeFromNibtapGestureRecognizer()
     }
 
     override func prepareForReuse() {
@@ -28,14 +25,20 @@ class GroupTableViewCell: UITableViewCell {
         groupName.text = nil
     }
 
-    func set(group: Groups.Item?) {
-        guard let group = group else { return }
-        groupImage.image = group.image
-        groupName.text = group.name
+}
+
+// MARK: - tapGestureRecognizer
+
+extension GroupTableViewCell {
+
+    func awakeFromNibtapGestureRecognizer() {
+        let tapGestureRecognizer = UITapGestureRecognizer(target: self,
+                                                    action: #selector(imageTapped(tapGestureRecognizer:)))
+        self.groupImage.isUserInteractionEnabled = true
+        self.groupImage.addGestureRecognizer(tapGestureRecognizer)
     }
 
-    @objc
-    func imageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
+    @objc func imageTapped(tapGestureRecognizer: UITapGestureRecognizer) {
         let springAnimation = CASpringAnimation(keyPath: "transform.scale")
         springAnimation.fromValue = 0.7
         springAnimation.toValue = 1
@@ -43,6 +46,24 @@ class GroupTableViewCell: UITableViewCell {
         springAnimation.damping = 1
 
         tapGestureRecognizer.view?.layer.add(springAnimation, forKey: nil)
+    }
+
+}
+
+extension GroupTableViewCell {
+
+    func configure(group: RealmGroup?) {
+        guard let group = group else {
+            return
+        }
+        groupImage.image = group.image(size: .small)
+        groupName.text = group.name
+    }
+
+    func configure(groupItem: Groups.Item?) {
+        guard let groupItem = groupItem else { return }
+        groupImage.image = groupItem.image
+        groupName.text = groupItem.name
     }
 
 }

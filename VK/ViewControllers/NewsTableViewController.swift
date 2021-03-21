@@ -13,8 +13,8 @@ class NewsTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        dataSourceViewDidLoad()
-        requestViewDidLoad()
+        viewDidLoadDataSource()
+        viewDidLoadRequest()
     }
 
     deinit {
@@ -27,8 +27,7 @@ class NewsTableViewController: UITableViewController {
 
 extension NewsTableViewController {
 
-    func requestViewDidLoad() {
-//        news = NetworkService.shared.getNews()
+    func viewDidLoadRequest() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(onDidReceiveNews),
                                                name: .didReceiveNews, object: nil)
@@ -51,7 +50,7 @@ extension NewsTableViewController {
 
 extension NewsTableViewController {
 
-    func dataSourceViewDidLoad() {
+    func viewDidLoadDataSource() {
         tableView.register(NewsTableViewCell.nib,
                            forCellReuseIdentifier: NewsTableViewCell.identifier)
     }

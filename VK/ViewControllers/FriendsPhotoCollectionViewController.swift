@@ -6,16 +6,27 @@
 //
 
 import UIKit
+import RealmSwift
 
 class FriendsPhotoCollectionViewController: UICollectionViewController {
 
-    var photos: Photos?
-    var user: UsersJson.User?
+    private var user: RealmUser?
+    private var photos: Results<RealmPhoto>?
+    private var notificationToken: NotificationToken?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        dataSourceViewDidLoad()
-        requestViewDidLoad()
+        viewDidLoadDataSource()
+        viewDidLoadRequest()
+        viewDidLoadNotificationToken()
+    }
+
+    deinit {
+        deinitNotificationToken()
+    }
+
+    func configure(user: RealmUser?) {
+        self.user = user
     }
 
 }
@@ -24,37 +35,36 @@ class FriendsPhotoCollectionViewController: UICollectionViewController {
 
 extension FriendsPhotoCollectionViewController {
 
-    func requestViewDidLoad() {
+    func viewDidLoadRequest() {
+        loadRealmData { self.collectionView.reloadData() }
+    }
 
-        if let user = user,
-           let userId = user.id {
-
-            NetworkService.shared.requestPhotos(userId: userId) { (data, _, _) in
-                guard let data = data else { return }
-                NetworkService.shared.printJSON(data: data)
-                do {
-                    let photoJson = try JSONDecoder().decode(PhotoJson.self, from: data)
-                    photoJson.saveToRealm()
-                    self.photos = Photos(photoJson: photoJson)
-                    DispatchQueue.main.async {
-                        self.collectionView.reloadData()
-                    }
-                } catch {
-                    print(error.localizedDescription)
-                }
-            }
+    func loadRealmData(offset: Int = 0, completion: @escaping () -> Void) {
+        RealmManager.getPhotos(realmUser: user, offset: offset) { photos in
+            self.photos = photos
+            completion()
         }
     }
 
 }
 
-// MARK: UICollectionViewDataSource
+// MARK: - UICollectionViewDataSource
 
 extension FriendsPhotoCollectionViewController {
 
-    func dataSourceViewDidLoad() {
+    func viewDidLoadDataSource() {
         collectionView.register(PhotoCollectionViewCell.nib,
                                 forCellWithReuseIdentifier: PhotoCollectionViewCell.identifier)
+
+        let refreshControl = UIRefreshControl()
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh from VK")
+        refreshControl.addTarget(self, action: #selector(refresh), for: .valueChanged)
+        collectionView.refreshControl = refreshControl
+
+    }
+
+    @objc func refresh(_ sender: AnyObject) {
+        loadRealmData { self.collectionView.refreshControl?.endRefreshing() }
     }
 
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -63,6 +73,15 @@ extension FriendsPhotoCollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return photos?.count ?? 0
+    }
+
+    override func collectionView(_ collectionView: UICollectionView,
+                                 willDisplay cell: UICollectionViewCell,
+                                 forItemAt indexPath: IndexPath) {
+        guard let photos = photos else { return }
+        let lastCount = photos.count
+        guard indexPath.row == lastCount - 1 else { return }
+        loadRealmData(offset: lastCount) {}
     }
 
     override func collectionView(_ collectionView: UICollectionView,
@@ -78,7 +97,7 @@ extension FriendsPhotoCollectionViewController {
 
 }
 
-// MARK: UICollectionViewDelegate
+// MARK: - UICollectionViewDelegate
 
 extension FriendsPhotoCollectionViewController {
 
@@ -92,7 +111,7 @@ extension FriendsPhotoCollectionViewController {
 
 }
 
-// MARK: UIViewControllerTransitioningDelegate
+// MARK: - UIViewControllerTransitioningDelegate
 
 extension FriendsPhotoCollectionViewController: UIViewControllerTransitioningDelegate {
 
@@ -108,7 +127,7 @@ extension FriendsPhotoCollectionViewController: UIViewControllerTransitioningDel
 
 }
 
-// MARK: UICollectionViewDelegateFlowLayout
+// MARK: - UICollectionViewDelegateFlowLayout
 
 extension FriendsPhotoCollectionViewController: UICollectionViewDelegateFlowLayout {
 
@@ -129,6 +148,44 @@ extension FriendsPhotoCollectionViewController: UICollectionViewDelegateFlowLayo
                         layout collectionViewLayout: UICollectionViewLayout,
                         minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 0.0
+    }
+
+}
+
+// MARK: - NotificationToken
+
+extension FriendsPhotoCollectionViewController {
+
+    func viewDidLoadNotificationToken() {
+        notificationToken = photos?.observe { [weak self] change in
+            switch change {
+            case .initial(let users):
+                print("Initialize \(users.count)")
+            case .update( _,
+                         deletions: let deletions,
+                         insertions: let insertions,
+                         modifications: let modifications):
+                self?.collectionView.deleteItems(at: deletions.indexPaths)
+                self?.collectionView.insertItems(at: insertions.indexPaths)
+                self?.collectionView.reloadItems(at: modifications.indexPaths)
+            case .error(let error):
+                self?.showAlert(title: "Error", message: error.localizedDescription)
+            }
+        }
+    }
+
+    private func deinitNotificationToken() {
+        notificationToken?.invalidate()
+    }
+
+    private func showAlert(title: String? = nil,
+                           message: String? = nil,
+                           handler: ((UIAlertAction) -> Void)? = nil,
+                           completion: (() -> Void)? = nil) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let alertAction = UIAlertAction(title: "OK", style: .default, handler: handler)
+        alertController.addAction(alertAction)
+        present(alertController, animated: true, completion: completion)
     }
 
 }

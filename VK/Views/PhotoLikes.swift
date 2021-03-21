@@ -6,12 +6,13 @@
 //
 
 import UIKit
+import RealmSwift
 
 @IBDesignable
 class PhotoLikes: UIControl {
 
     private var stackView: UIStackView!, button: UIButton!, label: UILabel!
-    var photos: Photos?
+    var photos: Results<RealmPhoto>?
     var row: Int?
 
     override init(frame: CGRect) {
@@ -30,6 +31,10 @@ class PhotoLikes: UIControl {
         super.layoutSubviews()
         stackView.frame = bounds
     }
+
+}
+
+extension PhotoLikes {
 
     private func setupView​() {
 
@@ -54,26 +59,31 @@ class PhotoLikes: UIControl {
 
     }
 
-    @objc
-    func touchLike(sender: UIButton) {
+    @objc func touchLike(sender: UIButton) {
         if let row = row, let photos = photos {
             UIView.transition(with: sender, duration: 0.5, options: [.transitionFlipFromLeft]) {
-                photos.switchLike(index: row)
+                photos[row].switchLike()
             }
             updateView​()
         }
     }
 
     func updateView​() {
-        if let row = row, let currentPhoto = photos?.getItem(index: row) {
+        if let row = row, let currentPhoto = photos?[row] {
             let currentColor = currentPhoto.isLiked ? #colorLiteral(red: 1, green: 0.2705882353, blue: 0.2274509804, alpha: 1) : #colorLiteral(red: 0.5960784314, green: 0.5960784314, blue: 0.6156862745, alpha: 1)
             label.textColor = currentColor
-            label.text = "\(currentPhoto.like)"
+            label.text = "\(currentPhoto.likesCount)"
             button.tintColor = currentColor
         }
     }
 
-    func setPhoto(photos: Photos, row: Int) {
+//    func setPhoto(photos: Photos, row: Int) {
+//        self.photos = photos
+//        self.row = row
+//        updateView​()
+//    }
+
+    func setPhoto(photos: Results<RealmPhoto>, row: Int) {
         self.photos = photos
         self.row = row
         updateView​()
