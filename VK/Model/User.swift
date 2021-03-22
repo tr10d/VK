@@ -49,7 +49,7 @@ extension UsersJson.User {
     }
 
     var image: UIImage? {
-        NetworkService.shared.image(url: photo50)
+        NetworkManager.shared.image(url: photo50)
     }
 
 }
@@ -71,6 +71,8 @@ extension UsersJson.User: Comparable {
     }
 
 }
+
+// MARK: - RealmManagerDataProtocol
 
 extension UsersJson: RealmManagerDataProtocol {
 

@@ -9,11 +9,11 @@ import UIKit
 import RealmSwift
 
 @IBDesignable
-class PhotoLikes: UIControl {
+final class PhotoLikes: UIControl {
 
     private var stackView: UIStackView!, button: UIButton!, label: UILabel!
-    var photos: Results<RealmPhoto>?
-    var row: Int?
+    private var photos: Results<RealmPhoto>?
+    private var row: Int?
 
     override init(frame: CGRect) {
         super.init(frame: frame)

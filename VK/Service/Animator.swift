@@ -169,7 +169,7 @@ extension Animator: UIViewControllerAnimatedTransitioning {
 extension Animator {
 
     static func getViewController(_ withIdentifier: String) -> UIViewController {
-        return UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: withIdentifier)
+        return UIStoryboard(name: "Friends", bundle: nil).instantiateViewController(withIdentifier: withIdentifier)
     }
 
 }

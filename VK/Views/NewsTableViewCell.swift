@@ -7,25 +7,31 @@
 
 import UIKit
 
-class NewsTableViewCell: UITableViewCell {
+final class NewsTableViewCell: UITableViewCell {
 
     static let nib = UINib(nibName: "NewsTableViewCell", bundle: nil)
     static let identifier = "Cell"
 
-    @IBOutlet weak var newsUserImg: UIImageView!
-    @IBOutlet weak var newsUser: UILabel!
-    @IBOutlet weak var newsDate: UILabel!
-    @IBOutlet weak var newsContent: UILabel!
-    @IBOutlet weak var newsImages: UIImageView!
+    @IBOutlet private weak var newsUserImg: UIImageView!
+    @IBOutlet private weak var newsUser: UILabel!
+    @IBOutlet private weak var newsDate: UILabel!
+    @IBOutlet private weak var newsContent: UILabel!
+    @IBOutlet private weak var newsImages: UIImageView!
 
-    func setContent(news: News) {
-        newsDate.text = news.date
-        newsContent.text = news.text
-        if let photos = news.images {
-            if photos.count > 0 {
-                newsImages.image = photos[0]?.image
-            }
+//    func setContent(news: News) {
+//        newsDate.text = news.date
+//        newsContent.text = news.text
+//        if let photos = news.images {
+//            if photos.count > 0 {
+//                newsImages.image = photos[0]?.image
+//            }
+//        }
+//    }
+
+    func configure(news: RealmNews?) {
+        guard let news = news else {
+            return
         }
-    }
 
+    }
 }

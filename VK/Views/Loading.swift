@@ -8,7 +8,7 @@
 import UIKit
 
 @IBDesignable
-class Loading: UIControl {
+final class Loading: UIControl {
 
     private var stackView: UIStackView!
     private var circle1, circle2, circle3: UIImageView!
@@ -29,6 +29,10 @@ class Loading: UIControl {
         super.layoutSubviews()
         stackView.frame = bounds
     }
+
+}
+
+extension Loading {
 
     private func setupView​() {
 

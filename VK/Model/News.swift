@@ -6,21 +6,28 @@
 //
 
 import Foundation
+import RealmSwift
 
-struct News {
-//    let user: User
-    let date: String
-    let text: String
-    let images: Photos?
+struct News: Codable {
 
-    init() {
-//        self.user = User()
-        self.date = "\(Randoms.randomDate())"
-        self.text = (1...Randoms.randomInt(1, 30)).reduce("", { string, _ in string + " \(Randoms.randomFakeTitle())" })
-//        if Randoms.randomBool() {
-//            self.images = NetworkService.shared.getPhotos(self.user)
-//        } else {
-            self.images = nil
-//        }
+    let response: Response?
+
+    // MARK: - Response
+
+    struct Response: Codable {
+        let count: Int
+        let items: [String]
     }
+
+}
+
+extension News: RealmManagerDataProtocol {
+
+    func getRealmObject() -> [Object] {
+        var realmObjects = [RealmNews]()
+//        guard let response = self.response else { return realmObjects }
+//        response.items.forEach { realmObjects.append(RealmUser(user: $0)) }
+        return realmObjects
+    }
+
 }

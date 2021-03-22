@@ -8,13 +8,13 @@
 import UIKit
 import RealmSwift
 
-class PhotoCollectionViewCell: UICollectionViewCell {
+final class PhotoCollectionViewCell: UICollectionViewCell {
 
     static let nib = UINib(nibName: "PhotoCollectionViewCell", bundle: nil)
     static let identifier = "Cell"
 
-    @IBOutlet weak var photoLike: PhotoLikes!
-    @IBOutlet weak var photo: UIImageView!
+    @IBOutlet private weak var photoLike: PhotoLikes!
+    @IBOutlet private weak var photo: UIImageView!
 
     override func prepareForReuse() {
         photo.image = nil

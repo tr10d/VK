@@ -11,7 +11,7 @@ class AllGroupTableViewController: UITableViewController {
 
     var searchGroups: SearchGroups?
 
-    @IBOutlet var searchBar: UISearchBar!
+    @IBOutlet private var searchBar: UISearchBar!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,9 +61,9 @@ extension AllGroupTableViewController: UISearchBarDelegate {
             searchGroups = nil
             tableView.reloadData()
         } else {
-            NetworkService.shared.requestSearchGroups(searchinText: searchText) { (data, _, _) in
+            NetworkManager.shared.requestSearchGroups(searchinText: searchText) { (data, _, _) in
                 guard let data = data else { return }
-                NetworkService.shared.printJSON(data: data)
+                NetworkManager.shared.printJSON(data: data)
                 do {
                     self.searchGroups = try JSONDecoder().decode(SearchGroups.self, from: data)
                     DispatchQueue.main.async {

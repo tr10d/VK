@@ -12,15 +12,15 @@ import RealmSwift
 
 class FriendsTableViewController: UIViewController, UIGestureRecognizerDelegate {
 
-    @IBOutlet weak var serarchBar: UISearchBar!
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet private weak var serarchBar: UISearchBar!
+    @IBOutlet private weak var tableView: UITableView!
 
     private var users: Results<RealmUser>?
     private var filteredUsers: Results<RealmUser>? {
         searchText.isEmpty ? users :
             users?.filter("lastName CONTAINS %@", searchText)
     }
-    
+
     private var searchText: String {
         self.serarchBar.text ?? ""
     }
@@ -71,7 +71,7 @@ extension FriendsTableViewController {
     }
 
     func loadRealmData(offset: Int = 0, completion: @escaping () -> Void) {
-        RealmManager.getUsers2(offset: offset) { realmData in
+        RealmManager.getUsers(offset: offset) { realmData in
             self.users = realmData
             completion()
         }

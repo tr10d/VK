@@ -69,7 +69,7 @@ extension Groups {
 extension Groups.Item {
 
     var image: UIImage? {
-        NetworkService.shared.image(url: photo50)
+        NetworkManager.shared.image(url: photo50)
     }
 
 }

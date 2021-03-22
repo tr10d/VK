@@ -10,7 +10,7 @@ import WebKit
 
 class WebViewController: UIViewController {
 
-    @IBOutlet weak var webView: WKWebView! {
+    @IBOutlet private weak var webView: WKWebView! {
         didSet {
             webView.navigationDelegate = self
         }
@@ -70,9 +70,9 @@ extension WebViewController {
     func viewDidLoadAuth() {
         if Session.shared.isKeysExist() {
 
-            NetworkService.shared.requestAPI(method: "account.getInfo") { (data, _, _) in
+            NetworkManager.shared.requestAPI(method: "account.getInfo") { (data, _, _) in
 
-                NetworkService.shared.printJSON(data: data)
+                NetworkManager.shared.printJSON(data: data)
                 var isError = true
 
                 if let data = data {
@@ -96,7 +96,7 @@ extension WebViewController {
     }
 
     private func loadRequestAuth() {
-        if let request = NetworkService.shared.requestAuth() {
+        if let request = NetworkManager.shared.requestAuth() {
             webView.load(request)
         }
     }

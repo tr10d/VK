@@ -7,13 +7,13 @@
 
 import UIKit
 
-class GroupTableViewCell: UITableViewCell {
+final class GroupTableViewCell: UITableViewCell {
 
     static let nib = UINib(nibName: "GroupTableViewCell", bundle: nil)
     static let identifier = "Cell"
 
-    @IBOutlet weak var groupImage: UIImageView!
-    @IBOutlet weak var groupName: UILabel!
+    @IBOutlet private weak var groupImage: UIImageView!
+    @IBOutlet private weak var groupName: UILabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()
