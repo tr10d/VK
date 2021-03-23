@@ -8,7 +8,7 @@
 import Foundation
 import Alamofire
 
-fileprivate struct API {
+private struct API {
     static let version = "5.130"
 }
 

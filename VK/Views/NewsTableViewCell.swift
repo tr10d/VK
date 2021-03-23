@@ -29,9 +29,7 @@ final class NewsTableViewCell: UITableViewCell {
 //    }
 
     func configure(news: RealmNews?) {
-        guard let news = news else {
-            return
-        }
-
+//        guard let news = news else { return }
+//        newsUserImg = news.
     }
 }

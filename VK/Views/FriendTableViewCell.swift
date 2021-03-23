@@ -51,7 +51,7 @@ extension FriendTableViewCell {
 
 extension FriendTableViewCell {
 
-    func set(user: UsersJson.User?) {
+    func set(user: UsersJson.Item?) {
         guard let user = user else {
             return
         }

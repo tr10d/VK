@@ -22,11 +22,11 @@ final class RealmUser: Object {
       "id"
     }
 
-    convenience init(user: UsersJson.User) {
+    convenience init(user: UsersJson.Item) {
         self.init()
-        self.id = user.id ?? 0
-        self.firstName = user.firstName ?? ""
-        self.lastName = user.lastName ?? ""
+        self.id = user.id
+        self.firstName = user.firstName
+        self.lastName = user.lastName
         self.photo50 = user.photo50 ?? ""
     }
 }
@@ -134,6 +134,19 @@ final class RealmPhoto: Object {
         photo.sizes.forEach { sizes.append(RealmSize(size: $0)) }
    }
 
+    convenience init(newsPhoto: News.Photo?) {
+        self.init()
+        guard let newsPhoto = newsPhoto else { return }
+        self.albumID = newsPhoto.albumID
+        self.date = newsPhoto.date
+        self.id = newsPhoto.id
+        self.ownerID = newsPhoto.ownerID
+        self.hasTags = newsPhoto.hasTags
+        self.text = newsPhoto.text
+
+        newsPhoto.sizes.forEach { sizes.append(RealmSize(newsSize: $0)) }
+   }
+
 }
 
 extension RealmPhoto {
@@ -215,16 +228,132 @@ final class RealmSize: Object {
         self.width = size.width
     }
 
+    convenience init(newsSize: News.Size) {
+        self.init()
+        self.height = newsSize.height
+        self.url = newsSize.url
+        self.type = newsSize.type
+        self.width = newsSize.width
+    }
 }
 
 // MARK: - RealmNews
 
 final class RealmNews: Object {
 
-    @objc dynamic var id = 0
+    @objc dynamic var sourceID = 0
+    @objc dynamic var date = 0
+    @objc dynamic var canDoubtCategory = false
+    @objc dynamic var canSetCategory = false
+    @objc dynamic var postType = ""
+    @objc dynamic var text = ""
+    @objc dynamic var markedAsAds = false
+//    @objc dynamic var postSource: PostSource?
+//    @objc dynamic var comments: Comments?
+//    @objc dynamic var likes: Likes?
+//    @objc dynamic var reposts: Reposts?
+//    @objc dynamic var views: Views?
+    @objc dynamic var isFavorite = false
+//    @objc dynamic var donut: Donut?
+    @objc dynamic var shortTextRate = 0
+    @objc dynamic var carouselOffset = 0
+    @objc dynamic var postID = 0
+    @objc dynamic var type = ""
+
+    var attachments = List<RealmAttachment>()
 
     override static func primaryKey() -> String? {
-        "id"
+        "sourceID"
+    }
+
+    convenience init(news: News.Item) {
+        self.init()
+        self.sourceID = news.sourceID
+        self.date = news.date ?? 0
+        self.canDoubtCategory = news.canDoubtCategory ?? false
+        self.canSetCategory = news.canSetCategory ?? false
+        self.postType = news.postType ?? ""
+        self.text = news.text ?? ""
+        self.markedAsAds = news.markedAsAds == 1
+        self.isFavorite = news.isFavorite ?? false
+        self.shortTextRate = Int(news.shortTextRate ?? 0.0)
+        self.carouselOffset = news.carouselOffset ?? 0
+        self.postID = news.postID ?? 0
+        self.type = news.type
+
+        news.attachments.forEach { attachments.append(RealmAttachment(attachment: $0)) }
+  }
+
+}
+
+final class RealmAttachment: Object {
+
+    @objc dynamic var type = ""
+    @objc dynamic var photo: RealmPhoto?
+    @objc dynamic var doc: RealmDoc?
+    @objc dynamic var link: RealmLink?
+
+    convenience init(attachment: News.Attachment) {
+        self.init()
+        self.type = attachment.type
+        self.photo = RealmPhoto(newsPhoto: attachment.photo)
+        self.doc = RealmDoc(doc: attachment.doc)
+        self.link = RealmLink(link: attachment.link)
+    }
+}
+
+final class RealmDoc: Object {
+
+    @objc dynamic var id = 0
+    @objc dynamic var ownerID = 0
+    @objc dynamic var title = ""
+    @objc dynamic var size = 0
+    @objc dynamic var ext = ""
+    @objc dynamic var date = 0
+    @objc dynamic var type = 0
+    @objc dynamic var url = ""
+    @objc dynamic var accessKey = ""
+
+    convenience init(doc: News.Doc?) {
+        self.init()
+        guard let doc = doc  else {
+            return
+        }
+        self.id = doc.id
+        self.ownerID = doc.ownerID
+        self.title = doc.title
+        self.size = doc.size
+        self.ext = doc.ext
+        self.date = doc.date
+        self.type = doc.type
+        self.url = doc.url
+        self.accessKey = doc.accessKey
+    }
+
+}
+
+final class RealmLink: Object {
+
+    @objc dynamic var url = ""
+    @objc dynamic var title = ""
+    @objc dynamic var linkDescription = ""
+    @objc dynamic var buttonText = ""
+    @objc dynamic var buttonAction = ""
+    @objc dynamic var target = ""
+    @objc dynamic var photo: RealmPhoto?
+    @objc dynamic var isFavorite = false
+
+    convenience init(link: News.Link?) {
+        self.init()
+        guard let link = link else { return }
+        self.url = link.url
+        self.title = link.title
+        self.linkDescription = link.linkDescription
+        self.buttonText = link.buttonText
+        self.buttonAction = link.buttonAction
+        self.target = link.target
+        self.isFavorite = link.isFavorite
+        self.photo = RealmPhoto(newsPhoto: link.photo)
     }
 
 }
