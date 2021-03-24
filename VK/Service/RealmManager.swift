@@ -65,10 +65,10 @@ extension RealmManager {
         }
     }
 
-    static func getNews(offset: Int = 0, completion: @escaping (Results<RealmNews>) -> Void) {
+    static func getNews(startFrom: String = "", completion: @escaping (Results<RealmNews>) -> Void) {
         guard let realmData = shared?.realm.objects(RealmNews.self) else { return }
-        if realmData.count == offset {
-            RealmManager.responseNews(offset: offset) { completion(realmData) }
+        if startFrom.isEmpty {
+            RealmManager.responseNews(startFrom: startFrom) { completion(realmData) }
         } else {
             completion(realmData)
         }
@@ -142,20 +142,20 @@ extension RealmManager {
         }
     }
 
-    static func responseNews(offset: Int = 0, completionHandler: @escaping () -> Void) {
-        NetworkManager.shared.requestNews(offset: offset) { (data, _, _) in
-            guard let data = data else { return }
-            do {
-                let realmData = try JSONDecoder().decode(News.self, from: data).getRealmObject()
-                guard !realmData.isEmpty else { return }
-                DispatchQueue.main.async {
-                    RealmManager.saveData(data: realmData)
-                    completionHandler()
-                }
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
+    static func responseNews(startFrom: String, completionHandler: @escaping () -> Void) {
+//        NetworkManager.shared.requestNews(startFrom: startFrom) { (data, _, _) in
+//            guard let data = data else { return }
+//            do {
+//                let realmData = try JSONDecoder().decode(Json.News.self, from: data).getRealmObject()
+//                guard !realmData.isEmpty else { return }
+//                DispatchQueue.main.async {
+//                    RealmManager.saveData(data: realmData)
+//                    completionHandler()
+//                }
+//            } catch {
+//                print(error.localizedDescription)
+//            }
+//        }
     }
 
     static func saveData(data: [Object]) {

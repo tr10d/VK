@@ -8,10 +8,6 @@
 import Foundation
 import Alamofire
 
-private struct API {
-    static let version = "5.130"
-}
-
 final class NetworkManager {
 
     struct Sessions {
@@ -40,6 +36,14 @@ final class NetworkManager {
 extension NetworkManager {
 
     func requestAuth() -> URLRequest? {
+
+        let scope = [
+            API.Scopes.friends,
+            API.Scopes.photos,
+            API.Scopes.wall,
+            API.Scopes.groups
+        ].scope
+
         var urlComponents = URLComponents()
         urlComponents.scheme = "https"
         urlComponents.host = "oauth.vk.com"
@@ -48,7 +52,7 @@ extension NetworkManager {
             URLQueryItem(name: "client_id", value: "7763397"),
             URLQueryItem(name: "redirect_uri", value: "https://oauth.vk.com/blank.html"),
             URLQueryItem(name: "display", value: "mobile"),
-            URLQueryItem(name: "scope", value: "262150"),
+            URLQueryItem(name: "scope", value: scope),
             URLQueryItem(name: "response_type", value: "token"),
             URLQueryItem(name: "v", value: API.version)
         ]
@@ -83,7 +87,24 @@ extension NetworkManager {
         NetworkManager.session.native.dataTask(with: request, completionHandler: completionHandler).resume()
 
     }
-
+    
+    func request<T: Codable>(method: String, parameters: [String: String], json: T.Type, completionHandler: @escaping (T) -> Void) {
+        NetworkManager.shared.requestAPI(method: method, parameters: parameters) { (data, _, _) in
+             #if DEBUG
+             self.printJSON(data: data)
+             #endif
+             guard let data = data else { return }
+             do {
+                let decodeJson = try JSONDecoder().decode(json, from: data)
+                 DispatchQueue.main.async {
+                     completionHandler(decodeJson)
+                 }
+             } catch {
+                 print(error.localizedDescription)
+             }
+         }
+    }
+    
     func requestAPIAF(method: String, parameters: [String: String] = [:],
                       completionHandler: @escaping (AFDataResponse<Any>) -> Void) {
 
@@ -154,24 +175,29 @@ extension NetworkManager {
                                          completionHandler: completionHandler)
     }
 
-    func requestNews(offset: Int, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) {
-        let parameters = [
-            "offset": "\(offset)",
-            "filters": "post",
-            "return_banned": "0",
-            "start_time": "",
-            "end_time": "",
-            "max_photos": "",
-            "source_ids": "",
-            "start_from": "",
-            "count": "50",
-            "fields": "",
-            "section": ""
-        ]
-       NetworkManager.shared.requestAPI(method: "newsfeed.get",
-                                        parameters: parameters,
-                                        completionHandler: completionHandler)
-    }
+//    func requestNews(startFrom: String = "", completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) {
+//
+//        let filters = [
+//            API.FilterItems.post,
+////            API.FilterItems.photo
+//        ].filters
+//
+//        let parameters = [
+//            "filters": filters,
+//            "return_banned": "0",
+//            "start_time": "",
+//            "end_time": "",
+//            "max_photos": "",
+//            "source_ids": "",
+//            "start_from": "\(startFrom)",
+//            "count": "2",
+//            "fields": "",
+//            "section": ""
+//        ]
+//       NetworkManager.shared.requestAPI(method: "newsfeed.get",
+//                                        parameters: parameters,
+//                                        completionHandler: completionHandler)
+//    }
 
     func printJSON(data: Data?) {
         if let data = data {
@@ -200,6 +226,35 @@ extension NetworkManager {
 
 }
 
+extension NetworkManager {
+
+    func getNews(startFrom: String = "", completionHandler: @escaping (Json.News) -> Void) {
+
+        let filters = [
+            API.FilterItems.post,
+            API.FilterItems.photo
+        ].filters
+
+        let parameters = [
+            "filters": filters,
+            "return_banned": "0",
+            "start_time": "",
+            "end_time": "",
+            "max_photos": "",
+            "source_ids": "",
+            "start_from": "\(startFrom)",
+            "count": "",
+            "fields": "",
+            "section": ""
+        ]
+
+        request(method: "newsfeed.get", parameters: parameters, json: Json.News.self) { decodeJson in
+            completionHandler(decodeJson)
+        }
+    }
+
+}
+
 // MARK: - Func
 
 extension NetworkManager {
@@ -222,14 +277,4 @@ extension NetworkManager {
         }
         return data.base64EncodedString()
     }
-}
-
-// MARK: - Notification.Name
-
-extension Notification.Name {
-    static let didReceiveUsers = Notification.Name("didReceiveUsers")
-    static let didReceiveGroups = Notification.Name("didReceiveGroups")
-    static let didReceivePhotos = Notification.Name("didReceivePhotos")
-    static let didReceiveNews = Notification.Name("didReceiveNews")
-    static let didReceiveAccountInfo = Notification.Name("didReceiveAccountInfo")
 }
