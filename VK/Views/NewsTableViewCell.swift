@@ -24,13 +24,22 @@ final class NewsTableViewCell: UITableViewCell {
     @IBOutlet weak var viewsCount: UILabel!
     @IBOutlet weak var likes: UIImageView!
 
+    @IBOutlet weak var contentHeight: NSLayoutConstraint!
+
     func configure(news: Json.News.Item) {
+
         newsContent.text = news.contentText
+        newsDate.text = news.dateFormatted
+        newsUser.text = news.userDescription
+
         likesCount.text = news.likesCount.description
         commentsCount.text = news.commentsCount.description
         repostsCount.text = news.repostsCount.description
         viewsCount.text = news.viewsCount.description
         likes.setLikes(news.isLikes)
+
+        contentHeight.constant = news.isPhoto ? 0 : 90
+
   }
 
 }

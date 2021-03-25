@@ -9,6 +9,7 @@ import UIKit
 
 struct API {
     static let version = "5.130"
+    static let clientId = "7763397"
 
     enum Scopes: Int {
         case friends = 2
@@ -18,17 +19,17 @@ struct API {
     }
 
     enum FilterItems: String {
-        case post = "post"
-        case photo = "photo"
+        case post
+        case photo
+    }
+
+    struct FiltersNewsFeed {
+        let post = FilterItems.post.rawValue
+        let photo = FilterItems.photo.rawValue
     }
 
     struct Filters {
         let newsFeed = FiltersNewsFeed()
-
-        struct FiltersNewsFeed {
-            let post = FilterItems.post.rawValue
-            let photo = FilterItems.photo.rawValue
-        }
     }
 
 }
@@ -60,13 +61,27 @@ extension Array where Element == API.FilterItems {
 }
 
 extension UIImageView {
-    
+
     func setLikes(_ isLikes: Bool) {
         if isLikes {
             self.image = UIImage(systemName: "suit.heart.fill")
         } else {
             self.image = UIImage(systemName: "suit.heart")
         }
+    }
+
+}
+
+extension Int {
+
+    var date: String {
+        let date = Date(timeIntervalSince1970: Double(self))
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "ru_RU")
+        dateFormatter.timeStyle = .short
+        dateFormatter.dateStyle = .long
+        dateFormatter.timeZone = .current
+        return dateFormatter.string(from: date)
     }
 
 }

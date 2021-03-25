@@ -18,7 +18,8 @@ class WebViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.loadRequestAuth()
+        viewDidLoadAuth()
+//        loadRequestAuth()
     }
 
 }
@@ -30,6 +31,12 @@ extension WebViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView,
                  decidePolicyFor navigationResponse: WKNavigationResponse,
                  decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
+
+        if let url = navigationResponse.response.url, url.path == "/error" {
+            decisionHandler(.cancel)
+            loadRequestAuth()
+            return
+        }
 
         guard let url = navigationResponse.response.url,
               url.path == "/blank.html",
@@ -77,7 +84,7 @@ extension WebViewController {
 
                 if let data = data {
                     do {
-                        _ = try JSONDecoder().decode(Info.self, from: data)
+                        _ = try JSONDecoder().decode(Json.Info.self, from: data)
                         isError = false
                     } catch {
                         print(error.localizedDescription)

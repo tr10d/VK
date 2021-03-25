@@ -21,8 +21,8 @@
                     <stackView opaque="NO" contentMode="scaleToFill" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="tb7-No-jH7">
                         <rect key="frame" x="0.0" y="0.0" width="340" height="60"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="person.circle" catalog="system" translatesAutoresizingMaskIntoConstraints="NO" id="vwQ-VX-MDj" userLabel="Avatar">
-                                <rect key="frame" x="5" y="5.5" width="50" height="49"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="VK_Compact_Logo" translatesAutoresizingMaskIntoConstraints="NO" id="vwQ-VX-MDj" userLabel="Avatar">
+                                <rect key="frame" x="5" y="5" width="50" height="50"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="Hoc-qH-GS8"/>
                                     <constraint firstAttribute="width" constant="50" id="L5H-cY-HBR"/>
@@ -53,18 +53,24 @@
                             <constraint firstItem="irc-JL-Y0M" firstAttribute="centerY" secondItem="tb7-No-jH7" secondAttribute="centerY" id="ksy-9g-GGG"/>
                         </constraints>
                     </stackView>
-                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="8gZ-Tm-GYG">
+                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="8gZ-Tm-GYG">
                         <rect key="frame" x="0.0" y="60" width="340" height="90"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="90" id="56n-dB-r7J"/>
                         </constraints>
-                        <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
-                        <color key="textColor" systemColor="labelColor"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                        <attributedString key="attributedText">
+                            <fragment>
+                                <string key="content">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                <attributes>
+                                    <color key="NSColor" systemColor="labelColor"/>
+                                    <font key="NSFont" metaFont="system" size="14"/>
+                                </attributes>
+                            </fragment>
+                        </attributedString>
                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                     </textView>
-                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" image="Group-9" translatesAutoresizingMaskIntoConstraints="NO" id="Kv0-xp-U4d">
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" image="VK_NewLogo" translatesAutoresizingMaskIntoConstraints="NO" id="Kv0-xp-U4d">
                         <rect key="frame" x="0.0" y="156" width="340" height="260"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="260" id="97R-HK-Xyr"/>
@@ -153,6 +159,7 @@
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="commentsCount" destination="E1Z-7q-8E7" id="5Yb-sp-pID"/>
+                <outlet property="contentHeight" destination="56n-dB-r7J" id="9A7-bS-Hob"/>
                 <outlet property="likes" destination="Rgq-jn-KlI" id="eoK-tD-Umz"/>
                 <outlet property="likesCount" destination="OgF-Cw-M70" id="7jN-68-dks"/>
                 <outlet property="newsContent" destination="8gZ-Tm-GYG" id="ZBL-8N-tbt"/>
@@ -167,12 +174,12 @@
         </tableViewCell>
     </objects>
     <resources>
-        <image name="Group-9" width="1368" height="912"/>
+        <image name="VK_Compact_Logo" width="48" height="48"/>
+        <image name="VK_NewLogo" width="800" height="600"/>
         <image name="arrowshape.turn.up.forward" catalog="system" width="128" height="106"/>
         <image name="bubble.left" catalog="system" width="128" height="110"/>
         <image name="eye" catalog="system" width="128" height="81"/>
         <image name="heart" catalog="system" width="128" height="109"/>
-        <image name="person.circle" catalog="system" width="128" height="121"/>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

@@ -49,7 +49,7 @@ extension NetworkManager {
         urlComponents.host = "oauth.vk.com"
         urlComponents.path = "/authorize"
         urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: "7763397"),
+            URLQueryItem(name: "client_id", value: API.clientId),
             URLQueryItem(name: "redirect_uri", value: "https://oauth.vk.com/blank.html"),
             URLQueryItem(name: "display", value: "mobile"),
             URLQueryItem(name: "scope", value: scope),
@@ -87,8 +87,11 @@ extension NetworkManager {
         NetworkManager.session.native.dataTask(with: request, completionHandler: completionHandler).resume()
 
     }
-    
-    func request<T: Codable>(method: String, parameters: [String: String], json: T.Type, completionHandler: @escaping (T) -> Void) {
+
+    func request<T: Codable>(method: String,
+                             parameters: [String: String],
+                             json: T.Type,
+                             completionHandler: @escaping (T) -> Void) {
         NetworkManager.shared.requestAPI(method: method, parameters: parameters) { (data, _, _) in
              #if DEBUG
              self.printJSON(data: data)
@@ -104,7 +107,7 @@ extension NetworkManager {
              }
          }
     }
-    
+
     func requestAPIAF(method: String, parameters: [String: String] = [:],
                       completionHandler: @escaping (AFDataResponse<Any>) -> Void) {
 
@@ -175,30 +178,6 @@ extension NetworkManager {
                                          completionHandler: completionHandler)
     }
 
-//    func requestNews(startFrom: String = "", completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) {
-//
-//        let filters = [
-//            API.FilterItems.post,
-////            API.FilterItems.photo
-//        ].filters
-//
-//        let parameters = [
-//            "filters": filters,
-//            "return_banned": "0",
-//            "start_time": "",
-//            "end_time": "",
-//            "max_photos": "",
-//            "source_ids": "",
-//            "start_from": "\(startFrom)",
-//            "count": "2",
-//            "fields": "",
-//            "section": ""
-//        ]
-//       NetworkManager.shared.requestAPI(method: "newsfeed.get",
-//                                        parameters: parameters,
-//                                        completionHandler: completionHandler)
-//    }
-
     func printJSON(data: Data?) {
         if let data = data {
             do {
@@ -243,7 +222,7 @@ extension NetworkManager {
             "max_photos": "",
             "source_ids": "",
             "start_from": "\(startFrom)",
-            "count": "",
+            "count": "20",
             "fields": "",
             "section": ""
         ]
