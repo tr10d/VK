@@ -99,7 +99,7 @@ extension NetworkManager {
              guard let data = data else { return }
              do {
                 let decodeJson = try JSONDecoder().decode(json, from: data)
-                 DispatchQueue.main.async {
+                OperationQueue.main.addOperation {
                      completionHandler(decodeJson)
                  }
              } catch {

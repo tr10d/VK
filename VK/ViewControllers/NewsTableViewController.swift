@@ -31,14 +31,14 @@ extension NewsTableViewController {
     }
 
     func loadData(completion: @escaping () -> Void) {
-        DispatchQueue.global().async {
+        OperationQueue().addOperation {
             NetworkManager.shared.getNews(startFrom: self.startFrom) { decodeJson in
                 var data = decodeJson
                 guard let response = data.response else { return }
                 data.configure()
                 self.startFrom = response.nextFrom ?? ""
                 response.items.forEach { self.news.append($0) }
-                DispatchQueue.main.async {
+                OperationQueue.main.addOperation {
                     self.tableView.reloadData()
                     completion()
                 }

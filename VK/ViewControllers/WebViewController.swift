@@ -91,9 +91,9 @@ extension WebViewController {
                     }
                 }
                 if isError {
-                    DispatchQueue.main.async { self.loadRequestAuth() }
+                    OperationQueue.main.addOperation { self.loadRequestAuth() }
                 } else {
-                    DispatchQueue.main.async { self.performSegue(withIdentifier: "toMainTab", sender: nil) }
+                    OperationQueue.main.addOperation { self.performSegue(withIdentifier: "toMainTab", sender: nil) }
                 }
             }
 

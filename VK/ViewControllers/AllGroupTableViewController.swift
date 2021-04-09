@@ -66,7 +66,7 @@ extension AllGroupTableViewController: UISearchBarDelegate {
                 NetworkManager.shared.printJSON(data: data)
                 do {
                     self.searchGroups = try JSONDecoder().decode(Json.SearchGroups.self, from: data)
-                    DispatchQueue.main.async {
+                    OperationQueue.main.addOperation {
                         self.tableView.reloadData()
                     }
                 } catch {

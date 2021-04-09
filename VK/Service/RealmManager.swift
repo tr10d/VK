@@ -80,7 +80,7 @@ extension RealmManager {
             do {
                 let usersJson = try JSONDecoder().decode(Json.Users.self, from: data)
                 let realmUsers = usersJson.response?.items.map { RealmUser(user: $0) }
-                DispatchQueue.main.async {
+                OperationQueue.main.addOperation {
                     saveData(data: realmUsers!)
                     completionHandler()
                 }
@@ -96,7 +96,7 @@ extension RealmManager {
             do {
                 let realmData = try JSONDecoder().decode(Json.Users.self, from: data).getRealmObject()
                 guard !realmData.isEmpty else { return }
-                DispatchQueue.main.async {
+                OperationQueue.main.addOperation {
                     RealmManager.saveData(data: realmData)
                     completionHandler()
                 }
@@ -114,7 +114,7 @@ extension RealmManager {
             do {
                 let realmData = try JSONDecoder().decode(Json.Photo.self, from: data).getRealmObject()
                 guard !realmData.isEmpty else { return }
-                DispatchQueue.main.async {
+                OperationQueue.main.addOperation {
                     RealmManager.saveData(data: realmData)
                     completionHandler()
                 }
@@ -131,7 +131,7 @@ extension RealmManager {
                 let groups = try JSONDecoder().decode(Json.Groups.self, from: data)
                 let realmGroups = groups.response?.items.map { RealmGroup(group: $0) }
                 if let realmGroups = realmGroups {
-                    DispatchQueue.main.async {
+                    OperationQueue.main.addOperation {
                         RealmManager.saveData(data: realmGroups)
                         completionHandler()
                     }
@@ -148,7 +148,7 @@ extension RealmManager {
 //            do {
 //                let realmData = try JSONDecoder().decode(Json.News.self, from: data).getRealmObject()
 //                guard !realmData.isEmpty else { return }
-//                DispatchQueue.main.async {
+//                OperationQueue.main.addOperation {
 //                    RealmManager.saveData(data: realmData)
 //                    completionHandler()
 //                }

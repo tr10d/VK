@@ -158,7 +158,7 @@ extension CachedData {
             fastCache[url] = image
 
         case .cache:
-            DispatchQueue.global(qos: .utility).async {
+            OperationQueue().addOperation {
                 self.saveImageToCache(url: url, image: image)
             }
 

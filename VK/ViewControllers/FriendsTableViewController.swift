@@ -71,14 +71,12 @@ extension FriendsTableViewController {
     }
 
     func loadRealmData(offset: Int = 0, completion: @escaping () -> Void) {
-//        OperationQueue().addOperation {
-            RealmManager.getUsers(offset: offset) { realmData in
-                DispatchQueue.main.async {
-                    self.users = realmData
-                    completion()
-                }
+        RealmManager.getUsers(offset: offset) { realmData in
+            OperationQueue.main.addOperation {
+                self.users = realmData
+                completion()
             }
-//        }
+        }
     }
 
 }
