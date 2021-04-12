@@ -22,7 +22,7 @@ final class RealmUser: Object {
       "id"
     }
 
-    convenience init(user: UsersJson.Item) {
+    convenience init(user: Json.Users.Item) {
         self.init()
         self.id = user.id
         self.firstName = user.firstName
@@ -66,7 +66,7 @@ final class RealmGroup: Object {
       "id"
     }
 
-    convenience init(group: Groups.Item) {
+    convenience init(group: Json.Groups.Item) {
         self.init()
         self.id = group.id
         self.name = group.name
@@ -120,8 +120,9 @@ final class RealmPhoto: Object {
         "id"
     }
 
-    convenience init(photo: PhotoJSON.Item) {
+    convenience init(photo: Json.Photo.Item?) {
         self.init()
+        guard let photo = photo else { return }
         self.albumID = photo.albumID
         self.date = photo.date
         self.id = photo.id
@@ -134,7 +135,7 @@ final class RealmPhoto: Object {
         photo.sizes.forEach { sizes.append(RealmSize(size: $0)) }
    }
 
-    convenience init(newsPhoto: News.Photo?) {
+    convenience init(newsPhoto: Json.Photo.Item?) {
         self.init()
         guard let newsPhoto = newsPhoto else { return }
         self.albumID = newsPhoto.albumID
@@ -194,10 +195,10 @@ final class RealmLikes: Object {
     @objc dynamic var userLikes = 0
     @objc dynamic var count = 0
 
-    convenience init(photo: PhotoJSON.Item) {
+    convenience init(photo: Json.Photo.Item) {
         self.init()
-        self.userLikes = photo.likes.userLikes
-        self.count = photo.likes.count
+        self.userLikes = photo.likes?.userLikes ?? 0
+        self.count = photo.likes?.count ?? 0
     }
 
 }
@@ -206,9 +207,9 @@ final class RealmReposts: Object {
 
     @objc dynamic var count = 0
 
-    convenience init(photo: PhotoJSON.Item) {
+    convenience init(photo: Json.Photo.Item) {
         self.init()
-        self.count = photo.reposts.count
+        self.count = photo.reposts?.count ?? 0
     }
 
 }
@@ -220,7 +221,7 @@ final class RealmSize: Object {
     @objc dynamic var type = ""
     @objc dynamic var width = 0
 
-    convenience init(size: PhotoJSON.Size) {
+    convenience init(size: Json.Size) {
         self.init()
         self.height = size.height
         self.url = size.url
@@ -228,7 +229,7 @@ final class RealmSize: Object {
         self.width = size.width
     }
 
-    convenience init(newsSize: News.Size) {
+    convenience init(newsSize: Json.Size) {
         self.init()
         self.height = newsSize.height
         self.url = newsSize.url
@@ -256,17 +257,17 @@ final class RealmNews: Object {
     @objc dynamic var isFavorite = false
 //    @objc dynamic var donut: Donut?
     @objc dynamic var shortTextRate = 0
-    @objc dynamic var carouselOffset = 0
-    @objc dynamic var postID = 0
+//    @objc dynamic var carouselOffset = 0
+//    @objc dynamic var postID = 0
     @objc dynamic var type = ""
 
-    var attachments = List<RealmAttachment>()
+//    var attachments = List<RealmAttachment>()
 
     override static func primaryKey() -> String? {
         "sourceID"
     }
 
-    convenience init(news: News.Item) {
+    convenience init(news: Json.News.Item) {
         self.init()
         self.sourceID = news.sourceID
         self.date = news.date ?? 0
@@ -277,11 +278,11 @@ final class RealmNews: Object {
         self.markedAsAds = news.markedAsAds == 1
         self.isFavorite = news.isFavorite ?? false
         self.shortTextRate = Int(news.shortTextRate ?? 0.0)
-        self.carouselOffset = news.carouselOffset ?? 0
-        self.postID = news.postID ?? 0
+//        self.carouselOffset = news.carouselOffset ?? 0
+//        self.postID = news.postID ?? 0
         self.type = news.type
 
-        news.attachments.forEach { attachments.append(RealmAttachment(attachment: $0)) }
+//        news.attachments.forEach { attachments.append(RealmAttachment(attachment: $0)) }
   }
 
 }
@@ -293,7 +294,7 @@ final class RealmAttachment: Object {
     @objc dynamic var doc: RealmDoc?
     @objc dynamic var link: RealmLink?
 
-    convenience init(attachment: News.Attachment) {
+    convenience init(attachment: Json.Attachment) {
         self.init()
         self.type = attachment.type
         self.photo = RealmPhoto(newsPhoto: attachment.photo)
@@ -314,7 +315,7 @@ final class RealmDoc: Object {
     @objc dynamic var url = ""
     @objc dynamic var accessKey = ""
 
-    convenience init(doc: News.Doc?) {
+    convenience init(doc: Json.Doc?) {
         self.init()
         guard let doc = doc  else {
             return
@@ -343,7 +344,7 @@ final class RealmLink: Object {
     @objc dynamic var photo: RealmPhoto?
     @objc dynamic var isFavorite = false
 
-    convenience init(link: News.Link?) {
+    convenience init(link: Json.Link?) {
         self.init()
         guard let link = link else { return }
         self.url = link.url

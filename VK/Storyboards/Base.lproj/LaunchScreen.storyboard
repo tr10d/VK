@@ -16,13 +16,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="VK_Full_Logo" translatesAutoresizingMaskIntoConstraints="NO" id="47y-gA-qWh">
-                                <rect key="frame" x="70" y="424" width="274" height="48"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="VK_NewLogo" translatesAutoresizingMaskIntoConstraints="NO" id="47y-gA-qWh">
+                                <rect key="frame" x="0.0" y="148" width="414" height="600"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" name="VK_ColorBlue"/>
+                        <color key="backgroundColor" name="VK_ColorWhite"/>
                         <constraints>
+                            <constraint firstItem="47y-gA-qWh" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" id="6kg-9s-szx"/>
+                            <constraint firstAttribute="trailing" secondItem="47y-gA-qWh" secondAttribute="trailing" id="RgJ-rZ-QQv"/>
                             <constraint firstItem="47y-gA-qWh" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="Sac-Qs-CNR"/>
                             <constraint firstItem="47y-gA-qWh" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="j7q-YX-wvS"/>
                         </constraints>
@@ -34,9 +36,9 @@
         </scene>
     </scenes>
     <resources>
-        <image name="VK_Full_Logo" width="274" height="48"/>
-        <namedColor name="VK_ColorBlue">
-            <color red="0.15299999713897705" green="0.52899998426437378" blue="0.96100002527236938" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        <image name="VK_NewLogo" width="800" height="600"/>
+        <namedColor name="VK_ColorWhite">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

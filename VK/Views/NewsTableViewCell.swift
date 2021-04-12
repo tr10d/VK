@@ -15,21 +15,31 @@ final class NewsTableViewCell: UITableViewCell {
     @IBOutlet private weak var newsUserImg: UIImageView!
     @IBOutlet private weak var newsUser: UILabel!
     @IBOutlet private weak var newsDate: UILabel!
-    @IBOutlet private weak var newsContent: UILabel!
+    @IBOutlet private weak var newsContent: UITextView!
     @IBOutlet private weak var newsImages: UIImageView!
 
-//    func setContent(news: News) {
-//        newsDate.text = news.date
-//        newsContent.text = news.text
-//        if let photos = news.images {
-//            if photos.count > 0 {
-//                newsImages.image = photos[0]?.image
-//            }
-//        }
-//    }
+    @IBOutlet weak var likesCount: UILabel!
+    @IBOutlet weak var commentsCount: UILabel!
+    @IBOutlet weak var repostsCount: UILabel!
+    @IBOutlet weak var viewsCount: UILabel!
+    @IBOutlet weak var likes: UIImageView!
 
-    func configure(news: RealmNews?) {
-//        guard let news = news else { return }
-//        newsUserImg = news.
-    }
+    @IBOutlet weak var contentHeight: NSLayoutConstraint!
+
+    func configure(news: Json.News.Item) {
+
+        newsContent.text = news.contentText
+        newsDate.text = news.dateFormatted
+        newsUser.text = news.userDescription
+
+        likesCount.text = news.likesCount.description
+        commentsCount.text = news.commentsCount.description
+        repostsCount.text = news.repostsCount.description
+        viewsCount.text = news.viewsCount.description
+        likes.setLikes(news.isLikes)
+
+        contentHeight.constant = news.isPhoto ? 0 : 90
+
+  }
+
 }

@@ -9,7 +9,7 @@ import UIKit
 
 class AllGroupTableViewController: UITableViewController {
 
-    var searchGroups: SearchGroups?
+    var searchGroups: Json.SearchGroups?
 
     @IBOutlet private var searchBar: UISearchBar!
 
@@ -65,7 +65,7 @@ extension AllGroupTableViewController: UISearchBarDelegate {
                 guard let data = data else { return }
                 NetworkManager.shared.printJSON(data: data)
                 do {
-                    self.searchGroups = try JSONDecoder().decode(SearchGroups.self, from: data)
+                    self.searchGroups = try JSONDecoder().decode(Json.SearchGroups.self, from: data)
                     DispatchQueue.main.async {
                         self.tableView.reloadData()
                     }

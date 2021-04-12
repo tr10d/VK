@@ -65,10 +65,10 @@ extension RealmManager {
         }
     }
 
-    static func getNews(offset: Int = 0, completion: @escaping (Results<RealmNews>) -> Void) {
+    static func getNews(startFrom: String = "", completion: @escaping (Results<RealmNews>) -> Void) {
         guard let realmData = shared?.realm.objects(RealmNews.self) else { return }
-        if realmData.count == offset {
-            RealmManager.responseNews(offset: offset) { completion(realmData) }
+        if startFrom.isEmpty {
+            RealmManager.responseNews(startFrom: startFrom) { completion(realmData) }
         } else {
             completion(realmData)
         }
@@ -78,7 +78,7 @@ extension RealmManager {
         NetworkManager.shared.requestUsers { (data, _, _) in
             guard let data = data else { return }
             do {
-                let usersJson = try JSONDecoder().decode(UsersJson.self, from: data)
+                let usersJson = try JSONDecoder().decode(Json.Users.self, from: data)
                 let realmUsers = usersJson.response?.items.map { RealmUser(user: $0) }
                 DispatchQueue.main.async {
                     saveData(data: realmUsers!)
@@ -94,7 +94,7 @@ extension RealmManager {
         NetworkManager.shared.requestUsers { (data, _, _) in
             guard let data = data else { return }
             do {
-                let realmData = try JSONDecoder().decode(UsersJson.self, from: data).getRealmObject()
+                let realmData = try JSONDecoder().decode(Json.Users.self, from: data).getRealmObject()
                 guard !realmData.isEmpty else { return }
                 DispatchQueue.main.async {
                     RealmManager.saveData(data: realmData)
@@ -112,7 +112,7 @@ extension RealmManager {
         NetworkManager.shared.requestPhotos(userId: realmUser.id, offset: offset) { (data, _, _) in
             guard let data = data else { return }
             do {
-                let realmData = try JSONDecoder().decode(PhotoJSON.self, from: data).getRealmObject()
+                let realmData = try JSONDecoder().decode(Json.Photo.self, from: data).getRealmObject()
                 guard !realmData.isEmpty else { return }
                 DispatchQueue.main.async {
                     RealmManager.saveData(data: realmData)
@@ -128,7 +128,7 @@ extension RealmManager {
         NetworkManager.shared.requestGroups { (data, _, _) in
             guard let data = data else { return }
             do {
-                let groups = try JSONDecoder().decode(Groups.self, from: data)
+                let groups = try JSONDecoder().decode(Json.Groups.self, from: data)
                 let realmGroups = groups.response?.items.map { RealmGroup(group: $0) }
                 if let realmGroups = realmGroups {
                     DispatchQueue.main.async {
@@ -142,20 +142,20 @@ extension RealmManager {
         }
     }
 
-    static func responseNews(offset: Int = 0, completionHandler: @escaping () -> Void) {
-        NetworkManager.shared.requestNews(offset: offset) { (data, _, _) in
-            guard let data = data else { return }
-            do {
-                let realmData = try JSONDecoder().decode(News.self, from: data).getRealmObject()
-                guard !realmData.isEmpty else { return }
-                DispatchQueue.main.async {
-                    RealmManager.saveData(data: realmData)
-                    completionHandler()
-                }
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
+    static func responseNews(startFrom: String, completionHandler: @escaping () -> Void) {
+//        NetworkManager.shared.requestNews(startFrom: startFrom) { (data, _, _) in
+//            guard let data = data else { return }
+//            do {
+//                let realmData = try JSONDecoder().decode(Json.News.self, from: data).getRealmObject()
+//                guard !realmData.isEmpty else { return }
+//                DispatchQueue.main.async {
+//                    RealmManager.saveData(data: realmData)
+//                    completionHandler()
+//                }
+//            } catch {
+//                print(error.localizedDescription)
+//            }
+//        }
     }
 
     static func saveData(data: [Object]) {

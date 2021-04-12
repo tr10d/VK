@@ -60,7 +60,7 @@ extension GroupTableViewCell {
         groupName.text = group.name
     }
 
-    func configure(groupItem: Groups.Item?) {
+    func configure(groupItem: Json.Groups.Item?) {
         guard let groupItem = groupItem else { return }
         groupImage.image = groupItem.image
         groupName.text = groupItem.name
