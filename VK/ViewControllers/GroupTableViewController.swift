@@ -13,7 +13,7 @@ class GroupTableViewController: UITableViewController {
     private var groups: Results<RealmGroup>?
     private var notificationToken: NotificationToken?
 
-    @IBAction func unwindFromGroups(_ segue: UIStoryboardSegue) {
+    @IBAction private func unwindFromGroups(_ segue: UIStoryboardSegue) {
         guard let tableViewController = segue.source as? AllGroupTableViewController,
               let indexPath = tableViewController.tableView.indexPathForSelectedRow,
               let group = tableViewController.searchGroups?[indexPath.row] else { return }

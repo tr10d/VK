@@ -14,7 +14,7 @@ class FullPhotoViewController: UIViewController {
     private var index: Int?
     private var animator = Animator()
 
-    @IBOutlet weak var photoImage: UIImageView!
+    @IBOutlet private weak var photoImage: UIImageView!
 
     override func viewDidLoad() {
         super.viewDidLoad()

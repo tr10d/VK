@@ -19,58 +19,85 @@ struct UsersJson: Codable {
 
     struct Response: Codable {
         let count: Int
-        let items: [User]
+        let items: [Item]
     }
 
     // MARK: - User
-
-    struct User: Codable {
-        let firstName: String?
-        let id: Int?
-        let lastName: String?
-        let photo50: String?
+    struct Item: Codable {
+        let firstName: String
+        let id: Int
+        let lastName: String
+        let canAccessClosed, isClosed: Bool
+        let sex: Int?
+        let screenName: String?
+        let photo50, photo100: String?
+//        let onlineInfo: OnlineInfo?
+        let online: Int?
 
         enum CodingKeys: String, CodingKey {
             case firstName = "first_name"
             case id
             case lastName = "last_name"
+            case canAccessClosed = "can_access_closed"
+            case isClosed = "is_closed"
+            case sex
+            case screenName = "screen_name"
             case photo50 = "photo_50"
+            case photo100 = "photo_100"
+//            case onlineInfo = "online_info"
+            case online
         }
     }
+
+//    struct User: Codable {
+//        let firstName: String?
+//        let id: Int?
+//        let lastName: String?
+//        let photo50: String?
+//
+//        enum CodingKeys: String, CodingKey {
+//            case firstName = "first_name"
+//            case id
+//            case lastName = "last_name"
+//            case photo50 = "photo_50"
+//        }
+//    }
 
 }
 
 // MARK: - UsersJson.Users extension
 
-extension UsersJson.User {
+extension UsersJson.Item {
 
-    var screenName: String {
-        "\(firstName ?? "") \(lastName ?? "")"
+    var description: String {
+        return "\(firstName) \(lastName)"
     }
 
     var image: UIImage? {
-        NetworkService.shared.image(url: photo50)
+        NetworkManager.shared.image(url: photo50)
     }
 
 }
 
 // MARK: - UsersJson.Users Comparable
 
-extension UsersJson.User: Comparable {
+extension UsersJson.Item: Comparable {
 
-    static func == (lhs: UsersJson.User, rhs: UsersJson.User) -> Bool {
+    static func == (lhs: UsersJson.Item, rhs: UsersJson.Item) -> Bool {
         lhs.id == rhs.id
     }
 
-    static func < (lhs: UsersJson.User, rhs: UsersJson.User) -> Bool {
-        lhs.screenName < rhs.screenName
+    static func < (lhs: UsersJson.Item, rhs: UsersJson.Item) -> Bool {
+        lhs.description < rhs.description
     }
 
-    static func > (lhs: UsersJson.User, rhs: UsersJson.User) -> Bool {
-        lhs.screenName > rhs.screenName
+    static func > (lhs: UsersJson.Item, rhs: UsersJson.Item) -> Bool {
+        lhs.description > rhs.description
     }
 
 }
+
+// MARK: - RealmManagerDataProtocol
 
 extension UsersJson: RealmManagerDataProtocol {
 

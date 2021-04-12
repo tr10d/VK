@@ -8,7 +8,7 @@
 import UIKit
 
 @IBDesignable
-class CircularImageView: UIImageView {
+final class CircularImageView: UIImageView {
 
     @IBInspectable
     var shadowRadius: CGFloat = 2.0 {

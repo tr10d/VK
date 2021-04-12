@@ -9,188 +9,9 @@
 import UIKit
 import RealmSwift
 
-protocol RealmManagerDataProtocol {
-    func getRealmObject() -> [Object]
-}
-
-// MARK: - RealmManager
-
-class RealmManager {
-
-    static let shared = RealmManager()
-
-    private let realm: Realm
-
-    private init?() {
-        let configurator = Realm.Configuration(schemaVersion: 1, deleteRealmIfMigrationNeeded: true)
-        guard let realm = try? Realm(configuration: configurator) else { return nil }
-        self.realm = realm
-        #if DEBUG
-            print(realm.configuration.fileURL ?? "New Realm error")
-        #endif
-    }
-
-}
-
-extension RealmManager {
-
-    static func getUsers2(offset: Int = 0, completion: @escaping (Results<RealmUser>) -> Void) {
-        guard let realmData = shared?.realm.objects(RealmUser.self).sorted(byKeyPath: "lastName") else { return }
-        if realmData.count == offset {
-            RealmManager.responseUsers(offset: offset) { completion(realmData) }
-        } else {
-            completion(realmData)
-        }
-    }
-
-    static func getPhotos(realmUser: RealmUser?, offset: Int = 0, completion: @escaping (Results<RealmPhoto>) -> Void) {
-        guard let realmUser = realmUser else { return }
-        guard let realmPhoto = shared?.realm.objects(RealmPhoto.self)
-                .filter("ownerID == %@", realmUser.id) else { return }
-
-        if realmPhoto.count == offset {
-            RealmManager.responsePhotos(realmUser: realmUser, offset: offset) {
-                completion(realmPhoto)
-            }
-        } else {
-            completion(realmPhoto)
-        }
-    }
-
-    static func getGroups(offset: Int = 0, completion: @escaping (Results<RealmGroup>) -> Void) {
-        guard let realmData = shared?.realm.objects(RealmGroup.self) else { return }
-        if realmData.count == offset {
-            RealmManager.responseGroups(offset: offset) { completion(realmData) }
-        } else {
-            completion(realmData)
-        }
-    }
-
-    static func responseUsers(offset: Int = 0, completionHandler: @escaping () -> Void) {
-        NetworkService.shared.requestUsers { (data, _, _) in
-            guard let data = data else { return }
-            do {
-                let usersJson = try JSONDecoder().decode(UsersJson.self, from: data)
-                let realmUsers = usersJson.response?.items.map { RealmUser(user: $0) }
-                DispatchQueue.main.async {
-                    saveData(data: realmUsers!)
-                    completionHandler()
-                }
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
-    }
-
-    static func responseUsers2(offset: Int = 0, completionHandler: @escaping () -> Void) {
-        NetworkService.shared.requestUsers { (data, _, _) in
-            guard let data = data else { return }
-            do {
-                let realmData = try JSONDecoder().decode(UsersJson.self, from: data).getRealmObject()
-                guard !realmData.isEmpty else { return }
-                DispatchQueue.main.async {
-                    RealmManager.saveData(data: realmData)
-                    completionHandler()
-                }
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
-    }
-
-    static func responsePhotos(realmUser: RealmUser?, offset: Int = 0, completionHandler: @escaping () -> Void) {
-        guard let realmUser = realmUser else { return }
-
-        NetworkService.shared.requestPhotos(userId: realmUser.id, offset: offset) { (data, _, _) in
-            guard let data = data else { return }
-            do {
-                let realmData = try JSONDecoder().decode(PhotoJSON.self, from: data).getRealmObject()
-                guard !realmData.isEmpty else { return }
-                DispatchQueue.main.async {
-                    RealmManager.saveData(data: realmData)
-                    completionHandler()
-                }
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
-    }
-
-    static func responseGroups(offset: Int = 0, completionHandler: @escaping () -> Void) {
-        NetworkService.shared.requestGroups { (data, _, _) in
-            guard let data = data else { return }
-            do {
-                let groups = try JSONDecoder().decode(Groups.self, from: data)
-                let realmGroups = groups.response?.items.map { RealmGroup(group: $0) }
-                if let realmGroups = realmGroups {
-                    DispatchQueue.main.async {
-                        RealmManager.saveData(data: realmGroups)
-                        completionHandler()
-                    }
-                }
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
-    }
-
-    static func saveData(data: [Object]) {
-        do {
-            try shared?.realm.write {
-                shared?.realm.add(data, update: .modified)
-            }
-        } catch {
-            print(error.localizedDescription)
-        }
-    }
-
-}
-
-extension RealmManager {
-
-    func add<T: Object>(object: T) throws {
-        try realm.write {
-            realm.add(object)
-        }
-    }
-
-    func add<T: Object>(objects: [T]) throws {
-        try realm.write {
-            realm.add(objects, update: .all)
-        }
-    }
-
-    func delete<T: Object>(object: T) throws {
-        try realm.write {
-            realm.delete(object)
-        }
-    }
-
-    func deleteAll() throws {
-        try realm.write {
-            realm.deleteAll()
-        }
-    }
-
-    func update(closure: (() -> Void)) throws {
-        try realm.write {
-            closure()
-        }
-    }
-
-    func getObjects<T: Object>() -> Results<T> {
-        let result = realm.objects(T.self)
-        if result.isEmpty {
-
-        }
-        return result
-    }
-
-}
-
 // MARK: - RealmUser
 
-class RealmUser: Object {
+final class RealmUser: Object {
 
     @objc dynamic var id = 0
     @objc dynamic var firstName = ""
@@ -201,11 +22,11 @@ class RealmUser: Object {
       "id"
     }
 
-    convenience init(user: UsersJson.User) {
+    convenience init(user: UsersJson.Item) {
         self.init()
-        self.id = user.id ?? 0
-        self.firstName = user.firstName ?? ""
-        self.lastName = user.lastName ?? ""
+        self.id = user.id
+        self.firstName = user.firstName
+        self.lastName = user.lastName
         self.photo50 = user.photo50 ?? ""
     }
 }
@@ -213,7 +34,7 @@ class RealmUser: Object {
 extension RealmUser {
 
     var screenName: String { "\(lastName) \(firstName)" }
-    var image: UIImage? { NetworkService.shared.image(url: photo50) }
+    var image: UIImage? { NetworkManager.shared.image(url: photo50) }
 
 }
 
@@ -227,7 +48,7 @@ extension RealmUser: Comparable {
 
 // MARK: - RealmGroup
 
-class RealmGroup: Object {
+final class RealmGroup: Object {
 
     @objc dynamic var id = 0
     @objc dynamic var name = ""
@@ -270,16 +91,17 @@ extension RealmGroup {
 
     func image(size: SizeImage = .small) -> UIImage? {
         switch size {
-        case .small: return NetworkService.shared.image(url: photo50)
-        case .medium: return NetworkService.shared.image(url: photo100)
-        case .big: return NetworkService.shared.image(url: photo200)
+        case .small: return NetworkManager.shared.image(url: photo50)
+        case .medium: return NetworkManager.shared.image(url: photo100)
+        case .big: return NetworkManager.shared.image(url: photo200)
         }
     }
 
 }
 
 // MARK: - RealmPhoto
-class RealmPhoto: Object {
+
+final class RealmPhoto: Object {
 
     @objc dynamic var albumID = 0
     @objc dynamic var date = 0
@@ -312,13 +134,26 @@ class RealmPhoto: Object {
         photo.sizes.forEach { sizes.append(RealmSize(size: $0)) }
    }
 
+    convenience init(newsPhoto: News.Photo?) {
+        self.init()
+        guard let newsPhoto = newsPhoto else { return }
+        self.albumID = newsPhoto.albumID
+        self.date = newsPhoto.date
+        self.id = newsPhoto.id
+        self.ownerID = newsPhoto.ownerID
+        self.hasTags = newsPhoto.hasTags
+        self.text = newsPhoto.text
+
+        newsPhoto.sizes.forEach { sizes.append(RealmSize(newsSize: $0)) }
+   }
+
 }
 
 extension RealmPhoto {
 
     var image: UIImage? {
         guard sizes.count > 0 else { return nil }
-        return NetworkService.shared.image(url: sizes[0].url)
+        return NetworkManager.shared.image(url: sizes[0].url)
     }
 
     func switchLike() {
@@ -343,7 +178,7 @@ extension RealmPhoto {
 
 }
 
-class RealmComments: Object {
+final class RealmComments: Object {
 
     @objc dynamic var count: Int = 0
 
@@ -354,7 +189,7 @@ class RealmComments: Object {
 
 }
 
-class RealmLikes: Object {
+final class RealmLikes: Object {
 
     @objc dynamic var userLikes = 0
     @objc dynamic var count = 0
@@ -367,7 +202,7 @@ class RealmLikes: Object {
 
 }
 
-class RealmReposts: Object {
+final class RealmReposts: Object {
 
     @objc dynamic var count = 0
 
@@ -378,7 +213,7 @@ class RealmReposts: Object {
 
 }
 
-class RealmSize: Object {
+final class RealmSize: Object {
 
     @objc dynamic var height = 0
     @objc dynamic var url = ""
@@ -391,6 +226,134 @@ class RealmSize: Object {
         self.url = size.url
         self.type = size.type
         self.width = size.width
+    }
+
+    convenience init(newsSize: News.Size) {
+        self.init()
+        self.height = newsSize.height
+        self.url = newsSize.url
+        self.type = newsSize.type
+        self.width = newsSize.width
+    }
+}
+
+// MARK: - RealmNews
+
+final class RealmNews: Object {
+
+    @objc dynamic var sourceID = 0
+    @objc dynamic var date = 0
+    @objc dynamic var canDoubtCategory = false
+    @objc dynamic var canSetCategory = false
+    @objc dynamic var postType = ""
+    @objc dynamic var text = ""
+    @objc dynamic var markedAsAds = false
+//    @objc dynamic var postSource: PostSource?
+//    @objc dynamic var comments: Comments?
+//    @objc dynamic var likes: Likes?
+//    @objc dynamic var reposts: Reposts?
+//    @objc dynamic var views: Views?
+    @objc dynamic var isFavorite = false
+//    @objc dynamic var donut: Donut?
+    @objc dynamic var shortTextRate = 0
+    @objc dynamic var carouselOffset = 0
+    @objc dynamic var postID = 0
+    @objc dynamic var type = ""
+
+    var attachments = List<RealmAttachment>()
+
+    override static func primaryKey() -> String? {
+        "sourceID"
+    }
+
+    convenience init(news: News.Item) {
+        self.init()
+        self.sourceID = news.sourceID
+        self.date = news.date ?? 0
+        self.canDoubtCategory = news.canDoubtCategory ?? false
+        self.canSetCategory = news.canSetCategory ?? false
+        self.postType = news.postType ?? ""
+        self.text = news.text ?? ""
+        self.markedAsAds = news.markedAsAds == 1
+        self.isFavorite = news.isFavorite ?? false
+        self.shortTextRate = Int(news.shortTextRate ?? 0.0)
+        self.carouselOffset = news.carouselOffset ?? 0
+        self.postID = news.postID ?? 0
+        self.type = news.type
+
+        news.attachments.forEach { attachments.append(RealmAttachment(attachment: $0)) }
+  }
+
+}
+
+final class RealmAttachment: Object {
+
+    @objc dynamic var type = ""
+    @objc dynamic var photo: RealmPhoto?
+    @objc dynamic var doc: RealmDoc?
+    @objc dynamic var link: RealmLink?
+
+    convenience init(attachment: News.Attachment) {
+        self.init()
+        self.type = attachment.type
+        self.photo = RealmPhoto(newsPhoto: attachment.photo)
+        self.doc = RealmDoc(doc: attachment.doc)
+        self.link = RealmLink(link: attachment.link)
+    }
+}
+
+final class RealmDoc: Object {
+
+    @objc dynamic var id = 0
+    @objc dynamic var ownerID = 0
+    @objc dynamic var title = ""
+    @objc dynamic var size = 0
+    @objc dynamic var ext = ""
+    @objc dynamic var date = 0
+    @objc dynamic var type = 0
+    @objc dynamic var url = ""
+    @objc dynamic var accessKey = ""
+
+    convenience init(doc: News.Doc?) {
+        self.init()
+        guard let doc = doc  else {
+            return
+        }
+        self.id = doc.id
+        self.ownerID = doc.ownerID
+        self.title = doc.title
+        self.size = doc.size
+        self.ext = doc.ext
+        self.date = doc.date
+        self.type = doc.type
+        self.url = doc.url
+        self.accessKey = doc.accessKey
+    }
+
+}
+
+final class RealmLink: Object {
+
+    @objc dynamic var url = ""
+    @objc dynamic var title = ""
+    @objc dynamic var linkDescription = ""
+    @objc dynamic var buttonText = ""
+    @objc dynamic var buttonAction = ""
+    @objc dynamic var target = ""
+    @objc dynamic var photo: RealmPhoto?
+    @objc dynamic var isFavorite = false
+
+    convenience init(link: News.Link?) {
+        self.init()
+        guard let link = link else { return }
+        self.url = link.url
+        self.title = link.title
+        self.linkDescription = link.linkDescription
+        self.buttonText = link.buttonText
+        self.buttonAction = link.buttonAction
+        self.target = link.target
+        self.isFavorite = link.isFavorite
+        self.photo = RealmPhoto(newsPhoto: link.photo)
     }
 
 }

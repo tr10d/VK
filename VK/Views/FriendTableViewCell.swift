@@ -7,13 +7,13 @@
 
 import UIKit
 
-class FriendTableViewCell: UITableViewCell {
+final class FriendTableViewCell: UITableViewCell {
 
     static let nib = UINib(nibName: "FriendTableViewCell", bundle: nil)
     static let identifier = "Cell"
 
-    @IBOutlet weak var friendImage: UIImageView!
-    @IBOutlet weak var friendName: UILabel!
+    @IBOutlet private weak var friendImage: UIImageView!
+    @IBOutlet private weak var friendName: UILabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -51,7 +51,7 @@ extension FriendTableViewCell {
 
 extension FriendTableViewCell {
 
-    func set(user: UsersJson.User?) {
+    func set(user: UsersJson.Item?) {
         guard let user = user else {
             return
         }

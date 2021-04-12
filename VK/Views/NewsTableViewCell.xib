@@ -22,26 +22,28 @@
                         <rect key="frame" x="0.0" y="0.0" width="340" height="378"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="tb7-No-jH7">
-                                <rect key="frame" x="0.0" y="0.0" width="340" height="50"/>
+                                <rect key="frame" x="0.0" y="0.0" width="340" height="53"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NVg-Yf-Rxk">
-                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="56" height="53"/>
                                         <subviews>
                                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Group-10" translatesAutoresizingMaskIntoConstraints="NO" id="tM3-jw-dQk">
-                                                <rect key="frame" x="3" y="3" width="44" height="44"/>
+                                                <rect key="frame" x="3" y="3" width="50" height="50"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="50" id="M06-ak-ctU"/>
+                                                    <constraint firstAttribute="height" constant="50" id="faa-eh-Xl1"/>
+                                                </constraints>
                                             </imageView>
                                         </subviews>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" secondItem="NVg-Yf-Rxk" secondAttribute="height" multiplier="1:1" id="4K8-zH-jTP"/>
-                                            <constraint firstAttribute="trailing" secondItem="tM3-jw-dQk" secondAttribute="trailing" constant="3" id="566-xK-GoT"/>
-                                            <constraint firstItem="tM3-jw-dQk" firstAttribute="leading" secondItem="NVg-Yf-Rxk" secondAttribute="leading" constant="3" id="TPe-0K-h9W"/>
-                                            <constraint firstItem="tM3-jw-dQk" firstAttribute="top" secondItem="NVg-Yf-Rxk" secondAttribute="top" constant="3" id="aGb-Fi-mIS"/>
-                                            <constraint firstAttribute="bottom" secondItem="tM3-jw-dQk" secondAttribute="bottom" constant="3" id="zZm-Fh-c90"/>
+                                            <constraint firstItem="tM3-jw-dQk" firstAttribute="centerX" secondItem="NVg-Yf-Rxk" secondAttribute="centerX" id="55X-0h-Dh6"/>
+                                            <constraint firstItem="tM3-jw-dQk" firstAttribute="leading" secondItem="NVg-Yf-Rxk" secondAttribute="leading" constant="3" id="WtW-RG-Yof"/>
+                                            <constraint firstItem="tM3-jw-dQk" firstAttribute="top" secondItem="NVg-Yf-Rxk" secondAttribute="top" constant="3" id="jpr-sa-XBY"/>
                                         </constraints>
                                     </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="irc-JL-Y0M" userLabel="User Data">
-                                        <rect key="frame" x="58" y="0.0" width="282" height="50"/>
+                                        <rect key="frame" x="64" y="3" width="273" height="50"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" text="User" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eSh-ZD-IdH">
                                                 <rect key="frame" x="0.0" y="0.0" width="36" height="27.5"/>
@@ -57,20 +59,19 @@
                                             </label>
                                         </subviews>
                                         <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="FRZ-lt-k38"/>
                                             <constraint firstItem="aVj-U2-KTs" firstAttribute="leading" secondItem="eSh-ZD-IdH" secondAttribute="leading" id="c7c-bC-a4S"/>
                                         </constraints>
                                     </stackView>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="irc-JL-Y0M" secondAttribute="trailing" id="AUb-Vd-61a"/>
-                                    <constraint firstAttribute="bottom" secondItem="irc-JL-Y0M" secondAttribute="bottom" id="CMw-45-1g4"/>
-                                    <constraint firstItem="irc-JL-Y0M" firstAttribute="top" secondItem="tb7-No-jH7" secondAttribute="top" id="FTV-hX-qxq"/>
-                                    <constraint firstAttribute="height" constant="50" id="MNJ-W4-tCM"/>
                                     <constraint firstItem="irc-JL-Y0M" firstAttribute="leading" secondItem="NVg-Yf-Rxk" secondAttribute="trailing" priority="500" constant="8" symbolic="YES" id="UeA-kP-OIy"/>
+                                    <constraint firstAttribute="trailing" secondItem="irc-JL-Y0M" secondAttribute="trailing" constant="3" id="V0k-H0-YFT"/>
+                                    <constraint firstItem="irc-JL-Y0M" firstAttribute="top" secondItem="tb7-No-jH7" secondAttribute="top" constant="3" id="rIc-l9-jCq"/>
                                 </constraints>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="justified" lineBreakMode="tailTruncation" numberOfLines="7" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dco-gD-loV">
-                                <rect key="frame" x="0.0" y="53" width="340" height="76.5"/>
+                                <rect key="frame" x="0.0" y="56" width="340" height="76.5"/>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="lessThanOrEqual" constant="100.5" id="Hzg-Tz-cav"/>
                                 </constraints>
@@ -81,13 +82,13 @@
                                 <string key="userLabel">You can configure the overall appearance of a label's text, and use attributed strings to customize the appearance of substrings within the text. Add and customize labels in your interface programmatically or with the Attributes inspector in Interface Builder. Follow these steps to add a label to your interface:</string>
                             </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" image="Group-9" translatesAutoresizingMaskIntoConstraints="NO" id="Kv0-xp-U4d">
-                                <rect key="frame" x="0.0" y="132.5" width="340" height="200"/>
+                                <rect key="frame" x="0.0" y="135.5" width="340" height="200"/>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="lessThanOrEqual" constant="200" id="k6x-ee-UHo"/>
                                 </constraints>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="ye6-iA-hfF" userLabel="Bottom Stack View">
-                                <rect key="frame" x="0.0" y="335.5" width="340" height="25"/>
+                                <rect key="frame" x="0.0" y="338.5" width="340" height="25"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="RDn-8y-QIx">
                                         <rect key="frame" x="0.0" y="0.0" width="51" height="25"/>

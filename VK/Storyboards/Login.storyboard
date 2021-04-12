@@ -119,10 +119,10 @@
             </objects>
             <point key="canvasLocation" x="843.92523364485976" y="80.345572354211669"/>
         </scene>
-        <!--UITabBarController-bdD-3B-JsX-->
+        <!--Main-->
         <scene sceneID="ALp-nO-OCW">
             <objects>
-                <viewControllerPlaceholder storyboardName="Main" referencedIdentifier="UITabBarController-bdD-3B-JsX" id="eCo-75-56z" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardName="Main" referencedIdentifier="UITabBarController-bdD-3B-JsX" id="eCo-75-56z" userLabel="Main" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="szy-ck-bcJ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1636" y="81.2807881773399"/>

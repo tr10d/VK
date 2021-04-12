@@ -22,7 +22,7 @@ struct UserDefault<T> {
     }
 }
 
-class Session {
+final class Session {
 
     static let shared = Session()
 

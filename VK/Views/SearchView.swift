@@ -7,9 +7,9 @@
 
 import UIKit
 
-class SearchView: UITableViewHeaderFooterView {
+final class SearchView: UITableViewHeaderFooterView {
 
-    @IBOutlet weak var searchBar: UISearchBar!
+    @IBOutlet private weak var searchBar: UISearchBar!
 
     static let nib = UINib(nibName: "SearchView", bundle: nil)
     static let identifier = "Cell"
