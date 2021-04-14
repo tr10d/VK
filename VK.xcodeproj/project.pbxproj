@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8523D99826209B1F002BEE8A /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8523D99726209B1F002BEE8A /* Promise.swift */; };
 		852C711E25B8B8CC001AA755 /* NewsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852C711C25B8B8CC001AA755 /* NewsTableViewController.swift */; };
 		852C712525B8B94F001AA755 /* NewsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852C712325B8B94F001AA755 /* NewsTableViewCell.swift */; };
 		852C712625B8B94F001AA755 /* NewsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 852C712425B8B94F001AA755 /* NewsTableViewCell.xib */; };
@@ -58,7 +57,6 @@
 
 /* Begin PBXFileReference section */
 		207A89C4B0FD23D69F177AED /* Pods-VK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-VK/Pods-VK.debug.xcconfig"; sourceTree = "<group>"; };
-		8523D99726209B1F002BEE8A /* Promise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
 		852C711C25B8B8CC001AA755 /* NewsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsTableViewController.swift; sourceTree = "<group>"; };
 		852C712325B8B94F001AA755 /* NewsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsTableViewCell.swift; sourceTree = "<group>"; };
 		852C712425B8B94F001AA755 /* NewsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewsTableViewCell.xib; sourceTree = "<group>"; };
@@ -248,7 +246,6 @@
 				85E39820259BC12D0079268F /* NetworkManager.swift */,
 				85365FF625C1E9C4007ED90B /* Animator.swift */,
 				8541EED526091331007F57EE /* RealmManager.swift */,
-				8523D99726209B1F002BEE8A /* Promise.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -403,7 +400,6 @@
 				854F524625978431007388D2 /* GroupTableViewController.swift in Sources */,
 				85B884F025B87C63008755AC /* PhotoCollectionViewCell.swift in Sources */,
 				85365FF725C1E9C4007ED90B /* Animator.swift in Sources */,
-				8523D99826209B1F002BEE8A /* Promise.swift in Sources */,
 				8553814625A2563800652CEA /* CircularImageView.swift in Sources */,
 				852C712E25B8D4D3001AA755 /* SearchTableViewCell.swift in Sources */,
 				85389C04260CBAE600FE5732 /* Groups.swift in Sources */,

@@ -7,6 +7,7 @@
 
 import Foundation
 import Alamofire
+import PromiseKit
 
 final class NetworkManager {
 
@@ -34,6 +35,20 @@ final class NetworkManager {
 // MARK: - API reqests
 
 extension NetworkManager {
+
+    func urlVK(with method: String, parameters: [String: String] = [:]) -> URL? {
+        let queryItems = [
+            URLQueryItem(name: "access_token", value: "\(Session.shared.token)"),
+            URLQueryItem(name: "v", value: API.version)
+        ] + parameters.map { URLQueryItem(name: $0, value: $1) }
+
+        var urlComponents = URLComponents()
+        urlComponents.scheme = "https"
+        urlComponents.host = "api.vk.com"
+        urlComponents.path = "/method/\(method)"
+        urlComponents.queryItems = queryItems
+        return urlComponents.url
+    }
 
     func requestAuth() -> URLRequest? {
 
@@ -63,22 +78,7 @@ extension NetworkManager {
     func requestAPI(method: String, parameters: [String: String] = [:],
                     completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) {
 
-        var queryItems = [
-            URLQueryItem(name: "access_token", value: "\(Session.shared.token)"),
-            URLQueryItem(name: "v", value: API.version)
-        ]
-
-        parameters.forEach { (name, value) in
-            queryItems.append(URLQueryItem(name: name, value: value))
-        }
-
-        var urlComponents = URLComponents()
-        urlComponents.scheme = "https"
-        urlComponents.host = "api.vk.com"
-        urlComponents.path = "/method/\(method)"
-        urlComponents.queryItems = queryItems
-
-        guard let url = urlComponents.url else { return }
+        guard let url = urlVK(with: method, parameters: parameters) else { return }
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -229,6 +229,18 @@ extension NetworkManager {
 
         request(method: "newsfeed.get", parameters: parameters, json: Json.News.self) { decodeJson in
             completionHandler(decodeJson)
+        }
+    }
+
+    func getNewsPromise(startFrom: String = "") -> Promise<Json.News> {
+
+        let url = urlVK(with: API.News.method,
+                            parameters: API.News.parameters(startFrom: startFrom))!
+
+        return firstly {
+            URLSession.shared.dataTask(.promise, with: url)
+        }.compactMap {
+            try JSONDecoder().decode(Json.News.self, from: $0.data)
         }
     }
 

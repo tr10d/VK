@@ -6,6 +6,16 @@
 //
 
 import UIKit
+import PromiseKit
+
+func brokenPromise<T>(method: String = #function) -> Promise<T> {
+    return Promise<T> { seal in
+        let err = NSError(domain: "VK",
+                          code: 0,
+                          userInfo: [NSLocalizedDescriptionKey: "'\(method)' not yet implemented."])
+        seal.reject(err)
+    }
+}
 
 struct API {
     static let version = "5.130"
@@ -31,6 +41,34 @@ struct API {
 
     struct Filters {
         let newsFeed = FiltersNewsFeed()
+    }
+
+}
+
+extension API {
+
+    struct News {
+        static private let filters = [
+            FilterItems.post,
+            FilterItems.photo
+        ].filters
+
+        static let method = "newsfeed.get"
+
+        static func parameters(startFrom: String) -> [String: String] {
+            return [
+                "filters": filters,
+                "return_banned": "0",
+                "start_time": "",
+                "end_time": "",
+                "max_photos": "",
+                "source_ids": "",
+                "start_from": "\(startFrom)",
+                "count": "20",
+                "fields": "",
+                "section": ""
+            ]
+        }
     }
 
 }

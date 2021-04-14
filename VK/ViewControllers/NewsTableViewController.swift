@@ -6,7 +6,7 @@
 //
 
 import UIKit
-import RealmSwift
+import PromiseKit
 
 class NewsTableViewController: UITableViewController {
 
@@ -27,23 +27,24 @@ class NewsTableViewController: UITableViewController {
 extension NewsTableViewController {
 
     func viewDidLoadRequest() {
-        loadData {}
+        loadData { }
     }
 
-    func loadData(completion: @escaping () -> Void) {
-        OperationQueue().addOperation {
-            NetworkManager.shared.getNews(startFrom: self.startFrom) { decodeJson in
+    func loadData(_ completion: @escaping () -> Void) {
+        NetworkManager.shared.getNewsPromise(startFrom: self.startFrom)
+            .then { [weak self] decodeJson -> Promise<[Json.News.Item]> in
                 var data = decodeJson
-                guard let response = data.response else { return }
+                guard let response = data.response else { return brokenPromise()}
                 data.configure()
-                self.startFrom = response.nextFrom ?? ""
-                response.items.forEach { self.news.append($0) }
-                OperationQueue.main.addOperation {
-                    self.tableView.reloadData()
-                    completion()
-                }
+                self?.startFrom = response.nextFrom ?? ""
+                return Promise.value(response.items)
+            }.done(on: DispatchQueue.main) { items in
+                self.news = items + self.news
+                self.tableView.reloadData()
             }
-        }
+            .catch { error in
+                debugPrint(error)
+            }
     }
 
 }

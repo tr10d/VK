@@ -10,5 +10,6 @@ target 'VK' do
   pod 'Alamofire', '~> 5.2'
   pod 'SwiftLint'
   pod 'RealmSwift', '=10.1.4'
-
+  pod "PromiseKit", "~> 6.8"
+  
 end
