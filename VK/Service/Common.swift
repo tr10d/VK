@@ -50,7 +50,7 @@ extension API {
       FilterItems.post,
       FilterItems.photo
     ].filters
-    static private let count = 5
+    static private let count = 20
     static let method = "newsfeed.get"
 
     static func parameters(startFrom: String) -> [String: String] {
@@ -111,5 +111,11 @@ extension Int {
     dateFormatter.dateStyle = .long
     dateFormatter.timeZone = .current
     return dateFormatter.string(from: date)
+  }
+}
+
+extension String {
+  var uiImage: UIImage? {
+    NetworkManager.shared.image(url: self)
   }
 }

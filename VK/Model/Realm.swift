@@ -298,8 +298,8 @@ final class RealmAttachment: Object {
         self.init()
         self.type = attachment.type
         self.photo = RealmPhoto(newsPhoto: attachment.photo)
-        self.doc = RealmDoc(doc: attachment.doc)
-        self.link = RealmLink(link: attachment.link)
+//        self.doc = RealmDoc(doc: attachment.doc)
+//        self.link = RealmLink(link: attachment.link)
     }
 }
 

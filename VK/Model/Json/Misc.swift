@@ -28,8 +28,11 @@ extension Json {
     struct Attachment: Codable {
         let type: String
         let photo: Photo.Item?
-        let doc: Doc?
-        let link: Link?
+//        let doc: Doc?
+//        let link: Link?
+      enum CodingKeys: String, CodingKey {
+          case type, photo
+      }
     }
 
     // MARK: - Comments

@@ -37,7 +37,7 @@ extension Json {
       let canDoubtCategory, canSetCategory: Bool?
       let postType, text: String?
       let markedAsAds: Int?
-      //            let attachments: [Attachment]
+      let attachments: [Attachment]?
       //            let postSource: PostSource?
       let comments: Comments?
       let likes: Likes?
@@ -51,6 +51,7 @@ extension Json {
       let photos: Json.Photo.Response?
       //            let testItem: String? = nil
       var user: Json.Users.Item?
+      var group: Json.Groups.Item?
 
       enum CodingKeys: String, CodingKey {
         case sourceID = "source_id"
@@ -60,7 +61,7 @@ extension Json {
         case postType = "post_type"
         case text
         case markedAsAds = "marked_as_ads"
-        //                case attachments
+        case attachments
         //                case postSource = "post_source"
         case comments
         case likes
@@ -78,14 +79,25 @@ extension Json {
   }
 }
 
-extension Json.News {
-  mutating func configure() {
-    guard var response = response else { return }
-    for (index, news) in response.items.enumerated() {
-      if let user = response.profiles.first(where: { $0.id == abs(news.sourceID) }) {
-        response.items[index].user = user
+extension Json.News.Response {
+  func configured() -> Json.News.Response {
+    var newRespnse = self
+    newRespnse.items = self.items
+      .map {
+        var newsUpdated = $0
+        let identifire = abs(newsUpdated.sourceID)
+        if newsUpdated.isUser {
+          if let user = self.profiles.first(where: { $0.id == identifire }) {
+            newsUpdated.user = user
+          }
+        } else {
+          if let group = self.groups.first(where: { $0.id == identifire }) {
+            newsUpdated.group = group
+          }
+        }
+        return newsUpdated
       }
-    }
+    return newRespnse
   }
 }
 
@@ -96,6 +108,49 @@ extension Json.News.Item: Equatable {
 }
 
 extension Json.News.Item {
+  var isUser: Bool {
+    sourceID > 0
+  }
+  var newsImage: UIImage? {
+    var url: String = ""
+
+    if let photos = photos {
+      debugPrint(photos)
+    } else if let attachments = attachments, !attachments.isEmpty {
+      if let element = attachments.first(where: { $0.type == "photo" }),
+         let photo = element.photo {
+        url = photo.urlForWidthScreen()
+      }
+    }
+    return url.uiImage
+  }
+  var avatarImage: UIImage? {
+    var url: String?
+    if isUser {
+      if let user = user {
+        url = user.photo50
+      }
+    } else {
+      if let group = group {
+        url = group.photo50
+      }
+    }
+    return url?.uiImage
+  }
+  var avatarName: String {
+    var name: String?
+    if isUser {
+      if let user = user {
+        name = user.description
+      }
+    } else {
+      if let group = group {
+        name = group.name
+      }
+    }
+    return name ?? ""
+  }
+
   var isPhoto: Bool {
     type == API.FilterItems.photo.rawValue
   }

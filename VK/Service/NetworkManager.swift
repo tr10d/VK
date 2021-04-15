@@ -154,7 +154,7 @@ extension NetworkManager {
         if let data = data {
             do {
                 let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-                print(json)
+                debugPrint(json)
             } catch {
                 print(error.localizedDescription)
             }
@@ -189,7 +189,10 @@ extension NetworkManager {
     return firstly {
       NetworkManager.session.dataTask(.promise, with: url)
     }.compactMap {
-      try JSONDecoder().decode(Json.News.self, from: $0.data)
+      #if DEBUG
+      NetworkManager.shared.printJSON(data: $0.data)
+      #endif
+      return try JSONDecoder().decode(Json.News.self, from: $0.data)
     }
   }
 }

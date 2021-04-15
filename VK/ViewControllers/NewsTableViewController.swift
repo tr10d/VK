@@ -33,11 +33,9 @@ extension NewsTableViewController {
 
   func loadData(_ mode: UpdateTableMode, completion: @escaping () -> Void = {}) {
     NetworkManager.shared.getNews(startFrom: self.startFrom)
-      .then { decodeJson -> Promise<Json.News.Response> in
-        var data = decodeJson
-        guard let response = data.response else { return brokenPromise() }
-        data.configure()
-        return Promise.value(response)
+      .then(on: DispatchQueue.global(qos: .userInitiated)) { decodeJson -> Promise<Json.News.Response> in
+        guard let response = decodeJson.response else { return brokenPromise() }
+        return Promise.value(response.configured())
       }.done(on: DispatchQueue.main) { response in
         self.updateTable(response: response, mode: mode)
         completion()
@@ -116,7 +114,7 @@ extension NewsTableViewController {
 
   override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     var height = 60 + 90 + 6 + 260 + 2 + 20
-    if news[indexPath.section].isPhoto {
+    if news[indexPath.row].isPhoto {
       height -= 90
     }
     return CGFloat(height)
