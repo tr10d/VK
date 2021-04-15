@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Groups-->
+        <scene sceneID="yes-c6-Yvz">
+            <objects>
+                <tableViewController storyboardIdentifier="GroupTableViewController" id="yaX-bg-bgO" customClass="GroupTableViewController" customModule="VK" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="76W-ys-ujs">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <connections>
+                            <outlet property="dataSource" destination="yaX-bg-bgO" id="LYe-bE-i2a"/>
+                            <outlet property="delegate" destination="yaX-bg-bgO" id="Qyy-bU-hzH"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="Groups" id="M2V-Ch-L7F">
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="xZI-tT-ofz">
+                            <connections>
+                                <segue destination="R3I-Kh-LXK" kind="show" identifier="toAllGroupes" id="AyU-rQ-3Cn"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="PXN-M5-zNe" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3230" y="435"/>
+        </scene>
+        <!--Groups-->
+        <scene sceneID="Tb5-1B-lOY">
+            <objects>
+                <navigationController storyboardIdentifier="UINavigationController-Ncz-Nl-t5N" automaticallyAdjustsScrollViewInsets="NO" id="Ncz-Nl-t5N" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Groups" image="person.3.fill" catalog="system" id="1eQ-GF-gVK"/>
+                    <toolbarItems/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO">
+                        <color key="tintColor" name="VK_ColorWhite"/>
+                    </simulatedNavigationBarMetrics>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="foE-ll-hXp">
+                        <rect key="frame" x="0.0" y="0.0" width="428" height="56"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="tintColor" name="VK_ColorWhite"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="yaX-bg-bgO" kind="relationship" relationship="rootViewController" id="oji-jc-gfn"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cmp-dC-gpw" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2422" y="435"/>
+        </scene>
+        <!--All groupes-->
+        <scene sceneID="d4M-KZ-o6h">
+            <objects>
+                <tableViewController storyboardIdentifier="AllGroupTableViewController" id="R3I-Kh-LXK" customClass="AllGroupTableViewController" customModule="VK" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="w6E-BS-W8v">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <connections>
+                            <outlet property="dataSource" destination="R3I-Kh-LXK" id="qvm-at-huR"/>
+                            <outlet property="delegate" destination="R3I-Kh-LXK" id="csX-c5-3as"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" title="All groupes" id="YlF-eC-sdk">
+                        <connections>
+                            <outlet property="titleView" destination="VFQ-oX-fbR" id="mWh-TW-B9h"/>
+                        </connections>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="searchBar" destination="VFQ-oX-fbR" id="gsq-1I-L5o"/>
+                        <segue destination="Z6M-1R-2mR" kind="unwind" identifier="unwindFromGroups" unwindAction="unwindFromGroups:" id="Tlu-18-JFP"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Bhy-Yh-zyz" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <searchBar contentMode="redraw" id="VFQ-oX-fbR">
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                    <textInputTraits key="textInputTraits"/>
+                    <connections>
+                        <outlet property="delegate" destination="R3I-Kh-LXK" id="t2d-28-Eh0"/>
+                    </connections>
+                </searchBar>
+                <exit id="Z6M-1R-2mR" userLabel="Exit" sceneMemberID="exit"/>
+            </objects>
+            <point key="canvasLocation" x="4060" y="435"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="person.3.fill" catalog="system" width="128" height="61"/>
+        <namedColor name="VK_ColorWhite">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>
