@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8523D99826209B1F002BEE8A /* Promise.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8523D99726209B1F002BEE8A /* Promise.swift */; };
 		852C711E25B8B8CC001AA755 /* NewsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852C711C25B8B8CC001AA755 /* NewsTableViewController.swift */; };
 		852C712525B8B94F001AA755 /* NewsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852C712325B8B94F001AA755 /* NewsTableViewCell.swift */; };
 		852C712625B8B94F001AA755 /* NewsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 852C712425B8B94F001AA755 /* NewsTableViewCell.xib */; };
@@ -32,6 +31,7 @@
 		8541EEC12609067D007F57EE /* Groups.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8541EEBF2609067D007F57EE /* Groups.storyboard */; };
 		8541EEC52609084B007F57EE /* News.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8541EEC42609084B007F57EE /* News.storyboard */; };
 		8541EED626091331007F57EE /* RealmManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8541EED526091331007F57EE /* RealmManager.swift */; };
+		854A3113262824510051054C /* Cache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854A3112262824510051054C /* Cache.swift */; };
 		854F5243259783D0007388D2 /* FriendsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854F5242259783D0007388D2 /* FriendsTableViewController.swift */; };
 		854F524625978431007388D2 /* GroupTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854F524525978431007388D2 /* GroupTableViewController.swift */; };
 		854F524925978463007388D2 /* AllGroupTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854F524825978463007388D2 /* AllGroupTableViewController.swift */; };
@@ -58,7 +58,6 @@
 
 /* Begin PBXFileReference section */
 		207A89C4B0FD23D69F177AED /* Pods-VK.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VK.debug.xcconfig"; path = "Pods/Target Support Files/Pods-VK/Pods-VK.debug.xcconfig"; sourceTree = "<group>"; };
-		8523D99726209B1F002BEE8A /* Promise.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Promise.swift; sourceTree = "<group>"; };
 		852C711C25B8B8CC001AA755 /* NewsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsTableViewController.swift; sourceTree = "<group>"; };
 		852C712325B8B94F001AA755 /* NewsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsTableViewCell.swift; sourceTree = "<group>"; };
 		852C712425B8B94F001AA755 /* NewsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NewsTableViewCell.xib; sourceTree = "<group>"; };
@@ -85,6 +84,7 @@
 		8541EEC02609067D007F57EE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Groups.storyboard; sourceTree = "<group>"; };
 		8541EEC42609084B007F57EE /* News.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = News.storyboard; sourceTree = SOURCE_ROOT; };
 		8541EED526091331007F57EE /* RealmManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmManager.swift; sourceTree = "<group>"; };
+		854A3112262824510051054C /* Cache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cache.swift; sourceTree = "<group>"; };
 		854F5242259783D0007388D2 /* FriendsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsTableViewController.swift; sourceTree = "<group>"; };
 		854F524525978431007388D2 /* GroupTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupTableViewController.swift; sourceTree = "<group>"; };
 		854F524825978463007388D2 /* AllGroupTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllGroupTableViewController.swift; sourceTree = "<group>"; };
@@ -248,7 +248,7 @@
 				85E39820259BC12D0079268F /* NetworkManager.swift */,
 				85365FF625C1E9C4007ED90B /* Animator.swift */,
 				8541EED526091331007F57EE /* RealmManager.swift */,
-				8523D99726209B1F002BEE8A /* Promise.swift */,
+				854A3112262824510051054C /* Cache.swift */,
 			);
 			path = Service;
 			sourceTree = "<group>";
@@ -281,6 +281,8 @@
 			dependencies = (
 			);
 			name = VK;
+			packageProductDependencies = (
+			);
 			productName = VK;
 			productReference = 853D5DF1258FA2E0008F7EB8 /* VK.app */;
 			productType = "com.apple.product-type.application";
@@ -308,6 +310,8 @@
 				Base,
 			);
 			mainGroup = 853D5DE8258FA2E0008F7EB8;
+			packageReferences = (
+			);
 			productRefGroup = 853D5DF2258FA2E0008F7EB8 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -370,7 +374,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/SwiftLint/swiftlint\"\n";
+			shellScript = "if which swiftlint >/dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
 		91DEACD6BE39EAF7872847E5 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -403,7 +407,6 @@
 				854F524625978431007388D2 /* GroupTableViewController.swift in Sources */,
 				85B884F025B87C63008755AC /* PhotoCollectionViewCell.swift in Sources */,
 				85365FF725C1E9C4007ED90B /* Animator.swift in Sources */,
-				8523D99826209B1F002BEE8A /* Promise.swift in Sources */,
 				8553814625A2563800652CEA /* CircularImageView.swift in Sources */,
 				852C712E25B8D4D3001AA755 /* SearchTableViewCell.swift in Sources */,
 				85389C04260CBAE600FE5732 /* Groups.swift in Sources */,
@@ -423,6 +426,7 @@
 				85389C01260CBA7A00FE5732 /* Users.swift in Sources */,
 				8541EED626091331007F57EE /* RealmManager.swift in Sources */,
 				853D5DF7258FA2E0008F7EB8 /* SceneDelegate.swift in Sources */,
+				854A3113262824510051054C /* Cache.swift in Sources */,
 				85B884EC25B87BA5008755AC /* FriendTableViewCell.swift in Sources */,
 				853B720325F79BDA0050999F /* Common.swift in Sources */,
 				852C712525B8B94F001AA755 /* NewsTableViewCell.swift in Sources */,

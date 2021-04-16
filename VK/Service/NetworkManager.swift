@@ -5,35 +5,41 @@
 //  Created by  Sergei on 29.12.2020.
 //
 
-import Foundation
-import Alamofire
+import UIKit
+import PromiseKit
 
 final class NetworkManager {
+  static let shared = NetworkManager()
+  static let session: URLSession = {
+    let configuration = URLSessionConfiguration.default
+    configuration.allowsCellularAccess = false
+    return URLSession(
+      configuration: configuration,
+      delegate: nil,
+      delegateQueue: nil
+    )
+  }()
 
-    struct Sessions {
-        let native: URLSession = {
-            let configuration = URLSessionConfiguration.default
-            configuration.allowsCellularAccess = false
-            return URLSession(configuration: configuration,
-                              delegate: nil, delegateQueue: nil)
-        }()
-        let alamofire: Alamofire.Session = {
-            let configuration = URLSessionConfiguration.default
-            configuration.allowsCellularAccess = false
-            return Alamofire.Session(configuration: configuration)
-        }()
-    }
-
-    static let shared = NetworkManager()
-    static let session = Sessions()
-
-    private init() {}
-
+  private init() {}
 }
 
 // MARK: - API reqests
 
 extension NetworkManager {
+
+    func urlVK(with method: String, parameters: [String: String] = [:]) -> URL? {
+        let queryItems = [
+            URLQueryItem(name: "access_token", value: "\(Session.shared.token)"),
+            URLQueryItem(name: "v", value: API.version)
+        ] + parameters.map { URLQueryItem(name: $0, value: $1) }
+
+        var urlComponents = URLComponents()
+        urlComponents.scheme = "https"
+        urlComponents.host = "api.vk.com"
+        urlComponents.path = "/method/\(method)"
+        urlComponents.queryItems = queryItems
+        return urlComponents.url
+    }
 
     func requestAuth() -> URLRequest? {
 
@@ -63,28 +69,13 @@ extension NetworkManager {
     func requestAPI(method: String, parameters: [String: String] = [:],
                     completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) {
 
-        var queryItems = [
-            URLQueryItem(name: "access_token", value: "\(Session.shared.token)"),
-            URLQueryItem(name: "v", value: API.version)
-        ]
-
-        parameters.forEach { (name, value) in
-            queryItems.append(URLQueryItem(name: name, value: value))
-        }
-
-        var urlComponents = URLComponents()
-        urlComponents.scheme = "https"
-        urlComponents.host = "api.vk.com"
-        urlComponents.path = "/method/\(method)"
-        urlComponents.queryItems = queryItems
-
-        guard let url = urlComponents.url else { return }
+        guard let url = urlVK(with: method, parameters: parameters) else { return }
 
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.timeoutInterval = 30
 
-        NetworkManager.session.native.dataTask(with: request, completionHandler: completionHandler).resume()
+        NetworkManager.session.dataTask(with: request, completionHandler: completionHandler).resume()
 
     }
 
@@ -106,25 +97,6 @@ extension NetworkManager {
                  print(error.localizedDescription)
              }
          }
-    }
-
-    func requestAPIAF(method: String, parameters: [String: String] = [:],
-                      completionHandler: @escaping (AFDataResponse<Any>) -> Void) {
-
-        var queryItems: [String: String] = [
-            "access_token": "\(Session.shared.token)",
-            "v": API.version
-        ]
-        parameters.forEach { (name, value) in
-            queryItems[name] = value
-        }
-
-        let url = "https://api.vk.com/method/\(method)"
-
-        NetworkManager.session.alamofire
-            .request(url, method: .post, parameters: queryItems)
-            .responseJSON(completionHandler: completionHandler)
-
     }
 }
 
@@ -205,49 +177,36 @@ extension NetworkManager {
 
 }
 
+// MARK: - get News
+
 extension NetworkManager {
+  func getNews(startFrom: String) -> Promise<Json.News> {
+    let url = urlVK(
+      with: API.News.method,
+      parameters: API.News.parameters(startFrom: startFrom)
+    )!
 
-    func getNews(startFrom: String = "", completionHandler: @escaping (Json.News) -> Void) {
-
-        let filters = [
-            API.FilterItems.post,
-            API.FilterItems.photo
-        ].filters
-
-        let parameters = [
-            "filters": filters,
-            "return_banned": "0",
-            "start_time": "",
-            "end_time": "",
-            "max_photos": "",
-            "source_ids": "",
-            "start_from": "\(startFrom)",
-            "count": "20",
-            "fields": "",
-            "section": ""
-        ]
-
-        request(method: "newsfeed.get", parameters: parameters, json: Json.News.self) { decodeJson in
-            completionHandler(decodeJson)
-        }
+    return firstly {
+      NetworkManager.session.dataTask(.promise, with: url)
+    }.compactMap {
+      try JSONDecoder().decode(Json.News.self, from: $0.data)
     }
-
+  }
 }
 
-// MARK: - Func
+// MARK: - Misc. Func
 
 extension NetworkManager {
+  func image(url: String?) -> UIImage? {
+    CachedData.shared.image(url: url)
+  }
 
-    func image(url: String?) -> UIImage? {
-        CachedData.shared.image(url: url)
+  func url2str(url: String?) -> String {
+    guard let urlString = url,
+          let urlObject = URL(string: urlString),
+          let data = try? Data(contentsOf: urlObject) else {
+      return ""
     }
-
-    func url2str(url: String?) -> String {
-        guard let urlString = url,
-              let urlObject = URL(string: urlString),
-              let data = try? Data(contentsOf: urlObject) else {
-            return ""
-        }
-        return data.base64EncodedString()
-    }
+    return data.base64EncodedString()
+  }
 }
