@@ -239,15 +239,7 @@ extension NetworkManager {
 extension NetworkManager {
 
     func image(url: String?) -> UIImage? {
-        // ToDo: заменить на вызов из CachedData
         CachedData.shared.image(url: url)
-//        guard let urlString = url,
-//              let urlObject = URL(string: urlString),
-//              let data = try? Data(contentsOf: urlObject),
-//              let image = UIImage(data: data) else {
-//            return nil
-//        }
-//        return image
     }
 
     func url2str(url: String?) -> String {
