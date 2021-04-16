@@ -33,10 +33,10 @@ extension NewsTableViewController {
 
   func loadData(_ mode: UpdateTableMode, completion: @escaping () -> Void = {}) {
     NetworkManager.shared.getNews(startFrom: self.startFrom)
-      .then(on: DispatchQueue.global(qos: .userInitiated)) { decodeJson -> Promise<Json.News.Response> in
+      .then { decodeJson -> Promise<Json.News.Response> in
         guard let response = decodeJson.response else { return brokenPromise() }
         return Promise.value(response.configured())
-      }.done(on: DispatchQueue.main) { response in
+      }.done { response in
         self.updateTable(response: response, mode: mode)
         completion()
       }.catch { error in
