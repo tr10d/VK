@@ -68,4 +68,16 @@ extension Json.Photo.Item {
     }
     return element?.url ?? ""
   }
+
+  func elementForWidthScreen() -> Json.Size? {
+    var element = sizes.last
+    let widthScreen = Int(UIScreen.main.bounds.width)
+    let weightSizes = sizes.map { abs($0.width - widthScreen) }
+
+    if let variance = weightSizes.min(),
+      let indexMinimumElement = weightSizes.firstIndex(of: variance) {
+      element = sizes[indexMinimumElement]
+    }
+    return element
+  }
 }

@@ -111,19 +111,24 @@ extension Json.News.Item {
   var isUser: Bool {
     sourceID > 0
   }
-  var newsImage: UIImage? {
-    var url: String = ""
+  var newsImage: Json.Size? {
+    var result: Json.Size?
 
     if let photos = photos {
       debugPrint(photos)
     } else if let attachments = attachments, !attachments.isEmpty {
       if let element = attachments.first(where: { $0.type == "photo" }),
          let photo = element.photo {
-        url = photo.urlForWidthScreen()
+        result = photo.elementForWidthScreen()
       }
     }
-    return url.uiImage
+
+    return result
   }
+  var identifire: String {
+    "\(sourceID) \(String(describing: date)) \(type)"
+  }
+
   var avatarImage: UIImage? {
     var url: String?
     if isUser {

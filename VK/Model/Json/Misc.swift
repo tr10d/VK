@@ -6,7 +6,7 @@
 //
 // swiftlint:disable identifier_name nesting
 
-import Foundation
+import UIKit
 
 // MARK: - Misc
 
@@ -147,4 +147,10 @@ extension Json {
     struct Views: Codable {
         let count: Int
     }
+}
+
+extension Json.Size {
+  var ratio: CGFloat {
+    CGFloat(width == 0 ? 0 : CGFloat(height) / CGFloat(width))
+  }
 }

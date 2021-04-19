@@ -118,4 +118,43 @@ extension String {
   var uiImage: UIImage? {
     NetworkManager.shared.image(url: self)
   }
+
+  func height(withConstrainedWidth width: CGFloat, font: UIFont) -> CGFloat {
+    let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
+    let boundingBox = self.boundingRect(
+      with: constraintRect,
+      options: .usesLineFragmentOrigin,
+      attributes: [.font: font],
+      context: nil
+    )
+    return ceil(boundingBox.height)
+  }
+
+  func width(withConstrainedHeight height: CGFloat, font: UIFont) -> CGFloat {
+    let constraintRect = CGSize(width: .greatestFiniteMagnitude, height: height)
+    let boundingBox = self.boundingRect(
+      with: constraintRect,
+      options: .usesLineFragmentOrigin,
+      attributes: [.font: font],
+      context: nil
+    )
+    return ceil(boundingBox.width)
+  }
+}
+
+extension UITableView {
+  func showPlaceholder(_ text: String) {
+    let label = UILabel(frame: bounds)
+    label.text = text
+    label.textColor = .gray
+    label.textAlignment = .center
+    label.numberOfLines = 0
+    label.font = .systemFont(ofSize: 24)
+
+    self.backgroundView = label
+  }
+
+  func hidePlaceholder() {
+    self.backgroundView = nil
+  }
 }

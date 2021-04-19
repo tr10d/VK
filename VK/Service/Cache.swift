@@ -11,6 +11,7 @@ final class CachedData {
   static let shared = CachedData()
 
   private var fastCache = [String: UIImage]()
+  private var fastCacheAny = [String: AnyObject]()
   private let pathName: String = {
     let pathName = "images"
     guard
@@ -23,11 +24,18 @@ final class CachedData {
     return pathName
   }()
 
-  private enum Sources {
+  enum Sources {
     case fastCache, cache, net
   }
 
   private init() {}
+}
+
+extension CachedData {
+  func cachedValue<T>(for key: String, complition: () -> T) -> T {
+    if let result = fastCacheAny[key] as? T { return result }
+    return complition()
+  }
 }
 
 extension CachedData {
