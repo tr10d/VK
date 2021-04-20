@@ -13,41 +13,7 @@ final class NewsTableViewCell: UITableViewCell {
   static let font = UIFont.systemFont(ofSize: 14)
   static let maxHeightText = CGFloat(200)
 
-  struct CellSizes {
-    let imageHeight, contentHeight, buttonHeight: CGFloat
-    var heightForRowAt: CGFloat {
-      60 + 20 + 6 + buttonHeight + contentHeight + imageHeight
-    }
-
-    internal init(imageHeight: CGFloat, contentHeight: CGFloat, buttonHeight: CGFloat) {
-      self.imageHeight = imageHeight
-      self.contentHeight = contentHeight
-      self.buttonHeight = buttonHeight
-//      self.full = 60 + 20 + 6 + buttonHeight + contentHeight + imageHeight
-    }
-  }
-
-  static func cellSizes(news: Json.News.Item, width: CGFloat) -> CellSizes {
-    var contentHeight: CGFloat = 0
-    var buttonHeight: CGFloat = 0
-    var imageHeight: CGFloat = 0
-
-    if !news.contentText.isEmpty {
-      let heightText = news.contentText.height(withConstrainedWidth: width, font: NewsTableViewCell.font)
-      if heightText <= NewsTableViewCell.maxHeightText {
-        contentHeight = heightText
-      } else {
-        contentHeight = NewsTableViewCell.maxHeightText
-        buttonHeight = 30
-      }
-   }
-
-    if let ratio = news.newsImage?.ratio {
-      imageHeight = width * ratio
-    }
-
-    return CellSizes(imageHeight: imageHeight, contentHeight: contentHeight, buttonHeight: buttonHeight)
-  }
+  @IBOutlet weak var button: UIButton!
 
   @IBOutlet private weak var newsUserImg: UIImageView!
   @IBOutlet private weak var newsUser: UILabel!
@@ -65,15 +31,26 @@ final class NewsTableViewCell: UITableViewCell {
   @IBOutlet weak var buttonHeight: NSLayoutConstraint!
 
   @IBAction func buttonTouched(_ sender: UIButton) {
-
+    configureContentHeight()
   }
 
-//   avatar - 60
-//   text - 200 ??
-//   button - 30
-//   image - 100 ??
-//   likes - 20
-//   placeholder - 6
+  var contentHeightMin: CGFloat = 0
+  var contentHeightMax: CGFloat = 0
+}
+
+// MARK: - Configuration
+
+extension NewsTableViewCell {
+  private func configureContentHeight() {
+    if contentHeight.constant <= contentHeightMin {
+      button.setTitle("Скрыть", for: .normal)
+      contentHeight.constant = contentHeightMax
+    } else {
+      button.setTitle("Показать всё", for: .normal)
+      contentHeight.constant = contentHeightMin
+    }
+  }
+
   func configure(news: Json.News.Item) {
     newsUser.text = news.avatarName
     newsUserImg.image = news.avatarImage
@@ -91,28 +68,69 @@ final class NewsTableViewCell: UITableViewCell {
     let cellSizes = CachedData.shared.cachedValue(for: news.identifire) {
       NewsTableViewCell.cellSizes(news: news, width: frame.width)
     }
-    contentHeight.constant = cellSizes.contentHeight
+
+    contentHeightMin = cellSizes.contentHeightMin
+    contentHeightMax = cellSizes.contentHeightMax
+
+    configureContentHeight()
+
     buttonHeight.constant = cellSizes.buttonHeight
     imageHeight.constant = cellSizes.imageHeight
+  }
+}
 
-//    if newsContent.text.isEmpty {
-//      contentHeight.constant = 1
-//      buttonHeight.constant = 1
-//    } else {
-//      let heightText = newsContent.text.height(withConstrainedWidth: frame.width, font: NewsTableViewCell.font)
-//      if heightText <= NewsTableViewCell.maxHeightText {
-//        contentHeight.constant = heightText
-//        buttonHeight.constant = 1
-//      } else {
-//        contentHeight.constant = NewsTableViewCell.maxHeightText
-//        buttonHeight.constant = 30
-//      }
-//   }
-//
-//    if let ratio = news.newsImage?.ratio {
-//      imageHeight.constant = frame.width * CGFloat(ratio)
-//    } else {
-//      imageHeight.constant = 1
-//    }
+// MARK: - CellSizes
+
+extension NewsTableViewCell {
+
+  //   avatar - 60
+  //   text - 200 ??
+  //   button - 30 ??
+  //   image - 100 ??
+  //   likes - 20
+  //   placeholder - 6
+  struct CellSizes {
+    let imageHeight: CGFloat
+    let contentHeightMin, contentHeightMax: CGFloat
+    let buttonHeight: CGFloat
+
+    var heightForRowAt: CGFloat {
+      60 + 20 + 6 + buttonHeight + contentHeightMin + imageHeight
+    }
+
+    internal init(imageHeight: CGFloat, contentHeightMin: CGFloat, contentHeightMax: CGFloat, buttonHeight: CGFloat) {
+      self.imageHeight = imageHeight
+      self.contentHeightMin = contentHeightMin
+      self.contentHeightMax = contentHeightMax
+     self.buttonHeight = buttonHeight
+    }
+  }
+
+  static func cellSizes(news: Json.News.Item, width: CGFloat) -> CellSizes {
+    var contentHeightMin: CGFloat = 0
+    var contentHeightMax: CGFloat = 0
+    var buttonHeight: CGFloat = 0
+    var imageHeight: CGFloat = 0
+
+    if !news.contentText.isEmpty {
+      contentHeightMax = news.contentText.height(withConstrainedWidth: width, font: NewsTableViewCell.font)
+      if contentHeightMax <= NewsTableViewCell.maxHeightText {
+        contentHeightMin = contentHeightMax
+      } else {
+        contentHeightMin = NewsTableViewCell.maxHeightText
+        buttonHeight = 30
+      }
+    }
+
+    if let ratio = news.newsImage?.ratio {
+      imageHeight = width * ratio
+    }
+
+    return CellSizes(
+      imageHeight: imageHeight,
+      contentHeightMin: contentHeightMin,
+      contentHeightMax: contentHeightMax,
+      buttonHeight: buttonHeight
+    )
   }
 }

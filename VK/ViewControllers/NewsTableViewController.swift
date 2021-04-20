@@ -113,7 +113,7 @@ extension NewsTableViewController {
   override func tableView(_ tableView: UITableView,
                           willDisplay cell: UITableViewCell,
                           forRowAt indexPath: IndexPath) {
-    guard news.count == (indexPath.row + 1) else { return }
+    guard (news.count - 6) == indexPath.row else { return }
     loadData(.fetchContinue)
   }
 
