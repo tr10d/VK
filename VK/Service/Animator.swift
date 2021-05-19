@@ -143,7 +143,7 @@ extension Animator: UIViewControllerAnimatedTransitioning {
               let destination = transitionContext.viewController(forKey: .to) else { return }
 
         transitionContext.containerView.addSubview(destination.view)
-        transitionContext.containerView.backgroundColor = UIColor(named: "VK_ColorBlue")
+        transitionContext.containerView.backgroundColor = Constants.colors.vkBlue
 
         let rotationAngle = (isPresenting ? .pi : -.pi) / CGFloat(2)
         let anchorPoint = (
