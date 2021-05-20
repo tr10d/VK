@@ -51,22 +51,23 @@ extension NewsTableViewCell {
     }
   }
 
-  func configure(news: Json.News.Item) {
-    newsUser.text = news.avatarName
-    newsUserImg.image = news.avatarImage
-    newsImages.image = news.newsImage?.url.uiImage
+  func configure(model: NewsTableViewCellModel) {
+    newsUser.text = model.avatarName
+    newsUserImg.image = model.avatarImage
 
-    newsContent.text = news.contentText
-    newsDate.text = news.dateFormatted
+    newsImages.image = model.newsImage
+    newsContent.text = model.newsContent
+    newsDate.text = model.newsDate
 
-    likesCount.text = news.likesCount.description
-    commentsCount.text = news.commentsCount.description
-    repostsCount.text = news.repostsCount.description
-    viewsCount.text = news.viewsCount.description
-    likes.setLikes(news.isLikes)
+    likesCount.text = model.likesCount
+    commentsCount.text = model.commentsCount
+    repostsCount.text = model.repostsCount
+    viewsCount.text = model.viewsCount
 
-    let cellSizes = CachedData.shared.cachedValue(for: news.identifire) {
-      NewsTableViewCell.cellSizes(news: news, width: frame.width)
+    likes.setLikes(model.isLikes)
+
+    let cellSizes = CachedData.shared.cachedValue(for: model.identifire) {
+      NewsTableViewCell.cellSizes(model: model, width: frame.width)
     }
 
     contentHeightMin = cellSizes.contentHeightMin
@@ -105,7 +106,35 @@ extension NewsTableViewCell {
      self.buttonHeight = buttonHeight
     }
   }
+  
+  static func cellSizes(model: NewsTableViewCellModel, width: CGFloat) -> CellSizes {
+    var contentHeightMin: CGFloat = 0
+    var contentHeightMax: CGFloat = 0
+    var buttonHeight: CGFloat = 0
+    var imageHeight: CGFloat = 0
 
+    if !model.newsContent.isEmpty {
+      contentHeightMax = model.newsContent.height(withConstrainedWidth: width, font: NewsTableViewCell.font)
+      if contentHeightMax <= NewsTableViewCell.maxHeightText {
+        contentHeightMin = contentHeightMax
+      } else {
+        contentHeightMin = NewsTableViewCell.maxHeightText
+        buttonHeight = 30
+      }
+    }
+
+    if let ratio = model.ratio {
+      imageHeight = width * ratio
+    }
+
+    return CellSizes(
+      imageHeight: imageHeight,
+      contentHeightMin: contentHeightMin,
+      contentHeightMax: contentHeightMax,
+      buttonHeight: buttonHeight
+    )
+  }
+  
   static func cellSizes(news: Json.News.Item, width: CGFloat) -> CellSizes {
     var contentHeightMin: CGFloat = 0
     var contentHeightMax: CGFloat = 0
@@ -132,5 +161,5 @@ extension NewsTableViewCell {
       contentHeightMax: contentHeightMax,
       buttonHeight: buttonHeight
     )
-  }
+ }
 }

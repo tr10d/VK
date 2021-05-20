@@ -102,7 +102,7 @@ extension NewsTableViewController {
     ) as? NewsTableViewCell else {
       return UITableViewCell()
     }
-    cell.configure(news: news[indexPath.row])
+    cell.configure(model: SimpleFactory().newNewsTableViewCellModel(news: news[indexPath.row]))
     return cell
   }
 }
