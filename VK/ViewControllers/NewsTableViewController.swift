@@ -34,11 +34,9 @@ extension NewsTableViewController {
   func loadData(_ mode: UpdateTableMode, completion: @escaping () -> Void = {}) {
     NetworkManager.shared.getNews(startFrom: self.startFrom)
       .then { decodeJson -> Promise<Json.News.Response> in
-        var data = decodeJson
-        guard let response = data.response else { return brokenPromise() }
-        data.configure()
-        return Promise.value(response)
-      }.done(on: DispatchQueue.main) { response in
+        guard let response = decodeJson.response else { return brokenPromise() }
+        return Promise.value(response.configured())
+      }.done { response in
         self.updateTable(response: response, mode: mode)
         completion()
       }.catch { error in
@@ -58,8 +56,7 @@ extension NewsTableViewController {
     case .fetchContinue:
       if items.isEmpty { return }
 
-      let counts = (from: news.count, to: news.count + items.count - 1)
-      let indexPaths = (counts.from...counts.to)
+      let indexPaths = (news.count..<(news.count + items.count))
         .map { IndexPath(row: $0, section: 0) }
 
       news += items
@@ -69,7 +66,7 @@ extension NewsTableViewController {
       tableView.endUpdates()
     case .fetchNew:
       let newItems = items
-        .map { news.contains($0) ? nil : $0 }
+        .map { news.contains($0 ) ? nil : $0 }
         .compactMap { $0 }
 
       if newItems.isEmpty { return }
@@ -86,10 +83,16 @@ extension NewsTableViewController {
   func viewDidLoadDataSource() {
     tableView.register(NewsTableViewCell.nib,
                        forCellReuseIdentifier: NewsTableViewCell.identifier)
+    tableView.tableFooterView = UIView()
   }
 
   override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    news.count
+    if news.isEmpty {
+      tableView.showPlaceholder("Новостей нет!")
+    } else {
+      tableView.hidePlaceholder()
+    }
+    return news.count
   }
 
   override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -110,16 +113,16 @@ extension NewsTableViewController {
   override func tableView(_ tableView: UITableView,
                           willDisplay cell: UITableViewCell,
                           forRowAt indexPath: IndexPath) {
-    guard news.count == (indexPath.row + 1) else { return }
+    guard (news.count - 6) == indexPath.row else { return }
     loadData(.fetchContinue)
   }
 
   override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    var height = 60 + 90 + 6 + 260 + 2 + 20
-    if news[indexPath.section].isPhoto {
-      height -= 90
+    let newsItem = news[indexPath.row]
+    let cellSizes = CachedData.shared.cachedValue(for: newsItem.identifire) {
+      NewsTableViewCell.cellSizes(news: newsItem, width: tableView.frame.width)
     }
-    return CGFloat(height)
+    return cellSizes.heightForRowAt
   }
 }
 

@@ -6,7 +6,7 @@
 //
 // swiftlint:disable identifier_name nesting
 
-import Foundation
+import UIKit
 
 // MARK: - Misc
 
@@ -28,8 +28,11 @@ extension Json {
     struct Attachment: Codable {
         let type: String
         let photo: Photo.Item?
-        let doc: Doc?
-        let link: Link?
+//        let doc: Doc?
+//        let link: Link?
+      enum CodingKeys: String, CodingKey {
+          case type, photo
+      }
     }
 
     // MARK: - Comments
@@ -144,4 +147,10 @@ extension Json {
     struct Views: Codable {
         let count: Int
     }
+}
+
+extension Json.Size {
+  var ratio: CGFloat {
+    CGFloat(width == 0 ? 0 : CGFloat(height) / CGFloat(width))
+  }
 }
