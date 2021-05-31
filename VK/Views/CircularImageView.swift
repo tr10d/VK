@@ -41,15 +41,15 @@ final class CircularImageView: UIImageView {
     override func layoutSubviews() {
         super.layoutSubviews()
         layer.cornerRadius = frame.height / 2
-        layer.borderColor = UIColor.black.cgColor
+      layer.borderColor = Constants.colors.black.cgColor
         layer.borderWidth = 0.1
         layer.masksToBounds = true
 
-        superview?.backgroundColor = UIColor.clear
+        superview?.backgroundColor = Constants.colors.clear
         superview?.layer.shadowRadius = 2
         superview?.layer.shadowOffset = CGSize(width: 3, height: 3)
         superview?.layer.shadowOpacity = 0.7
-        superview?.layer.shadowColor = UIColor.black.cgColor
+        superview?.layer.shadowColor = Constants.colors.black.cgColor
     }
 
 }

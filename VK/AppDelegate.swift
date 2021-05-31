@@ -14,13 +14,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
     PromiseKit.conf.Q.map = .global()
 
-    let vkBlue = UIColor(named: "VK_ColorBlue")!
-    let vkWhite = UIColor(named: "VK_ColorWhite")!
-
     let navigationBar = UINavigationBar.appearance()
-    navigationBar.tintColor = vkWhite
-    navigationBar.barTintColor = vkBlue
-    navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: vkWhite]
+    navigationBar.tintColor = Constants.colors.vkWhite
+    navigationBar.barTintColor = Constants.colors.vkBlue
+    navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: Constants.colors.vkWhite!]
 
     return true
   }

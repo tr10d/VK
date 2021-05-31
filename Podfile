@@ -11,5 +11,6 @@ target 'VK' do
   # pod 'SwiftLint'
   pod 'RealmSwift', '=10.1.4'
   pod "PromiseKit", "~> 6.8"
+  pod "Texture"
   
 end
